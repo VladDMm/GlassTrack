@@ -1,0 +1,210 @@
+﻿//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "AddGlass.h"
+#include "glTrack.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TAddFormG *AddFormG;
+//---------------------------------------------------------------------------
+__fastcall TAddFormG::TAddFormG(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------
+void __fastcall TAddFormG::CancelButtonClick(TObject *Sender)
+{
+    this->Close();
+}
+//---------------------------------------------------------------------------
+void __fastcall TAddFormG::Initialize_Component()
+{
+	FDQuery1->Connection = MenuForm->FDConnection1;
+
+    try {
+        FDQuery1->SQL->Clear();
+		FDQuery1->SQL->Add("SELECT DISTINCT a_marca FROM automobile");
+        FDQuery1->Open();
+
+        // Populăm AutoComboBox cu date din DB
+        AutoComboBox->Clear();
+        while (!FDQuery1->Eof) {
+			AutoComboBox->Items->Add(FDQuery1->FieldByName("a_marca")->AsString);
+            FDQuery1->Next();
+        }
+        FDQuery1->Close();
+
+        FDQuery1->SQL->Clear();
+        FDQuery1->SQL->Add("SELECT DISTINCT a_model FROM automobile");
+        FDQuery1->Open();
+
+        // Populăm ModelComboBox cu date din DB
+        ModelComboBox->Clear();
+        while (!FDQuery1->Eof) {
+            ModelComboBox->Items->Add(FDQuery1->FieldByName("a_model")->AsString);
+            FDQuery1->Next();
+        }
+        FDQuery1->Close();
+    }
+    catch (Exception &e) {
+        ShowMessage("Eroare la încărcarea datelor: " + e.Message);
+    }
+}
+
+void __fastcall TAddFormG::AddButtonClick(TObject *Sender)
+{
+	String marca, model, sectia, celula;
+    int a_id = -1, p_id;
+
+    // verificam dacă utilizatorul a selectat din ComboBox sau a scris manual
+    if (AutoComboBox->Text != "") {
+        marca = AutoComboBox->Text;
+    } else {
+        marca = AutoEdit->Text;
+    }
+
+    if (ModelComboBox->Text != "") {
+        model = ModelComboBox->Text;
+    } else {
+        model = ModelEdit->Text;
+	}
+
+	 if (SectiaComboBox->Text != "") {
+		sectia = SectiaComboBox->Text;
+    } else {
+		sectia = SectiaEdit->Text;
+    }
+
+	if (CelulaComboBox->Text != "") {
+		celula = CelulaComboBox->Text;
+    } else {
+		celula = CeulalEdit->Text;
+	}
+
+	try {
+		// daca exista automobilul
+        FDQuery1->SQL->Clear();
+        FDQuery1->SQL->Add("SELECT a_id FROM automobile WHERE a_marca = :marca AND a_model = :model");
+        FDQuery1->ParamByName("marca")->AsString = marca;
+        FDQuery1->ParamByName("model")->AsString = model;
+        FDQuery1->Open();
+
+        if (!FDQuery1->IsEmpty()) {
+			// daca exista folosim a_id
+            a_id = FDQuery1->FieldByName("a_id")->AsInteger;
+        } else {
+			// nu exista, inseram
+            FDQuery1->SQL->Clear();
+            FDQuery1->SQL->Add("INSERT INTO automobile (a_marca, a_model) VALUES (:marca, :model)");
+			FDQuery1->ParamByName("marca")->AsString = marca;
+			FDQuery1->ParamByName("model")->AsString = model;
+			FDQuery1->ExecSQL();
+
+            // obtine `a_id` inserat
+            FDQuery1->SQL->Clear();
+            FDQuery1->SQL->Add("SELECT LAST_INSERT_ID() AS new_a_id");
+            FDQuery1->Open();
+            a_id = FDQuery1->FieldByName("new_a_id")->AsInteger;
+        }
+
+		// inseram  in parbrize
+        FDQuery1->SQL->Clear();
+        FDQuery1->SQL->Add("INSERT INTO parbrize (p_code, p_origine, p_count, p_price) "
+                           "VALUES (:p_code, :p_origine, :p_count, :p_price)");
+		FDQuery1->ParamByName("p_code")->AsString = PCodeEdit->Text;
+		FDQuery1->ParamByName("p_origine")->AsString = POrigineEdit->Text;
+		FDQuery1->ParamByName("p_count")->AsInteger = StrToInt(CountEdit->Text);
+        FDQuery1->ParamByName("p_price")->AsFloat = StrToFloat(PriceEdit->Text);
+		FDQuery1->ExecSQL();
+
+		// inseram in numele celulei
+		FDQuery->SQL->Clear();
+		FDQuery->SQL->Add("INSERT INTO celula (nume_celula) VALUES (:nume_celula)");
+		FDQuery->ParamByName("nume_celula")->AsString = CelulaEdit->Text;
+		FDQuery->ExecSQL();
+
+		// inseram numele sectiei
+		FDQuery->SQL->Clear();
+		FDQuery->SQL->Add("INSERT INTO sectia (nume_sectie) VALUES (:nume_sectie)");
+		FDQuery->ParamByName("nume_sectie")->AsString = SectiaEdit->Text;
+		FDQuery->ExecSQL();
+
+        // obtinem id-ul sectiei introduse ca sa il atribuim locatiei parbrizului
+		int sectia_id = 0;
+		FDQuery1->SQL->Clear();
+		FDQuery1->SQL->Add("SELECT LAST_INSERT_ID() AS sectia_id");
+		FDQuery1->Open();
+		sectia_id = FDQuery1->FieldByName("sectia_id")->AsInteger;
+
+		// obtinem ultimu id inserat in celula
+		int celula_id = 0;
+		FDQuery1->SQL->Clear();
+		FDQuery1->SQL->Add("SELECT LAST_INSERT_ID() AS new_celula_id");
+		FDQuery1->Open();
+		celula_id = FDQuery1->FieldByName("new_celula_id")->AsInteger;
+
+		// atribuim celula la sectia setata
+        FDQuery->SQL->Clear();
+		FDQuery->SQL->Add("INSERT INTO sectia (id_celula) VALUES (:id_celula)");
+		FDQuery->ParamByName("id_celula")->AsInteger = celula_id;
+		FDQuery->ExecSQL();
+
+		// obtine p_id inserat
+		FDQuery1->SQL->Clear();
+		FDQuery1->SQL->Add("SELECT LAST_INSERT_ID() AS new_p_id");
+		FDQuery1->Open();
+		p_id = FDQuery1->FieldByName("new_p_id")->AsInteger;
+
+		// inseram in parbrize_auto (legatura între automobil și parbriz)
+		FDQuery1->SQL->Clear();
+		FDQuery1->SQL->Add("INSERT INTO parbrize_auto (a_id, p_id, sectia_id) VALUES (:a_id, :p_id, :sectia_id)");
+		FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+		FDQuery1->ParamByName("p_id")->AsInteger = p_id;
+		FDQuery1->ParamByName("sectia_id")->AsInteger = sectia_id;
+		FDQuery1->ExecSQL();
+
+		FDQuery1->SQL->Text = "SELECT pp.pa_id, a.a_marca, a.a_model, p.p_code, p.p_origine, p.p_count, p.p_price "
+			"FROM parbrize_auto pp "
+			"JOIN automobile a ON a.a_id = pp.a_id "
+			"JOIN parbrize p ON p.p_id = pp.p_id ";
+
+		ShowMessage("Datele au fost salvate cu succes!");
+	}
+    catch (Exception &e) {
+        ShowMessage("Eroare la salvare: " + e.Message);
+    }
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TAddFormG::FormCreate(TObject *Sender)
+{
+	Initialize_Component();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TAddFormG::AutoComboBoxChange(TObject *Sender)
+{
+String marcaSelectata = AutoComboBox->Text;
+
+    try {
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT a_model FROM automobile WHERE a_marca = :marca";
+        FDQuery1->ParamByName("marca")->AsString = marcaSelectata;
+        FDQuery1->Open();
+
+		ModelComboBox->Items->Clear();
+        while (!FDQuery1->Eof) {
+            ModelComboBox->Items->Add(FDQuery1->FieldByName("a_model")->AsString);
+            FDQuery1->Next();
+        }
+    }
+    catch (Exception &e) {
+        ShowMessage("Eroare la încărcarea modelelor: " + e.Message);
+    }
+}
+//---------------------------------------------------------------------------
+
