@@ -29,6 +29,8 @@
 #include <Vcl.DBGrids.hpp>
 #include <Vcl.Grids.hpp>
 #include <Vcl.Menus.hpp>
+#include "EditForm.h"
+
 //---------------------------------------------------------------------------
 class TMenuForm : public TForm
 {
@@ -46,30 +48,32 @@ __published:	// IDE-managed Components
 	TFDAutoIncField *FDQuery1pa_id;
 	TStringField *FDQuery1a_marca;
 	TStringField *FDQuery1a_model;
-	TStringField *FDQuery1p_code;
 	TStringField *FDQuery1p_origine;
 	TIntegerField *FDQuery1p_count;
 	TFMTBCDField *FDQuery1p_price;
-	TStringField *FDQuery1nume_sectie;
 	TStringField *FDQuery1nume_celula;
 	TPopupMenu *PopupMenu1;
 	TMenuItem *MenuItemVinde;
+	TMenuItem *MenuItemEdit;
+	TStringField *FDQuery1p_name;
+	TStringField *FDQuery1cod;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
 	void __fastcall FormShow(TObject *Sender);
-	void __fastcall DBGrid1MouseDown(TObject *Sender, TMouseButton Button,
-      TShiftState Shift, int X, int Y);
+	//void __fastcall DBGrid1MouseDown(TObject *Sender, TMouseButton Button,
+    //  TShiftState Shift, int X, int Y);
 	//void __fastcall Initialize_Component();
 	void __fastcall AddButtonClick(TObject *Sender);
 	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall SearchBoxChange(TObject *Sender);
-	void __fastcall FDQuery1AfterPost(TDataSet *DataSet);
-	void __fastcall DBGrid1CellClick(TColumn *Column);
-	void __fastcall FDQuery1CalcFields(TDataSet *DataSet);
+  //	void __fastcall FDQuery1AfterPost(TDataSet *DataSet);
+   //	void __fastcall DBGrid1CellClick(TColumn *Column);
+   //	void __fastcall FDQuery1CalcFields(TDataSet *DataSet);
 	void __fastcall DBGrid1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall MenuItemVindeClick(TObject *Sender);
 	void __fastcall DBGrid1DrawColumnCell(TObject *Sender, const TRect &Rect, int DataCol,
           TColumn *Column, TGridDrawState State);
+	void __fastcall MenuItemEditClick(TObject *Sender);
 private:	// User declarations
    //	TFDPhysMySQLDriverLink *FDPhysMySQLDriverLink1;  // Adăugat aici
 

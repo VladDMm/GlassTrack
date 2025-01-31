@@ -40,8 +40,10 @@ object MenuForm: TMenuForm
     Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
     DataSource = DataSource1
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
     ParentShowHint = False
     PopupMenu = PopupMenu1
+    ReadOnly = True
     ShowHint = False
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
@@ -49,14 +51,12 @@ object MenuForm: TMenuForm
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
-    OnCellClick = DBGrid1CellClick
     OnDrawColumnCell = DBGrid1DrawColumnCell
     OnKeyDown = DBGrid1KeyDown
     Columns = <
       item
         Expanded = False
         FieldName = 'pa_id'
-        ReadOnly = True
         Title.Caption = 'ID'
         Visible = False
       end
@@ -64,7 +64,6 @@ object MenuForm: TMenuForm
         Alignment = taCenter
         Expanded = False
         FieldName = 'a_marca'
-        ReadOnly = True
         Title.Caption = 'Marca'
         Width = 170
         Visible = True
@@ -73,7 +72,6 @@ object MenuForm: TMenuForm
         Alignment = taCenter
         Expanded = False
         FieldName = 'a_model'
-        ReadOnly = True
         Title.Caption = 'Model'
         Width = 170
         Visible = True
@@ -81,8 +79,16 @@ object MenuForm: TMenuForm
       item
         Alignment = taCenter
         Expanded = False
-        FieldName = 'p_code'
-        Title.Caption = 'Cod Parbriz'
+        FieldName = 'p_name'
+        Title.Caption = 'Produs'
+        Width = 150
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'cod'
+        Title.Caption = 'Cod'
         Width = 150
         Visible = True
       end
@@ -92,14 +98,6 @@ object MenuForm: TMenuForm
         FieldName = 'p_origine'
         Title.Caption = #354'ara'
         Width = 120
-        Visible = True
-      end
-      item
-        Alignment = taCenter
-        Expanded = False
-        FieldName = 'nume_sectie'
-        Title.Caption = 'Sec'#355'ia'
-        Width = 70
         Visible = True
       end
       item
@@ -172,21 +170,18 @@ object MenuForm: TMenuForm
   end
   object FDQuery1: TFDQuery
     AutoCalcFields = False
-    AfterPost = FDQuery1AfterPost
-    OnCalcFields = FDQuery1CalcFields
     CachedUpdates = True
     Connection = FDConnection1
     UpdateOptions.AssignedValues = [uvCheckReadOnly, uvAutoCommitUpdates]
     SQL.Strings = (
       
-        'SELECT pp.pa_id, a.a_marca, a.a_model, p.p_code, p.p_origine, s.' +
-        'nume_sectie,'
-      ' c.nume_celula, p.p_count, p.p_price '
-      'FROM parbrize_auto pp  '
-      'JOIN automobile a ON a.a_id = pp.a_id '
-      ' JOIN sectia s ON pp.sectia_id = s.id_sectia '
-      ' JOIN celula c ON s.id_celula = c.id_celula  '
-      'JOIN parbrize p ON p.p_id = pp.p_id ')
+        'SELECT pp.pa_id, a.a_marca, a.a_model, p.p_name, ct.cod, p.p_ori' +
+        'gine, c.nume_celula, p.p_count, p.p_price '
+      'FROM product_auto_table pp '
+      'JOIN vehicle_table a ON a.a_id = pp.a_id '
+      'JOIN celula_table c ON c.id_celula = pp.celula_id '
+      'JOIN code_table ct ON ct.id_cod = pp.id_cod '
+      'JOIN product_table p ON p.p_id = pp.p_id;')
     Left = 72
     Top = 256
     object FDQuery1pa_id: TFDAutoIncField
@@ -209,10 +204,17 @@ object MenuForm: TMenuForm
       ProviderFlags = []
       Size = 300
     end
-    object FDQuery1p_code: TStringField
+    object FDQuery1p_name: TStringField
       AutoGenerateValue = arDefault
-      FieldName = 'p_code'
-      Origin = 'p_code'
+      FieldName = 'p_name'
+      Origin = 'p_name'
+      ProviderFlags = []
+      Size = 255
+    end
+    object FDQuery1cod: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'cod'
+      Origin = 'cod'
       ProviderFlags = []
       FixedChar = True
       Size = 255
@@ -225,21 +227,11 @@ object MenuForm: TMenuForm
       FixedChar = True
       Size = 155
     end
-    object FDQuery1nume_sectie: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'nume_sectie'
-      Origin = 'nume_sectie'
-      ProviderFlags = []
-      ReadOnly = True
-      FixedChar = True
-      Size = 100
-    end
     object FDQuery1nume_celula: TStringField
       AutoGenerateValue = arDefault
       FieldName = 'nume_celula'
       Origin = 'nume_celula'
       ProviderFlags = []
-      ReadOnly = True
       FixedChar = True
       Size = 50
     end
@@ -292,6 +284,10 @@ object MenuForm: TMenuForm
     object MenuItemVinde: TMenuItem
       Caption = 'Vinde Produsul'
       OnClick = MenuItemVindeClick
+    end
+    object MenuItemEdit: TMenuItem
+      Caption = 'Editeaz'#259' Produsul'
+      OnClick = MenuItemEditClick
     end
   end
 end

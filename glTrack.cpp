@@ -13,6 +13,7 @@
 
 #include "glTrack.h"
 #include "AddGlass.h"
+#include "EditForm.h"
 
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -22,8 +23,20 @@ TMenuForm* MenuForm;
 TFDMemTable* FDPhysMySQLDriverLink1;
 
 //---------------------------------------------------------------------------
+
 __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) {}
+
 //---------------------------------------------------------------------------
+
+__fastcall TMenuForm::~TMenuForm()
+{
+    delete FDPhysMySQLDriverLink1;
+}
+
+//---------------------------------------------------------------------------
+
+// Crearea Formei Principale
+
 void __fastcall TMenuForm::FormCreate(TObject* Sender)
 {
     try {
@@ -37,11 +50,12 @@ void __fastcall TMenuForm::FormCreate(TObject* Sender)
         //        FDConnection1->Params->Add("Password=root");
         //        FDConnection1->LoginPrompt = false;
 
-	   // DBGrid1->Columns->Items[9]->ReadOnly = true;
+		// DBGrid1->Columns->Items[9]->ReadOnly = true;
+
         FDConnection1->LoginPrompt = false;
         FDConnection1->Connected = true; // Conectare la baza de date
         FormShow(this);
-		FormResize(this);
+        FormResize(this);
 
     } catch (Exception &e) {
         ShowMessage("Eroare la conectare: " + e.Message);
@@ -49,10 +63,7 @@ void __fastcall TMenuForm::FormCreate(TObject* Sender)
 }
 //---------------------------------------------------------------------------
 
-__fastcall TMenuForm::~TMenuForm()
-{
-    delete FDPhysMySQLDriverLink1;
-}
+// Functie pentru redimensionarea formei pe baza marimii zonei client si nr coloane
 
 void __fastcall TMenuForm::FormResize(TObject* Sender)
 {
@@ -64,8 +75,10 @@ void __fastcall TMenuForm::FormResize(TObject* Sender)
     if (colCount <= 1) // Dacă există doar ID-ul sau nicio coloană, ieșim
         return;
 
-    int totalMargin = DBGrid1->Margins->Left + DBGrid1->Margins->Right; // Marginea totală
-    int effectiveWidth = gridWidth - totalMargin - 10; // Scădem 2 pixeli pentru siguranță
+    int totalMargin =
+        DBGrid1->Margins->Left + DBGrid1->Margins->Right; // Marginea totală
+    int effectiveWidth =
+        gridWidth - totalMargin - 10; // Scădem 10 pixeli pentru a incapea datele pe forma
 
     int visibleCols = colCount - 1; // Excludem coloana ID
     int baseColWidth = effectiveWidth / visibleCols;
@@ -75,7 +88,8 @@ void __fastcall TMenuForm::FormResize(TObject* Sender)
         if (DBGrid1->Columns->Items[i]->FieldName == "id") {
             DBGrid1->Columns->Items[i]->Width = 0; // Ascundem ID-ul
         } else {
-            DBGrid1->Columns->Items[i]->Width = baseColWidth - 1; // Reducem cu 1 pixel fiecare coloană
+            DBGrid1->Columns->Items[i]->Width =
+                baseColWidth - 1; // Reducem cu 1 pixel fiecare coloană
         }
     }
 
@@ -84,68 +98,37 @@ void __fastcall TMenuForm::FormResize(TObject* Sender)
         DBGrid1->Columns->Items[i % visibleCols]->Width += 1;
     }
 }
+//-----------------------------------------------------------------------------
 
-
-
-/*
-    void __fastcall TMenuForm::btnVanzareClick(TObject *Sender)
-    {
-        if (FDQuery1->RecordCount == 0) {
-            ShowMessage("Nu există produse în listă.");
-            return;
-        }
-
-        int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger;
-        int p_count = FDQuery1->FieldByName("p_count")->AsInteger;
-
-        if (p_count <= 0) {
-            ShowMessage("Stoc epuizat!");
-            return;
-        }
-
-        try {
-            FDQuery1->SQL->Text = "UPDATE parbrize SET p_count = p_count - 1 WHERE p_id = "
-                                  "(SELECT p_id FROM parbrize_auto WHERE pa_id = :pa_id)";
-            FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
-            FDQuery1->ExecSQL();
-
-            FDConnection1->CommitRetaining();  // Confirmă tranzacția fără a o închide
-            FDQuery1->Close();
-            FDQuery1->Open();  // Reîncarcă datele actualizate
-
-            ShowMessage("Produs vândut cu succes!");
-        } catch (Exception &e) {
-            ShowMessage("Eroare la vânzare: " + e.Message);
-            FDQuery1->CancelUpdates();
-		}
-	}
-*/
-
-//---------------------------------------------------------------------------
+// Deschiderea Formei pentru Adaugare Produs
 
 void __fastcall TMenuForm::AddButtonClick(TObject* Sender)
 {
     AddFormG = new TAddFormG(this);
     AddFormG->ShowModal();
-    delete AddFormG;
+	delete AddFormG;
+    FormShow(this);
 }
 
 //---------------------------------------------------------------------------
 
+// Functie pentru a adauga datele din db in DBGrid
+
 void __fastcall TMenuForm::FormShow(TObject* Sender)
 {
     try {
-        FDQuery1->Close(); // Închide query-ul dacă era deja deschis
+        FDQuery1->Close();
         FDQuery1->SQL->Text =
-            "SELECT pp.pa_id, a.a_marca, a.a_model, p.p_code, p.p_origine, s.nume_sectie, c.nume_celula, p.p_count, p.p_price "
-            "FROM parbrize_auto pp "
-            "JOIN automobile a ON a.a_id = pp.a_id "
-            "JOIN sectia s ON pp.sectia_id = s.id_sectia "
-            "JOIN celula c ON s.id_celula = c.id_celula "
-            "JOIN parbrize p ON p.p_id = pp.p_id ";
+            "SELECT pp.pa_id, a.a_marca, a.a_model, p.p_name, ct.cod, p.p_origine, c.nume_celula, p.p_count, p.p_price "
+            "FROM product_auto_table pp "
+            "JOIN vehicle_table a ON a.a_id = pp.a_id "
+            "JOIN celula_table c ON c.id_celula = pp.celula_id "
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod "
+            "JOIN product_table p ON p.p_id = pp.p_id ";
 
-        FDQuery1->Open();
-        FormResize(MenuForm);
+		FDQuery1->Open();
+		FormResize(MenuForm);
+
     } catch (Exception &e) {
         ShowMessage("Eroare la încărcarea datelor: " + e.Message);
     }
@@ -153,6 +136,7 @@ void __fastcall TMenuForm::FormShow(TObject* Sender)
 
 //---------------------------------------------------------------------------
 
+// Functie buton Refresh ca sa adauge si sa redimensioneze datele in DBGrid
 void __fastcall TMenuForm::Button1Click(TObject* Sender)
 {
     FormShow(this);
@@ -160,6 +144,9 @@ void __fastcall TMenuForm::Button1Click(TObject* Sender)
 }
 
 //---------------------------------------------------------------------------
+
+// Functie pentru afisarea rezultatelor cautate in SearchBox
+
 void __fastcall TMenuForm::SearchBoxChange(TObject* Sender)
 {
     String searchText = SearchBox->Text.Trim();
@@ -167,14 +154,14 @@ void __fastcall TMenuForm::SearchBoxChange(TObject* Sender)
     try {
         FDQuery1->Close();
         FDQuery1->SQL->Text =
-            "SELECT pp.pa_id, a.a_marca, a.a_model, p.p_code, p.p_origine, s.nume_sectie, c.nume_celula, p.p_count, p.p_price "
-            "FROM parbrize_auto pp "
-            "JOIN automobile a ON a.a_id = pp.a_id "
-            "JOIN sectia s ON pp.sectia_id = s.id_sectia "
-            "JOIN celula c ON s.id_celula = c.id_celula "
-            "JOIN parbrize p ON p.p_id = pp.p_id "
+            "SELECT pp.pa_id, a.a_marca, a.a_model, p.p_name, ct.cod, p.p_origine, c.nume_celula, p.p_count, p.p_price "
+            "FROM product_auto_table pp "
+            "JOIN vehicle_table a ON a.a_id = pp.a_id "
+            "JOIN celula_table c ON c.id_celula = pp.celula_id "
+            "JOIN product_table p ON p.p_id = pp.p_id "
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod "
             "WHERE a.a_marca LIKE :searchText OR a.a_model LIKE :searchText "
-            "OR p.p_code LIKE :searchText OR s.nume_sectie LIKE :searchText "
+            "OR ct.cod LIKE :searchText OR p.p_name LIKE :searchText "
             "OR c.nume_celula LIKE :searchText OR p.p_origine LIKE :searchText";
 
         FDQuery1->ParamByName("searchText")->AsString = "%" + searchText + "%";
@@ -188,128 +175,7 @@ void __fastcall TMenuForm::SearchBoxChange(TObject* Sender)
 
 //---------------------------------------------------------------------------
 
-void __fastcall TMenuForm::FDQuery1AfterPost(TDataSet* DataSet)
-{
-    try {
-        // daca pa_id exista și nu este NULL
-        if (!DataSet->FieldByName("pa_id")->IsNull) {
-            int pa_id = DataSet->FieldByName("pa_id")->AsInteger;
-
-            // salvam valorile campurilor înainte de a modifica interogarea
-            String a_marca = DataSet->FieldByName("a_marca")->AsString;
-            String a_model = DataSet->FieldByName("a_model")->AsString;
-            String p_origine = DataSet->FieldByName("p_origine")->AsString;
-            String nume_sectie = DataSet->FieldByName("nume_sectie")->AsString;
-            String nume_celula = DataSet->FieldByName("nume_celula")->AsString;
-            String p_code = DataSet->FieldByName("p_code")->AsString;
-            float p_price = DataSet->FieldByName("p_price")->AsFloat;
-            int p_count = DataSet->FieldByName("p_count")->AsInteger;
-
-            // Actualizare în tabela `parbrize`
-            FDQuery1->SQL->Text =
-                "UPDATE parbrize SET p_price = :price, p_origine = :origine, p_code = :code, p_count = :count "
-                "WHERE p_id = (SELECT p_id FROM parbrize_auto WHERE pa_id = :pa_id)";
-            FDQuery1->ParamByName("price")->AsFloat = p_price;
-            FDQuery1->ParamByName("origine")->AsString = p_origine;
-            FDQuery1->ParamByName("code")->AsString = p_code;
-            FDQuery1->ParamByName("count")->AsInteger = p_count;
-            FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
-            FDQuery1->ExecSQL();
-
-            // Actualizare în tabela `automobile`
-            FDQuery1->SQL->Text =
-                "UPDATE automobile SET a_marca = :a_marca, a_model = :a_model "
-                "WHERE a_id = (SELECT a_id FROM parbrize_auto WHERE pa_id = :pa_id)";
-            FDQuery1->ParamByName("a_marca")->AsString = a_marca;
-            FDQuery1->ParamByName("a_model")->AsString = a_model;
-            FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
-            FDQuery1->ExecSQL();
-
-            //			// Actualizare în tabela `sectie`
-            //			FDQuery1->SQL->Text = "UPDATE sectia SET nume_sectie = :nume_sectie "
-            //								  "WHERE id_sectia = (SELECT sectia_id FROM parbrize_auto WHERE pa_id = :pa_id)";
-            //			FDQuery1->ParamByName("nume_sectie")->AsString = nume_sectie;
-            //			FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
-            //			FDQuery1->ExecSQL();
-            //
-            //			// Actualizare în tabela `celule`
-            //			FDQuery1->SQL->Text = "UPDATE celula SET id_celula = :nume_celula "
-            //								  "WHERE id_celula = (SELECT c.id_celula FROM parbrize_auto pa "
-            //								  "JOIN sectia s ON pa.sectia_id = s.id_sectia "
-            //								  "JOIN celula c ON c.id_celula = s.id_celula WHERE pa_id = :pa_id)";
-            //			FDQuery1->ParamByName("nume_celula")->AsString = nume_celula;
-            //			FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
-            //			FDQuery1->ExecSQL();
-
-            // Confirmă tranzacțiile
-            FDConnection1->CommitRetaining();
-            FormShow(MenuForm);
-        } else {
-            ShowMessage("Eroare: câmpul pa_id este NULL!");
-        }
-
-    } catch (Exception &e) {
-        ShowMessage("Eroare la salvare: " + e.Message);
-        FDQuery1->CancelUpdates();
-    }
-}
-
-//---------------------------------------------------------------------------
-
-void __fastcall TMenuForm::DBGrid1CellClick(TColumn* Column)
-{
-    if (Column->FieldName == "FakeField_Vanzare") // Dacă e butonul „Vânzare”
-    {
-        int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger;
-        int cantitate = FDQuery1->FieldByName("p_count")->AsInteger;
-
-        if (cantitate > 0) {
-            FDQuery1->Edit();
-            FDQuery1->FieldByName("p_count")->AsInteger = cantitate - 1;
-            FDQuery1->Post();
-            FDConnection1->CommitRetaining();
-            ShowMessage("Produs vândut! Cantitatea actualizată.");
-        } else {
-            ShowMessage("Stoc epuizat!");
-        }
-    }
-}
-
-//---------------------------------------------------------------------------
-
-void __fastcall TMenuForm::DBGrid1MouseDown(
-    TObject* Sender, TMouseButton Button, TShiftState Shift, int X, int Y)
-{
-    TColumn* Column = DBGrid1->Columns->Items[DBGrid1->MouseCoord(X, Y).X];
-
-    if (Column && Column->Title->Caption == "Vânzare") {
-        int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger;
-
-        if (pa_id > 0) {
-            FDQuery1->SQL->Text =
-                "UPDATE parbrize SET p_count = p_count - 1 "
-                "WHERE p_id = (SELECT p_id FROM parbrize_auto WHERE pa_id = :pa_id) "
-                "AND p_count > 0";
-            FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
-            FDQuery1->ExecSQL();
-
-            FDConnection1->CommitRetaining();
-            FDQuery1->Refresh(); // Actualizare date
-
-            ShowMessage("Produs vândut!");
-        }
-    }
-}
-
-//---------------------------------------------------------------------------
-
-void __fastcall TMenuForm::FDQuery1CalcFields(TDataSet* DataSet)
-{
-    DataSet->FieldByName("FakeField_Vanzare")->AsString = "Vânzare";
-}
-//---------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------
+// La apasarea tastei DELETE sa se stearga randul selectat
 
 void __fastcall TMenuForm::DBGrid1KeyDown(
     TObject* Sender, WORD &Key, TShiftState Shift)
@@ -329,7 +195,7 @@ void __fastcall TMenuForm::DBGrid1KeyDown(
 
                 FDQuery1->Close();
                 FDQuery1->SQL->Text =
-                    "DELETE FROM parbrize_auto WHERE pa_id = :pa_id";
+                    "DELETE FROM product_auto_table WHERE pa_id = :pa_id";
                 FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
                 FDQuery1->ExecSQL();
 
@@ -345,41 +211,60 @@ void __fastcall TMenuForm::DBGrid1KeyDown(
 }
 //---------------------------------------------------------------------------
 
+// La click dreapta si alegerea vanzarii produsului de vanzare sa scada cantitatea lui
+
 void __fastcall TMenuForm::MenuItemVindeClick(TObject* Sender)
 {
-    int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger;
+    int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger; // preia randul selectat
     if (FDQuery1->Active) {
-        FDQuery1->Close(); // Închide dataset-ul înainte de ExecSQL
+        FDQuery1->Close();
     }
-    FDQuery1->SQL->Text =
-        "UPDATE parbrize SET p_count = p_count - 1 "
-        "WHERE p_id = (SELECT p_id FROM parbrize_auto WHERE pa_id = :pa_id) "
-        "AND p_count > 0";
-    FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
-	FDQuery1->ExecSQL();
-	FormShow(this);
-    ShowMessage(L"Produs Vândut!");
+    FormShow(this);
+    if (MessageDlg(L"Doreşti să vinzi produsul?", mtConfirmation,
+            TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
 
-    //
-    //	if (pa_id > 0)
-    //	{
-    //		FDQuery1->Open();
-    //		FDQuery1->SQL->Text = "UPDATE parbrize SET p_count = p_count - 1 "
-    //                              "WHERE p_id = (SELECT p_id FROM parbrize_auto WHERE pa_id = :pa_id) "
-    //                              "AND p_count > 0";
-    //		FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
-    //		FDQuery1->ExecSQL();
-    //
-    //        FDConnection1->CommitRetaining();
-    //        FDQuery1->Refresh(); // Actualizare date
-    //
-    //		ShowMessage("Produs vândut!");
-    //	}
+    {   // Daca e apasat No atunci se reafiseaza datele
+		FormShow(this);
+		return;
+    } else {    // Daca e apasat Yes atunci se vinde produsul
+        FDQuery1->SQL->Text =
+            "UPDATE product_table SET p_count = p_count - 1 "
+            "WHERE p_id = (SELECT p_id FROM product_auto_table WHERE pa_id = :pa_id) "
+            "AND p_count > 0";
+        FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
+		FDQuery1->ExecSQL();
+        // Afisarea datelor actualizate
+        FormShow(this);
+        ShowMessage(L"Produs Vândut!");
+    }
 }
 
 //---------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------
+// Apelarea formei Edit pentru editarea randului selectat
+
+void __fastcall TMenuForm::MenuItemEditClick(TObject* Sender)
+{
+    if (FDQuery1->IsEmpty()) {
+        ShowMessage("Nu există rând selectat.");
+        return;
+    }
+
+    int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger;  // id rand
+	// Deschiderea Formei pentru editare, se transmite  id-ul randului,
+	TEditFormProduct* EditForm = new TEditFormProduct(this, FDQuery1, pa_id);
+
+	if (EditForm->ShowModal() == mrOk) {
+		FormShow(this);// se reafiseaza datele
+	}
+
+	delete EditForm;
+	FormShow(this);
+}
+
+//---------------------------------------------------------------------------
+
+// Daca cantitatea produsului este pe 0 se afiseaza randul cu rosu
 
 void __fastcall TMenuForm::DBGrid1DrawColumnCell(TObject* Sender,
     const TRect &Rect, int DataCol, TColumn* Column, TGridDrawState State)
@@ -389,13 +274,11 @@ void __fastcall TMenuForm::DBGrid1DrawColumnCell(TObject* Sender,
 
     if (p_count == 0) {
         DBGrid1->Canvas->Brush->Color =
-            clRed; // Fundal roșu pentru produse epuizate
+            clRed; // Fundal rosu pentru produse epuizate
         DBGrid1->Canvas->Font->Color = clWhite; // Text alb
-	}
+    }
 
     DBGrid1->Canvas->FillRect(Rect);
     DBGrid1->DefaultDrawColumnCell(Rect, DataCol, Column, State);
 }
 //---------------------------------------------------------------------------
-
-

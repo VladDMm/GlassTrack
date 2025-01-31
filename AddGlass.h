@@ -34,8 +34,6 @@ __published:	// IDE-managed Components
 	TEdit *POrigineEdit;
 	TLabel *Label4;
 	TLabel *Label5;
-	TLabel *Label6;
-	TEdit *SectiaEdit;
 	TEdit *CountEdit;
 	TEdit *PriceEdit;
 	TButton *AddButton;
@@ -43,13 +41,18 @@ __published:	// IDE-managed Components
 	TFDQuery *FDQuery1;
 	TEdit *CelulaEdit;
 	TLabel *Label7;
-	TComboBox *SectiaComboBox;
 	TComboBox *CelulaComboBox;
+	TEdit *PNameEdit;
+	TLabel *Label6;
+	TComboBox *CodComboBox;
 	void __fastcall CancelButtonClick(TObject *Sender);
     void __fastcall Initialize_Component();
 	void __fastcall AddButtonClick(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall AutoComboBoxChange(TObject *Sender);
+	void __fastcall CodeSearch();
+	void __fastcall CodComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall CodComboBoxSelect(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TAddFormG(TComponent* Owner);

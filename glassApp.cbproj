@@ -191,6 +191,12 @@
             <DependentOn>AddGlass.h</DependentOn>
             <BuildOrder>3</BuildOrder>
         </CppCompile>
+        <CppCompile Include="EditForm.cpp">
+            <Form>EditFormProduct</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>EditForm.h</DependentOn>
+            <BuildOrder>4</BuildOrder>
+        </CppCompile>
         <CppCompile Include="glassApp.cpp">
             <BuildOrder>0</BuildOrder>
         </CppCompile>
@@ -206,6 +212,7 @@
         </CppCompile>
         <FormResources Include="glTrack.dfm"/>
         <FormResources Include="AddGlass.dfm"/>
+        <FormResources Include="EditForm.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -291,6 +298,12 @@
                 <DeployFile LocalName=".\Win32\Debug\glassApp.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>glassApp.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName=".\Win32\Debug\glassApp.tds" Configuration="Debug" Class="DebugSymbols">
+                    <Platform Name="Win32">
+                        <RemoteName>glassApp.tds</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

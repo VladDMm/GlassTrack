@@ -6,6 +6,7 @@
 //---------------------------------------------------------------------------
 USEFORM("glTrack.cpp", MenuForm);
 USEFORM("AddGlass.cpp", AddFormG);
+USEFORM("EditForm.cpp", EditFormProduct);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -15,6 +16,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->MainFormOnTaskBar = true;
 		Application->CreateForm(__classid(TMenuForm), &MenuForm);
 		Application->CreateForm(__classid(TAddFormG), &AddFormG);
+		Application->CreateForm(__classid(TEditFormProduct), &EditFormProduct);
 		Application->Run();
 	}
 	catch (Exception &exception)

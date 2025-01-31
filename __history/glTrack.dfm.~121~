@@ -1,0 +1,301 @@
+object MenuForm: TMenuForm
+  Left = 0
+  Top = 0
+  Caption = 'MenuForm'
+  ClientHeight = 468
+  ClientWidth = 1064
+  Color = clSilver
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnCreate = FormCreate
+  OnResize = FormResize
+  DesignSize = (
+    1064
+    468)
+  TextHeight = 15
+  object Label1: TLabel
+    Left = 598
+    Top = 11
+    Width = 60
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = 'C'#259'utare'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    ExplicitLeft = 600
+  end
+  object DBGrid1: TDBGrid
+    AlignWithMargins = True
+    Left = 8
+    Top = 50
+    Width = 1040
+    Height = 410
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    BorderStyle = bsNone
+    DataSource = DataSource1
+    ParentShowHint = False
+    PopupMenu = PopupMenu1
+    ShowHint = False
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+    OnCellClick = DBGrid1CellClick
+    OnDrawColumnCell = DBGrid1DrawColumnCell
+    OnKeyDown = DBGrid1KeyDown
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'pa_id'
+        ReadOnly = True
+        Title.Caption = 'ID'
+        Visible = False
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'a_marca'
+        Title.Caption = 'Marca'
+        Width = 170
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'a_model'
+        Title.Caption = 'Model'
+        Width = 170
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'p_name'
+        Title.Caption = 'Produs'
+        Width = 150
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'cod'
+        Title.Caption = 'Cod'
+        Width = 150
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'p_origine'
+        Title.Caption = #354'ara'
+        Width = 120
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'nume_celula'
+        Title.Caption = 'Celula'
+        Width = 70
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'p_count'
+        Title.Caption = 'Cantitatea'
+        Width = 60
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'p_price'
+        Title.Caption = 'Pre'#355
+        Width = 80
+        Visible = True
+      end>
+  end
+  object AddButton: TButton
+    Left = 910
+    Top = 8
+    Width = 120
+    Height = 36
+    Anchors = [akTop, akRight]
+    Caption = 'Adaug'#259
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+    OnClick = AddButtonClick
+    ExplicitLeft = 908
+  end
+  object SearchBox: TEdit
+    Left = 678
+    Top = 11
+    Width = 201
+    Height = 33
+    Alignment = taCenter
+    Anchors = [akTop, akRight]
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = [fsItalic]
+    ParentFont = False
+    TabOrder = 2
+    OnChange = SearchBoxChange
+    ExplicitLeft = 676
+  end
+  object Button1: TButton
+    Left = 8
+    Top = 11
+    Width = 59
+    Height = 33
+    Caption = 'Refresh'
+    TabOrder = 3
+    OnClick = Button1Click
+  end
+  object FDQuery1: TFDQuery
+    AutoCalcFields = False
+    AfterPost = FDQuery1AfterPost
+    OnCalcFields = FDQuery1CalcFields
+    CachedUpdates = True
+    Connection = FDConnection1
+    UpdateOptions.AssignedValues = [uvCheckReadOnly, uvAutoCommitUpdates]
+    SQL.Strings = (
+      
+        'SELECT pp.pa_id, a.a_marca, a.a_model, p.p_name, ct.cod, p.p_ori' +
+        'gine, c.nume_celula, p.p_count, p.p_price '
+      'FROM product_auto_table pp '
+      'JOIN vehicle_table a ON a.a_id = pp.a_id '
+      'JOIN celula_table c ON c.id_celula = pp.celula_id '
+      'JOIN code_table ct ON ct.id_cod = pp.id_cod '
+      'JOIN product_table p ON p.p_id = pp.p_id;')
+    Left = 72
+    Top = 256
+    object FDQuery1pa_id: TFDAutoIncField
+      FieldName = 'pa_id'
+      Origin = 'pa_id'
+      ProviderFlags = [pfInWhere, pfInKey]
+      ReadOnly = False
+    end
+    object FDQuery1a_marca: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'a_marca'
+      Origin = 'a_marca'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 300
+    end
+    object FDQuery1a_model: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'a_model'
+      Origin = 'a_model'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 300
+    end
+    object FDQuery1p_name: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'p_name'
+      Origin = 'p_name'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 255
+    end
+    object FDQuery1cod: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'cod'
+      Origin = 'cod'
+      ProviderFlags = []
+      ReadOnly = True
+      FixedChar = True
+      Size = 255
+    end
+    object FDQuery1p_origine: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'p_origine'
+      Origin = 'p_origine'
+      ProviderFlags = []
+      ReadOnly = True
+      FixedChar = True
+      Size = 155
+    end
+    object FDQuery1nume_celula: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'nume_celula'
+      Origin = 'nume_celula'
+      ProviderFlags = []
+      ReadOnly = True
+      FixedChar = True
+      Size = 50
+    end
+    object FDQuery1p_count: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'p_count'
+      Origin = 'p_count'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQuery1p_price: TFMTBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'p_price'
+      Origin = 'p_price'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 20
+      Size = 6
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = FDQuery1
+    Left = 120
+    Top = 256
+  end
+  object FDConnection1: TFDConnection
+    Params.Strings = (
+      'DriverID=MySQL'
+      'Database=glasstrack_db'
+      'Password=root'
+      'Server=127.0.0.1'
+      'User_Name=root')
+    UpdateOptions.AssignedValues = [uvAutoCommitUpdates]
+    UpdateOptions.AutoCommitUpdates = True
+    Connected = True
+    Left = 160
+    Top = 256
+  end
+  object FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink
+    VendorLib = 'C:\Program Files\MariaDB 11.4\lib32\libmariadb.dll'
+    Left = 208
+    Top = 256
+  end
+  object FDUpdateSQL1: TFDUpdateSQL
+    Connection = FDConnection1
+    Left = 256
+    Top = 256
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 440
+    Top = 8
+    object MenuItemVinde: TMenuItem
+      Caption = 'Vinde Produsul'
+      OnClick = MenuItemVindeClick
+    end
+    object MenuItemEdit: TMenuItem
+      Caption = 'Editeaz'#259' Produsul'
+    end
+  end
+end
