@@ -387,4 +387,11 @@
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.ImageCollection.hpp \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.BaseImageCollection.hpp \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.VirtualImageList.hpp \
-  C:\RAD\ Project\GlassTrack/AddGlass.h
+  C:\RAD\ Project\GlassTrack/EditForm.h \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Datasnap.DBClient.hpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Datasnap.DSIntf.hpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Data.DBCommon.hpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\System.StrUtils.hpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Datasnap.Midas.hpp \
+  C:\RAD\ Project\GlassTrack/AddGlass.h \
+  C:\RAD\ Project\GlassTrack/LoadData.h

@@ -344,7 +344,13 @@
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.Mask.hpp \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\System.MaskUtils.hpp \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.ListActns.hpp \
-  AddGlass.cpp C:\RAD\ Project\GlassTrack/AddGlass.h \
+  AddGlass.cpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\algorithm \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\xheap \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\set \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\xtree \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\optional \
+  C:\RAD\ Project\GlassTrack/AddGlass.h \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Data.DB.hpp \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Data.SqlTimSt.hpp \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Data.FmtBcd.hpp \
@@ -384,4 +390,10 @@
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.Buttons.hpp \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.ImageCollection.hpp \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.BaseImageCollection.hpp \
-  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.VirtualImageList.hpp
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\vcl\Vcl.VirtualImageList.hpp \
+  C:\RAD\ Project\GlassTrack/EditForm.h \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Datasnap.DBClient.hpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Datasnap.DSIntf.hpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Data.DBCommon.hpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\System.StrUtils.hpp \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\Datasnap.Midas.hpp

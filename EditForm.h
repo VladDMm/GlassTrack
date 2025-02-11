@@ -28,23 +28,19 @@ __published:	// IDE-managed Components
 	TEdit *CodEdit;
 	TEdit *CountEdit;
 	TEdit *PriceEdit;
-	TEdit *OrigineEdit;
 	TLabel *Label1;
 	TLabel *Label2;
 	TEdit *AutoEdit;
 	TEdit *CelulaEdit;
-	TLabel *Label3;
 	TLabel *Label4;
 	TLabel *Label5;
 	TLabel *Label6;
-	TEdit *ModelName;
-	TLabel *Label7;
 	TButton *ConfirmButton;
 	TButton *CancelButton;
-	TEdit *ProductEdit;
-	TLabel *Label8;
 	void __fastcall CancelButtonClick(TObject *Sender);
 	void __fastcall ConfirmButtonClick(TObject *Sender);
+	void __fastcall CancelButtonKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+
 private:	// User declarations
 	TFDQuery* FDQuery1; // Adaugă un membru pentru query-ul primit
     int ProductId;

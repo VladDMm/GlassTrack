@@ -30,6 +30,8 @@
 #include <Vcl.Grids.hpp>
 #include <Vcl.Menus.hpp>
 #include "EditForm.h"
+#include <Datasnap.DBClient.hpp>
+#include <Vcl.ExtCtrls.hpp>
 
 //---------------------------------------------------------------------------
 class TMenuForm : public TForm
@@ -43,40 +45,45 @@ __published:	// IDE-managed Components
 	TFDConnection *FDConnection1;
 	TFDPhysMySQLDriverLink *FDPhysMySQLDriverLink1;
 	TLabel *Label1;
-	TButton *Button1;
 	TFDUpdateSQL *FDUpdateSQL1;
-	TFDAutoIncField *FDQuery1pa_id;
-	TStringField *FDQuery1a_marca;
-	TStringField *FDQuery1a_model;
-	TStringField *FDQuery1p_origine;
-	TIntegerField *FDQuery1p_count;
-	TFMTBCDField *FDQuery1p_price;
-	TStringField *FDQuery1nume_celula;
 	TPopupMenu *PopupMenu1;
 	TMenuItem *MenuItemVinde;
 	TMenuItem *MenuItemEdit;
-	TStringField *FDQuery1p_name;
-	TStringField *FDQuery1cod;
+	TButton *Button2;
+	TLongWordField *FDQuery1p_count;
+	TLongWordField *FDQuery1p_price;
+	TFDAutoIncField *FDQuery1pa_id;
+	TMemoField *FDQuery1a_marca_model;
+	TMemoField *FDQuery1cod;
+	TMemoField *FDQuery1nume_celula;
+	TTimer *Timer1;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
-	void __fastcall FormShow(TObject *Sender);
 	//void __fastcall DBGrid1MouseDown(TObject *Sender, TMouseButton Button,
     //  TShiftState Shift, int X, int Y);
 	//void __fastcall Initialize_Component();
 	void __fastcall AddButtonClick(TObject *Sender);
-	void __fastcall Button1Click(TObject *Sender);
 	void __fastcall SearchBoxChange(TObject *Sender);
   //	void __fastcall FDQuery1AfterPost(TDataSet *DataSet);
    //	void __fastcall DBGrid1CellClick(TColumn *Column);
    //	void __fastcall FDQuery1CalcFields(TDataSet *DataSet);
 	void __fastcall DBGrid1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall MenuItemVindeClick(TObject *Sender);
+    void __fastcall FormShow(TObject* Sender);
 	void __fastcall DBGrid1DrawColumnCell(TObject *Sender, const TRect &Rect, int DataCol,
           TColumn *Column, TGridDrawState State);
 	void __fastcall MenuItemEditClick(TObject *Sender);
+	void __fastcall Button2Click(TObject *Sender);
+	void __fastcall SearchBoxClick(TObject *Sender);
+    int __fastcall ShowConfirmationDeleteDialog();
+	int __fastcall ShowConfirmationDialog();
+	void __fastcall SearchBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
+	void __fastcall DBGrid1TitleClick(TColumn *Column);
+	void __fastcall Timer1Timer(TObject *Sender);
+
 private:	// User declarations
    //	TFDPhysMySQLDriverLink *FDPhysMySQLDriverLink1;  // Adăugat aici
-
+    void __fastcall ConfirmDialogKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 public:		// User declarations
 	__fastcall TMenuForm(TComponent* Owner);
     __fastcall ~TMenuForm(); // Destructor pentru a elibera memoria

@@ -17,7 +17,7 @@ object MenuForm: TMenuForm
     468)
   TextHeight = 15
   object Label1: TLabel
-    Left = 598
+    Left = 596
     Top = 11
     Width = 60
     Height = 25
@@ -35,7 +35,7 @@ object MenuForm: TMenuForm
     AlignWithMargins = True
     Left = 8
     Top = 50
-    Width = 1040
+    Width = 1038
     Height = 410
     Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
@@ -53,6 +53,7 @@ object MenuForm: TMenuForm
     TitleFont.Style = []
     OnDrawColumnCell = DBGrid1DrawColumnCell
     OnKeyDown = DBGrid1KeyDown
+    OnTitleClick = DBGrid1TitleClick
     Columns = <
       item
         Expanded = False
@@ -63,7 +64,8 @@ object MenuForm: TMenuForm
       item
         Alignment = taCenter
         Expanded = False
-        FieldName = 'a_marca'
+        FieldName = 'a_marca_model'
+        ReadOnly = False
         Title.Caption = 'Marca'
         Width = 170
         Visible = True
@@ -71,39 +73,16 @@ object MenuForm: TMenuForm
       item
         Alignment = taCenter
         Expanded = False
-        FieldName = 'a_model'
-        Title.Caption = 'Model'
-        Width = 170
-        Visible = True
-      end
-      item
-        Alignment = taCenter
-        Expanded = False
-        FieldName = 'p_name'
-        Title.Caption = 'Produs'
-        Width = 150
-        Visible = True
-      end
-      item
-        Alignment = taCenter
-        Expanded = False
         FieldName = 'cod'
+        ReadOnly = False
         Title.Caption = 'Cod'
-        Width = 150
-        Visible = True
-      end
-      item
-        Alignment = taCenter
-        Expanded = False
-        FieldName = 'p_origine'
-        Title.Caption = #354'ara'
-        Width = 120
         Visible = True
       end
       item
         Alignment = taCenter
         Expanded = False
         FieldName = 'nume_celula'
+        ReadOnly = False
         Title.Caption = 'Celula'
         Width = 70
         Visible = True
@@ -112,6 +91,7 @@ object MenuForm: TMenuForm
         Alignment = taCenter
         Expanded = False
         FieldName = 'p_count'
+        ReadOnly = False
         Title.Caption = 'Cantitatea'
         Width = 60
         Visible = True
@@ -120,13 +100,14 @@ object MenuForm: TMenuForm
         Alignment = taCenter
         Expanded = False
         FieldName = 'p_price'
+        ReadOnly = False
         Title.Caption = 'Pre'#355
         Width = 80
         Visible = True
       end>
   end
   object AddButton: TButton
-    Left = 910
+    Left = 908
     Top = 8
     Width = 120
     Height = 36
@@ -140,10 +121,10 @@ object MenuForm: TMenuForm
     ParentFont = False
     TabOrder = 1
     OnClick = AddButtonClick
-    ExplicitLeft = 908
+    ExplicitLeft = 906
   end
   object SearchBox: TEdit
-    Left = 678
+    Left = 676
     Top = 11
     Width = 201
     Height = 33
@@ -157,125 +138,102 @@ object MenuForm: TMenuForm
     ParentFont = False
     TabOrder = 2
     OnChange = SearchBoxChange
-    ExplicitLeft = 676
+    OnClick = SearchBoxClick
+    OnKeyDown = SearchBoxKeyDown
+    ExplicitLeft = 674
   end
-  object Button1: TButton
+  object Button2: TButton
     Left = 8
     Top = 11
-    Width = 59
+    Width = 144
     Height = 33
-    Caption = 'Refresh'
+    Caption = #206'ncarc'#259' Datele din Fi'#351'ier'
     TabOrder = 3
-    OnClick = Button1Click
+    OnClick = Button2Click
   end
   object FDQuery1: TFDQuery
     AutoCalcFields = False
     CachedUpdates = True
     Connection = FDConnection1
+    FormatOptions.AssignedValues = [fvSortOptions]
     UpdateOptions.AssignedValues = [uvCheckReadOnly, uvAutoCommitUpdates]
     SQL.Strings = (
       
-        'SELECT pp.pa_id, a.a_marca, a.a_model, p.p_name, ct.cod, p.p_ori' +
-        'gine, c.nume_celula, p.p_count, p.p_price '
+        'SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_co' +
+        'unt, pp.p_price '
       'FROM product_auto_table pp '
       'JOIN vehicle_table a ON a.a_id = pp.a_id '
       'JOIN celula_table c ON c.id_celula = pp.celula_id '
-      'JOIN code_table ct ON ct.id_cod = pp.id_cod '
-      'JOIN product_table p ON p.p_id = pp.p_id;')
-    Left = 72
-    Top = 256
+      'JOIN code_table ct ON ct.id_cod = pp.id_cod;')
+    Left = 600
+    Top = 96
     object FDQuery1pa_id: TFDAutoIncField
       FieldName = 'pa_id'
       Origin = 'pa_id'
       ProviderFlags = [pfInWhere, pfInKey]
       ReadOnly = False
     end
-    object FDQuery1a_marca: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'a_marca'
-      Origin = 'a_marca'
-      ProviderFlags = []
-      Size = 300
-    end
-    object FDQuery1a_model: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'a_model'
-      Origin = 'a_model'
-      ProviderFlags = []
-      Size = 300
-    end
-    object FDQuery1p_name: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'p_name'
-      Origin = 'p_name'
-      ProviderFlags = []
-      Size = 255
-    end
-    object FDQuery1cod: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'cod'
-      Origin = 'cod'
-      ProviderFlags = []
-      FixedChar = True
-      Size = 255
-    end
-    object FDQuery1p_origine: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'p_origine'
-      Origin = 'p_origine'
-      ProviderFlags = []
-      FixedChar = True
-      Size = 155
-    end
-    object FDQuery1nume_celula: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'nume_celula'
-      Origin = 'nume_celula'
-      ProviderFlags = []
-      FixedChar = True
-      Size = 50
-    end
-    object FDQuery1p_count: TIntegerField
+    object FDQuery1p_count: TLongWordField
       AutoGenerateValue = arDefault
       FieldName = 'p_count'
       Origin = 'p_count'
-      ProviderFlags = []
     end
-    object FDQuery1p_price: TFMTBCDField
+    object FDQuery1p_price: TLongWordField
       AutoGenerateValue = arDefault
       FieldName = 'p_price'
       Origin = 'p_price'
+    end
+    object FDQuery1a_marca_model: TMemoField
+      AutoGenerateValue = arDefault
+      DisplayWidth = 10
+      FieldName = 'a_marca_model'
+      Origin = 'a_marca_model'
       ProviderFlags = []
-      Precision = 20
-      Size = 6
+      BlobType = ftMemo
+      DisplayValue = dvFullText
+    end
+    object FDQuery1cod: TMemoField
+      AutoGenerateValue = arDefault
+      DisplayWidth = 20
+      FieldName = 'cod'
+      ProviderFlags = []
+      BlobType = ftMemo
+      DisplayValue = dvFullText
+    end
+    object FDQuery1nume_celula: TMemoField
+      AutoGenerateValue = arDefault
+      DisplayWidth = 20
+      FieldName = 'nume_celula'
+      BlobType = ftMemo
+      DisplayValue = dvFullText
     end
   end
   object DataSource1: TDataSource
     DataSet = FDQuery1
-    Left = 120
-    Top = 256
+    Left = 592
+    Top = 168
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
       'DriverID=MySQL'
       'Database=glasstrack_db'
-      'Password=root'
-      'Server=127.0.0.1'
-      'User_Name=root')
+      'Password=halley'
+      'Server=172.16.9.4'
+      'User_Name=root'
+      'Port=4081')
     UpdateOptions.AssignedValues = [uvAutoCommitUpdates]
     UpdateOptions.AutoCommitUpdates = True
-    Connected = True
-    Left = 160
-    Top = 256
+    Left = 704
+    Top = 160
   end
   object FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink
-    VendorLib = 'C:\Program Files\MariaDB 11.4\lib32\libmariadb.dll'
-    Left = 208
-    Top = 256
+    VendorLib = 'libmariadb.dll'
+    Left = 840
+    Top = 160
   end
   object FDUpdateSQL1: TFDUpdateSQL
     Connection = FDConnection1
-    Left = 256
+    Left = 728
     Top = 256
   end
   object PopupMenu1: TPopupMenu
@@ -289,5 +247,11 @@ object MenuForm: TMenuForm
       Caption = 'Editeaz'#259' Produsul'
       OnClick = MenuItemEditClick
     end
+  end
+  object Timer1: TTimer
+    Interval = 600000
+    OnTimer = Timer1Timer
+    Left = 928
+    Top = 80
   end
 end

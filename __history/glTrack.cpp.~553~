@@ -1,0 +1,447 @@
+﻿#include <vcl.h>
+#pragma hdrstop
+
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Phys.MySQL.hpp>
+
+#include <FireDAC.Phys.MySQL.hpp>
+#include <FireDAC.Phys.MySQLDef.hpp>
+#include <Vcl.Controls.hpp>
+
+#include "algorithm"
+
+#include "glTrack.h"
+#include "AddGlass.h"
+#include "EditForm.h"
+#include "LoadData.h"
+
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+
+TMenuForm* MenuForm;
+TFDMemTable* FDPhysMySQLDriverLink1;
+
+//---------------------------------------------------------------------------
+
+__fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner) {}
+
+//---------------------------------------------------------------------------
+
+__fastcall TMenuForm::~TMenuForm()
+{
+    delete FDPhysMySQLDriverLink1;
+}
+
+//---------------------------------------------------------------------------
+
+// Crearea Formei Principale
+
+void __fastcall TMenuForm::FormCreate(TObject* Sender)
+{
+    try {
+        //        FDPhysMySQLDriverLink1->VendorLib = "C:\\Program Files\\MariaDB 11.4\\lib\\libmariadb.dll";
+        //
+        //        FDConnection1->Params->Clear();
+        //        FDConnection1->Params->Add("DriverID=MySQL");
+        //        FDConnection1->Params->Add("Server=127.0.0.1");
+        //        FDConnection1->Params->Add("Database=glasstrack_db");
+        //        FDConnection1->Params->Add("User_Name=root");
+        //        FDConnection1->Params->Add("Password=root");
+        //        FDConnection1->LoginPrompt = false;
+
+        //  FDConnection1->Params->Values["CharacterSet"] = "utf8mb4";
+        //FDQuery1->FieldByName("cod")->DataType = ftString;
+        FDConnection1->LoginPrompt = false;
+        FDConnection1->Connected = true; // Conectare la baza de date
+        if (FDConnection1->Connected == false) {
+            throw L"Nu s-a reuşit să se conecteze la baza de date!";
+        }
+        FormShow(this);
+        FormResize(this);
+
+	}
+	catch(Exception &e)
+	{
+
+    }
+}
+//---------------------------------------------------------------------------
+
+// Functie pentru redimensionarea formei pe baza marimii zonei client si nr coloane
+
+void __fastcall TMenuForm::FormResize(TObject* Sender)
+{
+    DBGrid1->AlignWithMargins = true; // Activăm alinierea cu margini
+
+    int gridWidth = DBGrid1->ClientWidth; // Lățimea disponibilă
+    int colCount = DBGrid1->Columns->Count; // Numărul total de coloane
+
+    if (colCount <= 1) // Dacă există doar ID-ul sau nicio coloană, ieșim
+        return;
+
+    int totalMargin =
+        DBGrid1->Margins->Left + DBGrid1->Margins->Right; // Marginea totală
+    int effectiveWidth =
+        gridWidth - totalMargin -
+        10; // Scădem 10 pixeli pentru a incapea datele pe forma
+
+    int visibleCols = colCount - 1; // Excludem coloana ID
+    int baseColWidth = effectiveWidth / visibleCols;
+    int remainingWidth = effectiveWidth % visibleCols;
+
+    for (int i = 0; i < colCount; i++) {
+        if (DBGrid1->Columns->Items[i]->FieldName == "id") {
+            DBGrid1->Columns->Items[i]->Width = 0; // Ascundem ID-ul
+        } else {
+            DBGrid1->Columns->Items[i]->Width =
+                baseColWidth - 1; // Reducem cu 1 pixel fiecare coloană
+        }
+    }
+
+    // Distribuim pixelii rămași pentru a evita marginile goale
+    for (int i = 0; i < remainingWidth; i++) {
+        DBGrid1->Columns->Items[i % visibleCols]->Width += 1;
+    }
+}
+//-----------------------------------------------------------------------------
+
+// Deschiderea Formei pentru Adaugare Produs
+
+void __fastcall TMenuForm::AddButtonClick(TObject* Sender)
+{
+    AddFormG = new TAddFormG(this);
+    AddFormG->ShowModal();
+    delete AddFormG;
+    FormShow(this);
+}
+
+//---------------------------------------------------------------------------
+
+// Functie pentru a adauga datele din db in DBGrid
+
+void __fastcall TMenuForm::FormShow(TObject* Sender)
+{
+    try {
+        FDQuery1->Close();
+
+        FDQuery1->SQL->Text =
+            "SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price "
+            "FROM product_auto_table pp "
+            "JOIN vehicle_table a ON a.a_id = pp.a_id "
+            "JOIN celula_table c ON c.id_celula = pp.celula_id "
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod";
+
+        FDQuery1->Open();
+        FormResize(MenuForm);
+
+    } catch (Exception &e) {
+        ShowMessage("Eroare la încărcarea datelor: " + e.Message);
+    }
+}
+
+//---------------------------------------------------------------------------
+
+// Functie pentru afisarea rezultatelor cautate in SearchBox
+
+void __fastcall TMenuForm::SearchBoxChange(TObject* Sender)
+{
+    String searchText = SearchBox->Text.Trim();
+
+    try {
+        FDQuery1->Close();
+        FDQuery1->SQL->Text =
+            "SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price "
+            "FROM product_auto_table pp "
+            "JOIN vehicle_table a ON a.a_id = pp.a_id "
+            "JOIN celula_table c ON c.id_celula = pp.celula_id "
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod "
+            "WHERE a.a_marca_model LIKE :searchText "
+            "OR ct.cod LIKE :searchText OR pp.p_price LIKE :searchText "
+            "OR pp.p_count LIKE :searchText";
+
+        FDQuery1->ParamByName("searchText")->AsString = "%" + searchText + "%";
+
+        FDQuery1->Open();
+        FormResize(this);
+    } catch (Exception &e) {
+        ShowMessage("Eroare la actualizarea datelor: " + e.Message);
+    }
+}
+
+//---------------------------------------------------------------------------
+
+//
+void __fastcall TMenuForm::ConfirmDialogKeyDown(
+    TObject* Sender, WORD &Key, TShiftState Shift)
+{
+    if (Key == VK_SPACE) {
+        Key = 0;
+    }
+}
+
+//---------------------------------------------------------------------------
+
+// La apasarea tastei DELETE sa se stearga randul selectat
+
+int __fastcall TMenuForm::ShowConfirmationDeleteDialog()
+{
+    TForm* ConfirmDialog = new TForm(this);
+    ConfirmDialog->Caption = "Confirmare";
+    ConfirmDialog->Position = poScreenCenter;
+    ConfirmDialog->BorderStyle = bsDialog;
+    ConfirmDialog->Width = 300;
+    ConfirmDialog->Height = 150;
+
+    TLabel* Label = new TLabel(ConfirmDialog);
+    Label->Parent = ConfirmDialog;
+    Label->Caption = L"Doreşti să ştergi produsul?";
+    Label->Left = 50;
+    Label->Top = 30;
+    Label->AutoSize = true;
+
+    TButton* YesButton = new TButton(ConfirmDialog);
+    YesButton->Parent = ConfirmDialog;
+    YesButton->Caption = "Da";
+    YesButton->ModalResult = mrYes;
+    YesButton->Left = 50;
+    YesButton->Top = 70;
+
+    TButton* NoButton = new TButton(ConfirmDialog);
+    NoButton->Parent = ConfirmDialog;
+    NoButton->Caption = "Nu";
+    NoButton->ModalResult = mrNo;
+    NoButton->Left = 150;
+    NoButton->Top = 70;
+    NoButton->Cancel = true;
+    NoButton->TabStop = true;
+
+    // Permite procesarea tastelor înainte de controalele din fereastră
+    ConfirmDialog->KeyPreview = true;
+
+    // Asociază metoda ConfirmDialogKeyDown
+    ConfirmDialog->OnKeyDown = ConfirmDialogKeyDown;
+
+    int Result = ConfirmDialog->ShowModal();
+    delete ConfirmDialog;
+    return Result;
+}
+
+//
+void __fastcall TMenuForm::DBGrid1KeyDown(
+    TObject* Sender, WORD &Key, TShiftState Shift)
+
+{
+    if (Key == VK_DELETE) // daca s-a apasat tasta Delete
+    {
+        if (FDQuery1->RecordCount == 0) {
+            ShowMessage(L"Nu există rând selectat!");
+            return; //
+        }
+        //		if (ShowConfirmationDeleteDialog() == mrNo)
+        //            return; // Dacă utilizatorul apasă ESC sau "Nu", nu sterge produsul}
+        int Result = ShowConfirmationDeleteDialog();
+        if (Result != mrYes) { // Acceptă doar mrYes pentru vânzare
+            return;
+        }
+
+        try {
+            int pa_id = FDQuery1->FieldByName("pa_id")
+                            ->AsInteger; // id-ul randului selectat
+
+            FDQuery1->Close();
+            FDQuery1->SQL->Text =
+                "DELETE FROM product_auto_table WHERE pa_id = :pa_id";
+            FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
+            FDQuery1->ExecSQL();
+
+            FDQuery1->Close();
+
+            ShowMessage(L"Produsul a fost șters cu succes.");
+            FormShow(this);
+        } catch (Exception &e) {
+            ShowMessage(L"Eroare la ștergere: " + e.Message);
+        }
+    }
+}
+//---------------------------------------------------------------------------
+
+// La click dreapta si alegerea vanzarii produsului de vanzare sa scada cantitatea lui
+
+int __fastcall TMenuForm::ShowConfirmationDialog()
+{
+    TForm* ConfirmDialog = new TForm(Application);
+    ConfirmDialog->Caption = "Confirmare";
+    ConfirmDialog->Position = poScreenCenter;
+    ConfirmDialog->BorderStyle = bsDialog;
+    ConfirmDialog->Width = 300;
+    ConfirmDialog->Height = 150;
+
+    TLabel* Label = new TLabel(ConfirmDialog);
+    Label->Parent = ConfirmDialog;
+    Label->Caption = "Doreşti să vinzi produsul?";
+    Label->Left = 50;
+    Label->Top = 30;
+    Label->AutoSize = true;
+
+    TButton* YesButton = new TButton(ConfirmDialog);
+    YesButton->Parent = ConfirmDialog;
+    YesButton->Caption = "Da";
+    YesButton->ModalResult = mrYes;
+    YesButton->Left = 50;
+    YesButton->Top = 70;
+
+    // Permite procesarea tastelor înainte de controalele din fereastră
+    ConfirmDialog->KeyPreview = true;
+
+    TButton* NoButton = new TButton(ConfirmDialog);
+    NoButton->Parent = ConfirmDialog;
+    NoButton->Caption = "Nu";
+    NoButton->ModalResult = mrNo;
+    NoButton->Left = 150;
+    NoButton->Top = 70;
+    NoButton->Cancel = true;
+
+    // Eveniment pentru prevenirea confirmării la Space
+    ConfirmDialog->OnKeyDown = ConfirmDialogKeyDown;
+
+    int Result = ConfirmDialog->ShowModal();
+    delete ConfirmDialog;
+    return Result;
+}
+
+void __fastcall TMenuForm::MenuItemVindeClick(TObject* Sender)
+{
+    if (!FDQuery1->Active || FDQuery1->IsEmpty()) {
+        ShowMessage(L"Nu există un produs selectat!");
+        return;
+    }
+
+    int pa_id =
+        FDQuery1->FieldByName("pa_id")->AsInteger; // Preia id-ul produsului
+
+    int Result = ShowConfirmationDialog();
+    if (Result != mrYes) { // Acceptă doar mrYes pentru vânzare
+        return;
+    }
+
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "UPDATE product_auto_table SET p_count = p_count - 1 "
+                          "WHERE pa_id = :pa_id AND p_count > 0";
+    FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
+    FDQuery1->ExecSQL();
+
+    FormShow(this);
+    ShowMessage(L"Produs Vândut!");
+}
+
+//---------------------------------------------------------------------------
+
+// Apelarea formei Edit pentru editarea randului selectat
+
+void __fastcall TMenuForm::MenuItemEditClick(TObject* Sender)
+{
+    if (FDQuery1->IsEmpty()) {
+        ShowMessage("Nu există rând selectat.");
+        return;
+    }
+
+    int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger; // id rand
+    // Deschiderea Formei pentru editare, se transmite  id-ul randului,
+    TEditFormProduct* EditForm = new TEditFormProduct(this, FDQuery1, pa_id);
+
+    if (EditForm->ShowModal() == mrOk) {
+        FormShow(this); // se reafiseaza datele
+    }
+
+    delete EditForm;
+    FormShow(this);
+}
+
+//---------------------------------------------------------------------------
+
+// Daca cantitatea produsului este pe 0 se afiseaza randul cu rosu
+
+void __fastcall TMenuForm::DBGrid1DrawColumnCell(TObject* Sender,
+    const TRect &Rect, int DataCol, TColumn* Column, TGridDrawState State)
+{
+    int p_count =
+        DBGrid1->DataSource->DataSet->FieldByName("p_count")->AsInteger;
+
+    bool isSelected = (State.Contains(gdSelected));
+
+    if (p_count == 0 && !isSelected) {
+        DBGrid1->Canvas->Brush->Color =
+            clInfoBk; // Fundal pentru produse epuizate
+        DBGrid1->Canvas->Font->Color = clInactiveCaptionText; // Text alb
+        DBGrid1->Canvas->FillRect(Rect);
+    }
+    if (!isSelected || p_count != 0) {
+        DBGrid1->DefaultDrawColumnCell(Rect, DataCol, Column, State);
+    }
+
+    //	DBGrid1->Canvas->FillRect(Rect);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMenuForm::Button2Click(TObject* Sender)
+{
+    TLoadDataForm* LoadForm = new TLoadDataForm(this, FDQuery1);
+
+    if (LoadForm->ShowModal() == mrOk) {
+        FormShow(this); // se reafiseaza datele
+    }
+
+    delete LoadForm;
+    FormShow(this);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMenuForm::SearchBoxClick(TObject* Sender)
+{
+    SearchBox->Clear();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMenuForm::SearchBoxKeyDown(
+    TObject* Sender, WORD &Key, TShiftState Shift)
+
+{
+    if (Key == VK_ESCAPE)
+        SearchBox->Clear();
+}
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+
+void __fastcall TMenuForm::DBGrid1TitleClick(TColumn* Column)
+{
+    static bool sortAsc = true;
+    String sortOrder = sortAsc ? "ASC" : "DESC";
+    String columnName = Column->FieldName; // Obține numele câmpului
+    if (columnName == "cod")
+        return;
+    try {
+        FDQuery1->Close();
+        FDQuery1->SQL->Text =
+            "SELECT pp.pa_id AS pa_id, "
+            "a.a_marca_model AS a_marca_model, "
+            "ct.cod AS cod, "
+            "c.nume_celula AS nume_celula, "
+            "pp.p_count AS p_count, "
+            "pp.p_price AS p_price "
+            "FROM product_auto_table pp "
+            "JOIN vehicle_table a ON a.a_id = pp.a_id "
+            "JOIN celula_table c ON c.id_celula = pp.celula_id "
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod "
+            "ORDER BY " +
+            columnName + " " + sortOrder;
+        FDQuery1->Open();
+        sortAsc = !sortAsc;
+    } catch (Exception &e) {
+        ShowMessage("Eroare la sortare: " + e.Message);
+    }
+}
+
+//---------------------------------------------------------------------------
+

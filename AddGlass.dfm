@@ -1,20 +1,24 @@
 object AddFormG: TAddFormG
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = 'Ad'#259'gare Produs'
-  ClientHeight = 456
-  ClientWidth = 556
+  ClientHeight = 311
+  ClientWidth = 428
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poMainFormCenter
+  Scaled = False
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   TextHeight = 15
   object Label1: TLabel
-    Left = 8
-    Top = 89
+    Left = 31
+    Top = 70
     Width = 85
     Height = 25
     Caption = 'Automobil'
@@ -25,34 +29,8 @@ object AddFormG: TAddFormG
     Font.Style = []
     ParentFont = False
   end
-  object Label2: TLabel
-    Left = 311
-    Top = 89
-    Width = 51
-    Height = 25
-    Caption = 'Model'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 25
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-  end
-  object Label3: TLabel
-    Left = 204
-    Top = 192
-    Width = 138
-    Height = 25
-    Caption = 'Informa'#355'ii Produs'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 25
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-  end
   object Label4: TLabel
-    Left = 30
+    Left = 57
     Top = 23
     Width = 33
     Height = 25
@@ -64,22 +42,9 @@ object AddFormG: TAddFormG
     Font.Style = []
     ParentFont = False
   end
-  object Label5: TLabel
-    Left = 280
-    Top = 246
-    Width = 94
-    Height = 25
-    Caption = #354'ara Origine'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 25
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-  end
   object TLabel
-    Left = 14
-    Top = 345
+    Left = 30
+    Top = 158
     Width = 79
     Height = 25
     Caption = 'Cantitatea'
@@ -91,8 +56,8 @@ object AddFormG: TAddFormG
     ParentFont = False
   end
   object TLabel
-    Left = 331
-    Top = 345
+    Left = 59
+    Top = 206
     Width = 31
     Height = 25
     Caption = 'Pre'#355
@@ -104,8 +69,8 @@ object AddFormG: TAddFormG
     ParentFont = False
   end
   object Label7: TLabel
-    Left = 30
-    Top = 297
+    Left = 46
+    Top = 115
     Width = 47
     Height = 25
     Caption = 'Celula'
@@ -116,23 +81,10 @@ object AddFormG: TAddFormG
     Font.Style = []
     ParentFont = False
   end
-  object Label6: TLabel
-    Left = 26
-    Top = 250
-    Width = 61
-    Height = 25
-    Caption = 'Produs'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 25
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-  end
-  object AutoEdit: TEdit
-    Left = 99
-    Top = 134
-    Width = 191
+  object AutoComboBox: TComboBox
+    Left = 139
+    Top = 71
+    Width = 235
     Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -141,11 +93,13 @@ object AddFormG: TAddFormG
     Font.Style = []
     ParentFont = False
     TabOrder = 0
+    OnKeyPress = AutoComboBoxKeyPress
+    OnSelect = AutoComboBoxSelect
   end
-  object ModelEdit: TEdit
-    Left = 380
-    Top = 134
-    Width = 168
+  object CountEdit: TEdit
+    Left = 139
+    Top = 159
+    Width = 235
     Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -155,10 +109,10 @@ object AddFormG: TAddFormG
     ParentFont = False
     TabOrder = 1
   end
-  object PCodeEdit: TEdit
-    Left = 357
-    Top = 28
-    Width = 191
+  object PriceEdit: TEdit
+    Left = 139
+    Top = 207
+    Width = 235
     Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -168,75 +122,9 @@ object AddFormG: TAddFormG
     ParentFont = False
     TabOrder = 2
   end
-  object ModelComboBox: TComboBox
-    Left = 380
-    Top = 90
-    Width = 168
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 3
-  end
-  object AutoComboBox: TComboBox
-    Left = 99
-    Top = 90
-    Width = 191
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 4
-    OnChange = AutoComboBoxChange
-  end
-  object POrigineEdit: TEdit
-    Left = 380
-    Top = 247
-    Width = 168
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 5
-  end
-  object CountEdit: TEdit
-    Left = 120
-    Top = 346
-    Width = 121
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 6
-  end
-  object PriceEdit: TEdit
-    Left = 379
-    Top = 346
-    Width = 121
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 7
-  end
   object AddButton: TButton
-    Left = 296
-    Top = 413
+    Left = 245
+    Top = 269
     Width = 97
     Height = 33
     Caption = 'Adaug'#259
@@ -246,14 +134,15 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 8
+    TabOrder = 3
     OnClick = AddButtonClick
   end
   object CancelButton: TButton
-    Left = 150
-    Top = 413
+    Left = 60
+    Top = 269
     Width = 91
     Height = 33
+    Cancel = True
     Caption = 'Anuleaz'#259
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -261,26 +150,13 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 9
+    TabOrder = 4
     OnClick = CancelButtonClick
   end
-  object CelulaEdit: TEdit
-    Left = 379
-    Top = 296
-    Width = 169
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 10
-  end
   object CelulaComboBox: TComboBox
-    Left = 107
-    Top = 296
-    Width = 169
+    Left = 139
+    Top = 116
+    Width = 235
     Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -288,25 +164,12 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 11
-  end
-  object PNameEdit: TEdit
-    Left = 107
-    Top = 251
-    Width = 158
-    Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 12
+    TabOrder = 5
   end
   object CodComboBox: TComboBox
-    Left = 99
-    Top = 28
-    Width = 191
+    Left = 139
+    Top = 24
+    Width = 235
     Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -314,7 +177,7 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 13
+    TabOrder = 6
     OnKeyPress = CodComboBoxKeyPress
     OnSelect = CodComboBoxSelect
   end

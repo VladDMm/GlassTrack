@@ -1,0 +1,45 @@
+//---------------------------------------------------------------------------
+
+#ifndef LoadDataH
+#define LoadDataH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <Vcl.Controls.hpp>
+#include <Vcl.StdCtrls.hpp>
+#include <Vcl.Forms.hpp>
+#include <Vcl.Grids.hpp>
+#include <Vcl.Dialogs.hpp>
+
+#include <Data.DB.hpp>
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Comp.DataSet.hpp>
+#include <FireDAC.DApt.hpp>
+#include <FireDAC.DApt.Intf.hpp>
+#include <FireDAC.DatS.hpp>
+#include <FireDAC.Phys.Intf.hpp>
+#include <FireDAC.Stan.Async.hpp>
+#include <FireDAC.Stan.Error.hpp>
+#include <FireDAC.Stan.Intf.hpp>
+#include <FireDAC.Stan.Option.hpp>
+#include <FireDAC.Stan.Param.hpp>
+//---------------------------------------------------------------------------
+class TLoadDataForm : public TForm
+{
+__published:	// IDE-managed Components
+	TButton *Button1;
+	TEdit *Edit1;
+	TStringGrid *StringGrid1;
+	TOpenDialog *OpenDialog1;
+	TButton *Button2;
+	void __fastcall Button1Click(TObject *Sender);
+	void __fastcall Button2Click(TObject *Sender);
+    void __fastcall ResizeStringGrid();
+private:	// User declarations
+	TFDQuery* FDQuery1;
+public:		// User declarations
+	__fastcall TLoadDataForm(TComponent* Owner, TFDQuery* query);
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TLoadDataForm *LoadDataForm;
+//---------------------------------------------------------------------------
+#endif

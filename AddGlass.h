@@ -23,36 +23,27 @@
 class TAddFormG : public TForm
 {
 __published:	// IDE-managed Components
-	TEdit *AutoEdit;
-	TEdit *ModelEdit;
-	TEdit *PCodeEdit;
 	TComboBox *AutoComboBox;
 	TLabel *Label1;
-	TLabel *Label2;
-	TComboBox *ModelComboBox;
-	TLabel *Label3;
-	TEdit *POrigineEdit;
 	TLabel *Label4;
-	TLabel *Label5;
 	TEdit *CountEdit;
 	TEdit *PriceEdit;
 	TButton *AddButton;
 	TButton *CancelButton;
 	TFDQuery *FDQuery1;
-	TEdit *CelulaEdit;
 	TLabel *Label7;
 	TComboBox *CelulaComboBox;
-	TEdit *PNameEdit;
-	TLabel *Label6;
 	TComboBox *CodComboBox;
 	void __fastcall CancelButtonClick(TObject *Sender);
     void __fastcall Initialize_Component();
 	void __fastcall AddButtonClick(TObject *Sender);
 	void __fastcall FormCreate(TObject *Sender);
-	void __fastcall AutoComboBoxChange(TObject *Sender);
-	void __fastcall CodeSearch();
+  //	void __fastcall AutoComboBoxChange(TObject *Sender);
 	void __fastcall CodComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall CodComboBoxSelect(TObject *Sender);
+	void __fastcall AutoComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
+	void __fastcall AutoComboBoxSelect(TObject *Sender);
+	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TAddFormG(TComponent* Owner);
