@@ -92,10 +92,10 @@ void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
 	std::transform(cod_name.begin(), cod_name.end(), cod_name.begin(),::toupper);
 
     try {
-        // Verificam daca automobilul exista
+		// Verificam daca automobilul exista
         FDQuery1->SQL->Text =
             "SELECT a_id FROM vehicle_table WHERE a_marca_model = :marca";
-		FDQuery1->ParamByName("marca")->AsWideString = marca;
+		FDQuery1->ParamByName("marca")->AsString = marca;
         FDQuery1->Open();
 
         if (!FDQuery1->IsEmpty()) {
@@ -214,100 +214,6 @@ void __fastcall TAddFormG::FormCreate(TObject* Sender)
 {
     Initialize_Component();
 }
-//---------------------------------------------------------------------------
-
-// Functie care afiseaza modelele disponibile automobilului pe baza
-// automobilului selectat
-
-//void __fastcall TAddFormG::AutoComboBoxChange(TObject* Sender)
-//{
-//    String marcaSelectata = AutoComboBox->Text;
-//
-//    try {
-//        FDQuery1->Close();
-//        FDQuery1->SQL->Text =
-//			"SELECT a_marca_model FROM vehicle_table WHERE a_marca_model = :marca";
-//        FDQuery1->ParamByName("marca")->AsString = marcaSelectata;
-//        FDQuery1->Open();
-//
-//    } catch (Exception &e) {
-//        ShowMessage("Eroare la încărcarea modelelor: " + e.Message);
-//    }
-//}
-
-//---------------------------------------------------------------------------
-
-//void __fastcall TAddFormG::CodComboBoxKeyPress(TObject *Sender, System::WideChar &Key)
-//{
-//	if (Key == VK_RETURN) {
-//        String cod_name = CodComboBox->Text;
-//        int cod_id = -1;
-//
-//        FDQuery1->Close();
-//        FDQuery1->SQL->Text = "SELECT id_cod FROM code_table WHERE cod = :cod_name";
-//        FDQuery1->ParamByName("cod_name")->AsString = cod_name;
-//        FDQuery1->Open();
-//
-//        if (!FDQuery1->IsEmpty()) {
-//            cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
-//        } else {
-//            if (MessageDlg(L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
-//                           mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
-//            {
-//                Close();
-//            } else {
-//                CodComboBox->Clear();
-//            }
-//            return; // 🛑 Ieșim dacă nu există cod
-//        }
-//
-//   //     FDQuery1->Close();
-//        FDQuery1->SQL->Text =
-//            "SELECT pp.pa_id, a.a_marca, a.a_model, p.p_name, ct.cod, p.p_origine, c.nume_celula, p.p_count, p.p_price "
-//            "FROM product_auto_table pp "
-//            "JOIN vehicle_table a ON a.a_id = pp.a_id "
-//            "JOIN celula_table c ON c.id_celula = pp.celula_id "
-//            "JOIN code_table ct ON ct.id_cod = pp.id_cod "
-//            "JOIN product_table p ON p.p_id = pp.p_id "
-//            "WHERE pp.id_cod = :cod_id";
-//        FDQuery1->ParamByName("cod_id")->AsInteger = cod_id;
-//        FDQuery1->Open();
-//
-//        // 🔹 Curățăm listele
-//        AutoComboBox->Items->Clear();
-//        ModelComboBox->Items->Clear();
-//        CelulaComboBox->Items->Clear();
-//
-//        // 🔹 Folosim un `std::set<String>` pentru a evita duplicatele fără a elimina înregistrări valide
-//        std::set<String> uniqueMarci;
-//        std::set<String> uniqueModele;
-//        std::set<String> uniqueCelule;
-//
-//		while (!FDQuery1->Eof) {
-//			String marca = FDQuery1->FieldByName("a_marca")->AsString;
-//            String model = FDQuery1->FieldByName("a_model")->AsString;
-//            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-//            AutoComboBox->Items->Add(
-//                FDQuery1->FieldByName("a_marca")->AsString);
-//            ModelComboBox->Items->Add(
-//                FDQuery1->FieldByName("a_model")->AsString);
-//            CelulaComboBox->Items->Add(
-//                FDQuery1->FieldByName("nume_celula")->AsString);
-//            FDQuery1->Next();
-//            //            if (uniqueMarci.insert(marca).second) // Adăugăm doar dacă nu există deja
-//            //                AutoComboBox->Items->Add(marca);
-//            //
-//            //            if (uniqueModele.insert(model).second)
-//            //                ModelComboBox->Items->Add(model);
-//            //
-//            //            if (uniqueCelule.insert(celula).second)
-//            //                CelulaComboBox->Items->Add(celula);
-//
-//            FDQuery1->Next();
-//        }
-//    }
-//}
-
 //-----------------------------------------------------------------------------
 
 // Functia care preia codul selectat din comboboxul cu codul disponibil la apasarea
@@ -419,7 +325,7 @@ void __fastcall TAddFormG::CodComboBoxKeyPress(
 
 //---------------------------------------------------------------------------
 
-// Functia care preia elementul selectat din comboboxul cu codul disponibil daca
+// Functia care preia codul selectat din comboboxul cu codul disponibil daca
 // e, si pe baza lui se atribuie produsele si automobilul la codul dat, sau se adauga cod nou
 
 void __fastcall TAddFormG::CodComboBoxSelect(TObject* Sender)
@@ -522,212 +428,212 @@ void __fastcall TAddFormG::CodComboBoxSelect(TObject* Sender)
 
 //---------------------------------------------------------------------------
 
-void __fastcall TAddFormG::AutoComboBoxKeyPress(TObject *Sender, System::WideChar &Key)
-
-{
-   if (Key != VK_RETURN)
-        return;
-
-	String a_name = AutoComboBox->Text;
-	FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
-	FDQuery1->ParamByName("a_name")->AsWideString = a_name;
-	FDQuery1->Open();
-
-	int a_id = -1;
-    if (!FDQuery1->IsEmpty()) {
-		a_id = FDQuery1->FieldByName("a_id")->AsInteger;
-    } else {
-        if (MessageDlg(
-                L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
-                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
-        {
-            Close();
-            return;
-        }
-
-		CodComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT cod FROM code_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-			if (CodComboBox->Items->IndexOf(cod_name) == -1)
-				CodComboBox->Items->Add(cod_name);
-
-            FDQuery1->Next();
-        }
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
-        FDQuery1->Open();
-
-		while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-			FDQuery1->Next();
-        }
-        return;
-    }
-
-    FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
-						  "JOIN vehicle_table a ON a.a_id = pa.a_id "
-						  "JOIN code_table ct ON ct.id_cod = pa.id_cod "
-						  "WHERE a.a_id = :a_id";
-    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-    FDQuery1->Open();
-
-    CodComboBox->Items->Clear();
-    CelulaComboBox->Items->Clear();
-
-    while (!FDQuery1->Eof) {
-        //        String marca = FDQuery1->FieldByName("a_marca")->AsString;
-        //        String model = FDQuery1->FieldByName("a_model")->AsString;
-        //        String inceput_an = FDQuery1->FieldByName("a_year")->AsString;
-        //        String sfarsit_an = FDQuery1->FieldByName("a_year_end")->AsString;
-        //        String origine = FDQuery1->FieldByName("p_origine")->AsString;
-        //
-        //        POrigineEdit->Text = origine;
-        //
-        //        if (YearComboBox->Items->IndexOf(inceput_an) == -1)
-        //            YearComboBox->Items->Add(inceput_an);
-        //
-        //        if (EndYearComboBox->Items->IndexOf(sfarsit_an) == -1)
-        //            EndYearComboBox->Items->Add(sfarsit_an);
-        //
-
-		String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-		if (CodComboBox->Items->IndexOf(cod_name) == -1)
-			CodComboBox->Items->Add(cod_name);
-
-        FDQuery1->Next();
-    }
-
-	FDQuery1->Close();
-
-    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
-                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
-						  "WHERE pa.a_id = :a_id";
-
-    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-	FDQuery1->Open();
-
-    while (!FDQuery1->Eof) {
-        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
-        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
-            CelulaComboBox->Items->Add(nume_celula);
-        FDQuery1->Next();
-	}
-}
+//void __fastcall TAddFormG::AutoComboBoxKeyPress(TObject *Sender, System::WideChar &Key)
+//
+//{
+//   if (Key != VK_RETURN)
+//        return;
+//
+//	String a_name = AutoComboBox->Text;
+//	FDQuery1->Close();
+//	FDQuery1->SQL->Text = "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
+//	FDQuery1->ParamByName("a_name")->AsWideString = a_name;
+//	FDQuery1->Open();
+//
+//	int a_id = -1;
+//    if (!FDQuery1->IsEmpty()) {
+//		a_id = FDQuery1->FieldByName("a_id")->AsInteger;
+//    } else {
+//        if (MessageDlg(
+//                L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
+//                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
+//        {
+//            Close();
+//            return;
+//        }
+//
+//		CodComboBox->Items->Clear();
+//		CelulaComboBox->Items->Clear();
+//
+//        FDQuery1->Close();
+//		FDQuery1->SQL->Text = "SELECT cod FROM code_table";
+//        FDQuery1->Open();
+//
+//        while (!FDQuery1->Eof) {
+//			String cod_name = FDQuery1->FieldByName("cod")->AsString;
+//
+//			if (CodComboBox->Items->IndexOf(cod_name) == -1)
+//				CodComboBox->Items->Add(cod_name);
+//
+//            FDQuery1->Next();
+//        }
+//
+//        FDQuery1->Close();
+//		FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
+//        FDQuery1->Open();
+//
+//		while (!FDQuery1->Eof) {
+//            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+//            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+//                CelulaComboBox->Items->Add(celula);
+//			FDQuery1->Next();
+//        }
+//        return;
+//    }
+//
+//    FDQuery1->Close();
+//	FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
+//						  "JOIN vehicle_table a ON a.a_id = pa.a_id "
+//						  "JOIN code_table ct ON ct.id_cod = pa.id_cod "
+//						  "WHERE a.a_id = :a_id";
+//    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+//    FDQuery1->Open();
+//
+//    CodComboBox->Items->Clear();
+//    CelulaComboBox->Items->Clear();
+//
+//    while (!FDQuery1->Eof) {
+//        //        String marca = FDQuery1->FieldByName("a_marca")->AsString;
+//        //        String model = FDQuery1->FieldByName("a_model")->AsString;
+//        //        String inceput_an = FDQuery1->FieldByName("a_year")->AsString;
+//        //        String sfarsit_an = FDQuery1->FieldByName("a_year_end")->AsString;
+//        //        String origine = FDQuery1->FieldByName("p_origine")->AsString;
+//        //
+//        //        POrigineEdit->Text = origine;
+//        //
+//        //        if (YearComboBox->Items->IndexOf(inceput_an) == -1)
+//        //            YearComboBox->Items->Add(inceput_an);
+//        //
+//        //        if (EndYearComboBox->Items->IndexOf(sfarsit_an) == -1)
+//        //            EndYearComboBox->Items->Add(sfarsit_an);
+//        //
+//
+//		String cod_name = FDQuery1->FieldByName("cod")->AsString;
+//
+//		if (CodComboBox->Items->IndexOf(cod_name) == -1)
+//			CodComboBox->Items->Add(cod_name);
+//
+//        FDQuery1->Next();
+//    }
+//
+//	FDQuery1->Close();
+//
+//    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
+//                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
+//						  "WHERE pa.a_id = :a_id";
+//
+//    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+//	FDQuery1->Open();
+//
+//    while (!FDQuery1->Eof) {
+//        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
+//        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
+//            CelulaComboBox->Items->Add(nume_celula);
+//        FDQuery1->Next();
+//	}
+//}
 //---------------------------------------------------------------------------
-
-void __fastcall TAddFormG::AutoComboBoxSelect(TObject *Sender)
-{
-	String a_name = AutoComboBox->Text;
-	FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
-	FDQuery1->ParamByName("a_name")->AsWideString = a_name;
-	FDQuery1->Open();
-
-	int a_id = -1;
-    if (!FDQuery1->IsEmpty()) {
-		a_id = FDQuery1->FieldByName("a_id")->AsInteger;
-    } else {
-        if (MessageDlg(
-                L"Nu există informaţii la acest automobil,\nDoriţi să adăugaţi un produs nou?",
-                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
-        {
-            Close();
-            return;
-        }
-
-		CodComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT cod FROM code_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-			if (CodComboBox->Items->IndexOf(cod_name) == -1)
-				CodComboBox->Items->Add(cod_name);
-
-            FDQuery1->Next();
-        }
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
-        FDQuery1->Open();
-
-		while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-			FDQuery1->Next();
-        }
-        return;
-    }
-
-    FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
-						  "JOIN vehicle_table a ON a.a_id = pa.a_id "
-						  "JOIN code_table ct ON ct.id_cod = pa.id_cod "
-						  "WHERE a.a_id = :a_id";
-    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-    FDQuery1->Open();
-
-    CodComboBox->Items->Clear();
-    CelulaComboBox->Items->Clear();
-
-    while (!FDQuery1->Eof) {
-        //        String marca = FDQuery1->FieldByName("a_marca")->AsString;
-        //        String model = FDQuery1->FieldByName("a_model")->AsString;
-        //        String inceput_an = FDQuery1->FieldByName("a_year")->AsString;
-        //        String sfarsit_an = FDQuery1->FieldByName("a_year_end")->AsString;
-        //        String origine = FDQuery1->FieldByName("p_origine")->AsString;
-        //
-        //        POrigineEdit->Text = origine;
-        //
-        //        if (YearComboBox->Items->IndexOf(inceput_an) == -1)
-        //            YearComboBox->Items->Add(inceput_an);
-        //
-        //        if (EndYearComboBox->Items->IndexOf(sfarsit_an) == -1)
-        //            EndYearComboBox->Items->Add(sfarsit_an);
-        //
-
-		String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-		if (CodComboBox->Items->IndexOf(cod_name) == -1)
-			CodComboBox->Items->Add(cod_name);
-
-        FDQuery1->Next();
-    }
-
-	FDQuery1->Close();
-
-    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
-                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
-						  "WHERE pa.a_id = :a_id";
-
-    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-	FDQuery1->Open();
-
-    while (!FDQuery1->Eof) {
-        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
-        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
-            CelulaComboBox->Items->Add(nume_celula);
-        FDQuery1->Next();
-	}
-}
+//
+//void __fastcall TAddFormG::AutoComboBoxSelect(TObject *Sender)
+//{
+//	String a_name = AutoComboBox->Text;
+//	FDQuery1->Close();
+//	FDQuery1->SQL->Text = "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
+//	FDQuery1->ParamByName("a_name")->AsWideString = a_name;
+//	FDQuery1->Open();
+//
+//	int a_id = -1;
+//    if (!FDQuery1->IsEmpty()) {
+//		a_id = FDQuery1->FieldByName("a_id")->AsInteger;
+//    } else {
+//        if (MessageDlg(
+//                L"Nu există informaţii la acest automobil,\nDoriţi să adăugaţi un produs nou?",
+//                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
+//        {
+//            Close();
+//            return;
+//        }
+//
+//		CodComboBox->Items->Clear();
+//		CelulaComboBox->Items->Clear();
+//
+//        FDQuery1->Close();
+//		FDQuery1->SQL->Text = "SELECT cod FROM code_table";
+//        FDQuery1->Open();
+//
+//        while (!FDQuery1->Eof) {
+//			String cod_name = FDQuery1->FieldByName("cod")->AsString;
+//
+//			if (CodComboBox->Items->IndexOf(cod_name) == -1)
+//				CodComboBox->Items->Add(cod_name);
+//
+//            FDQuery1->Next();
+//        }
+//
+//        FDQuery1->Close();
+//		FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
+//        FDQuery1->Open();
+//
+//		while (!FDQuery1->Eof) {
+//            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+//            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+//                CelulaComboBox->Items->Add(celula);
+//			FDQuery1->Next();
+//        }
+//        return;
+//    }
+//
+//    FDQuery1->Close();
+//	FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
+//						  "JOIN vehicle_table a ON a.a_id = pa.a_id "
+//						  "JOIN code_table ct ON ct.id_cod = pa.id_cod "
+//						  "WHERE a.a_id = :a_id";
+//    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+//    FDQuery1->Open();
+//
+//    CodComboBox->Items->Clear();
+//    CelulaComboBox->Items->Clear();
+//
+//    while (!FDQuery1->Eof) {
+//        //        String marca = FDQuery1->FieldByName("a_marca")->AsString;
+//        //        String model = FDQuery1->FieldByName("a_model")->AsString;
+//        //        String inceput_an = FDQuery1->FieldByName("a_year")->AsString;
+//        //        String sfarsit_an = FDQuery1->FieldByName("a_year_end")->AsString;
+//        //        String origine = FDQuery1->FieldByName("p_origine")->AsString;
+//        //
+//        //        POrigineEdit->Text = origine;
+//        //
+//        //        if (YearComboBox->Items->IndexOf(inceput_an) == -1)
+//        //            YearComboBox->Items->Add(inceput_an);
+//        //
+//        //        if (EndYearComboBox->Items->IndexOf(sfarsit_an) == -1)
+//        //            EndYearComboBox->Items->Add(sfarsit_an);
+//        //
+//
+//		String cod_name = FDQuery1->FieldByName("cod")->AsString;
+//
+//		if (CodComboBox->Items->IndexOf(cod_name) == -1)
+//			CodComboBox->Items->Add(cod_name);
+//
+//        FDQuery1->Next();
+//    }
+//
+//	FDQuery1->Close();
+//
+//    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
+//                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
+//						  "WHERE pa.a_id = :a_id";
+//
+//    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+//	FDQuery1->Open();
+//
+//    while (!FDQuery1->Eof) {
+//        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
+//        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
+//            CelulaComboBox->Items->Add(nume_celula);
+//        FDQuery1->Next();
+//	}
+//}
 //---------------------------------------------------------------------------
 
 void __fastcall TAddFormG::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)

@@ -41,8 +41,8 @@ __published:	// IDE-managed Components
   //	void __fastcall AutoComboBoxChange(TObject *Sender);
 	void __fastcall CodComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
 	void __fastcall CodComboBoxSelect(TObject *Sender);
-	void __fastcall AutoComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
-	void __fastcall AutoComboBoxSelect(TObject *Sender);
+ //	void __fastcall AutoComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
+ // void __fastcall AutoComboBoxSelect(TObject *Sender);
 	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 private:	// User declarations
 public:		// User declarations

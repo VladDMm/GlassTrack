@@ -93,8 +93,6 @@ object AddFormG: TAddFormG
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    OnKeyPress = AutoComboBoxKeyPress
-    OnSelect = AutoComboBoxSelect
   end
   object CountEdit: TEdit
     Left = 139

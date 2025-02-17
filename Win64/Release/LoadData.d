@@ -189,11 +189,12 @@
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\string \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\dstring.h \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\wstring.h \
-  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\systobj.h \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\syshash.h \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\functional \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\tuple \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\xfunctional \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\dinkumware64\xfunctional2 \
+  c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\systobj.h \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\systdate.h \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\syscurr.h \
   c:\program\ files\ (x86)\embarcadero\studio\23.0\include\windows\rtl\syscomp.h \

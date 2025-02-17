@@ -95,15 +95,9 @@ void __fastcall TLoadDataForm::AddFileButtonClick(TObject* Sender)
                 columns->StrictDelimiter = true;
                 columns->DelimitedText = line;
 
-                // daca randul are exact 5 coloane (il ignoram)
-                //                if (columns->Count == 5) {
-                //                    delete columns;
-                //                    continue;
-                //                }
-
                 // adaugam un nou rand in StringGrid
                 int newRow = StringGrid1->RowCount;
-                StringGrid1->RowCount = newRow + 1;
+				StringGrid1->RowCount = newRow + 1;
 
                 // Copiem datele în StringGrid
                 for (int j = 0; j < columns->Count && j < StringGrid1->ColCount;
@@ -183,10 +177,10 @@ void __fastcall TLoadDataForm::ConfirmButtonClick(TObject* Sender)
 
             //            String celula = StringGrid1->Cells[0][i];
             //            String cod_name = StringGrid1->Cells[1][i];
-            //            String marca = StringGrid1->Cells[2][i];
+		   //	String marca = StringGrid1->Cells[2][i];
             UnicodeString celula = StringGrid1->Cells[0][i];
             UnicodeString cod_name = StringGrid1->Cells[1][i];
-            UnicodeString marca = StringGrid1->Cells[2][i];
+			UnicodeString marca = StringGrid1->Cells[2][i];
 
             int p_count =
                 StrToFloatDef(fixNumberFormat(StringGrid1->Cells[3][i]), 0.0);

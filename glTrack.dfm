@@ -217,10 +217,11 @@ object MenuForm: TMenuForm
     Params.Strings = (
       'DriverID=MySQL'
       'Database=glasstrack_db'
-      'Password=halley'
-      'Server=172.16.9.4'
+      'Password=root'
+      'Server=127.0.0.6'
       'User_Name=root'
-      'Port=4081')
+      'Port=3306'
+      'CharacterSet=cp1251')
     UpdateOptions.AssignedValues = [uvAutoCommitUpdates]
     UpdateOptions.AutoCommitUpdates = True
     Left = 704
