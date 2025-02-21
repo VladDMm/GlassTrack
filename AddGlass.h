@@ -22,33 +22,37 @@
 //---------------------------------------------------------------------------
 class TAddFormG : public TForm
 {
-__published:	// IDE-managed Components
-	TComboBox *AutoComboBox;
-	TLabel *Label1;
-	TLabel *Label4;
-	TEdit *CountEdit;
-	TEdit *PriceEdit;
-	TButton *AddButton;
-	TButton *CancelButton;
-	TFDQuery *FDQuery1;
-	TLabel *Label7;
-	TComboBox *CelulaComboBox;
-	TComboBox *CodComboBox;
-	void __fastcall CancelButtonClick(TObject *Sender);
+  __published: // IDE-managed Components
+    TComboBox* AutoComboBox;
+    TLabel* Label1;
+    TLabel* Label4;
+    TEdit* CountEdit;
+    TEdit* PriceEdit;
+    TButton* AddButton;
+    TButton* CancelButton;
+    TFDQuery* FDQuery1;
+    TLabel* Label7;
+    TComboBox* CelulaComboBox;
+    TComboBox* CodComboBox;
+    void __fastcall CancelButtonClick(TObject* Sender);
     void __fastcall Initialize_Component();
-	void __fastcall AddButtonClick(TObject *Sender);
-	void __fastcall FormCreate(TObject *Sender);
-  //	void __fastcall AutoComboBoxChange(TObject *Sender);
-	void __fastcall CodComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
-	void __fastcall CodComboBoxSelect(TObject *Sender);
- //	void __fastcall AutoComboBoxKeyPress(TObject *Sender, System::WideChar &Key);
- // void __fastcall AutoComboBoxSelect(TObject *Sender);
-	void __fastcall FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-private:	// User declarations
-public:		// User declarations
-	__fastcall TAddFormG(TComponent* Owner);
+    void __fastcall AddButtonClick(TObject* Sender);
+    void __fastcall FormCreate(TObject* Sender);
+    //	void __fastcall AutoComboBoxChange(TObject *Sender);
+    void __fastcall CodComboBoxKeyPress(TObject* Sender, System::WideChar &Key);
+    void __fastcall CodComboBoxSelect(TObject* Sender);
+    void __fastcall AutoComboBoxKeyPress(
+        TObject* Sender, System::WideChar &Key);
+    void __fastcall AutoComboBoxSelect(TObject* Sender);
+    void __fastcall FormKeyDown(TObject* Sender, WORD &Key, TShiftState Shift);
+    void __fastcall CodComboBoxExit(TObject* Sender);
+	void __fastcall AutoComboBoxExit(TObject *Sender);
+  private: // User declarations
+  public: // User declarations
+    __fastcall TAddFormG(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TAddFormG *AddFormG;
+extern PACKAGE TAddFormG* AddFormG;
 //---------------------------------------------------------------------------
 #endif
+

@@ -17,41 +17,6 @@ TLoadDataForm* LoadDataForm;
 #include <optional>
 
 //---------------------------------------------------------------------------
-// Funcție pentru corectarea formatului numerelor (ex. 1,000 → 1.000)
-//std::string fixNumberFormat(std::string value) {
-//	value.erase(std::remove(value.begin(), value.end(), '.'), value.end());
-//	std::replace(value.begin(), value.end(), ',', '.');
-//	return value;
-//}
-////---------------------------------------------------------------------------
-//// Funcție pentru extragerea anilor din descriere
-//std::pair<int, std::optional<int>> extractYears(const std::string& input) {
-//	std::regex pattern(R"(\[(\d{2})\s*-\s*(\d{2})?\])");
-//	std::smatch match;
-//
-//	if (std::regex_search(input, match, pattern)) {
-//		int startYear = std::stoi(match[1].str());
-//		std::optional<int> endYear;
-//
-//		if (match[2].matched) {
-//			endYear = std::stoi(match[2].str());
-//		}
-//
-//		// Convertim anii în format complet
-//		if (startYear >= 80 && startYear <= 99) startYear += 1900;
-//		else startYear += 2000;
-//
-//		if (endYear) {
-//			if (*endYear >= 80 && *endYear <= 99) *endYear += 1900;
-//			else *endYear += 2000;
-//		}
-//
-//		return { startYear, endYear };
-//	}
-//	return { 0, std::nullopt };
-//}
-
-//---------------------------------------------------------------------------
 __fastcall TLoadDataForm::TLoadDataForm(TComponent* Owner, TFDQuery* query) :
     TForm(Owner), FDQuery1(query)
 {
@@ -126,36 +91,6 @@ String fixNumberFormat(String value)
     return value;
 }
 
-//---------------------------------------------------------------------------
-
-// Funcție pentru extragerea anilor din formatul "[an - an]"
-//std::pair<int, std::optional<int>> extractYears(String input) {
-//    std::wstring winput = input.c_str();  // Convertim în std::wstring
-//    std::wregex pattern(LR"(\[(\d{2})\s*-\s*(\d{2})?\])");
-//    std::wsmatch match;
-//
-//    if (std::regex_search(winput, match, pattern)) {
-//        int startYear = StrToInt(match[1].str().c_str());
-//        std::optional<int> endYear;
-//
-//        if (match[2].matched) {
-//            endYear = StrToInt(match[2].str().c_str());
-//        }
-//
-//        // Convertim anii în format complet
-//        if (startYear >= 80 && startYear <= 99) startYear += 1900;
-//        else startYear += 2000;
-//
-//        if (endYear) {
-//            if (*endYear >= 80 && *endYear <= 99) *endYear += 1900;
-//            else *endYear += 2000;
-//        }
-//
-//        return { startYear, endYear };
-//    }
-//    return { 0, std::nullopt };
-//}
-
 //-------------------------------------------------------------------------
 
 // Functia de a adauga datele din StringGrid in baza de date
@@ -174,10 +109,6 @@ void __fastcall TLoadDataForm::ConfirmButtonClick(TObject* Sender)
                     colCount++;
                 }
             }
-
-            //            String celula = StringGrid1->Cells[0][i];
-            //            String cod_name = StringGrid1->Cells[1][i];
-		   //	String marca = StringGrid1->Cells[2][i];
             UnicodeString celula = StringGrid1->Cells[0][i];
             UnicodeString cod_name = StringGrid1->Cells[1][i];
 			UnicodeString marca = StringGrid1->Cells[2][i];
@@ -186,11 +117,6 @@ void __fastcall TLoadDataForm::ConfirmButtonClick(TObject* Sender)
                 StrToFloatDef(fixNumberFormat(StringGrid1->Cells[3][i]), 0.0);
             double p_price =
                 StrToFloatDef(fixNumberFormat(StringGrid1->Cells[4][i]), 0.0);
-
-            // Extragem anii din descriere
-            //   std::pair<int, std::optional<int>> years = extractYears(descriere);
-            //   int year = years.first;
-            //   int year_end = years.second.value_or(0);  // Dacă nu există, folosim 0
 
             // daca automobilul exista
             newFDQuery->SQL->Text =
