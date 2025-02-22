@@ -37,49 +37,67 @@ void __fastcall TLoadDataForm::ResizeStringGrid()
 
 void __fastcall TLoadDataForm::AddFileButtonClick(TObject* Sender)
 {
-    if (OpenDialog1->Execute()) //  fereastra explorer
+    if (OpenDialog1->Execute()) // fereastra explorer
     {
         String filePath = OpenDialog1->FileName; // calea fisierului
         PathEdit->Text = filePath; // afisare calea in edit1
 
         TStringList* fileContent = new TStringList();
         try {
-            fileContent->LoadFromFile(filePath, TEncoding::UTF8); // incarcare fișierul în memorie
+            fileContent->LoadFromFile(filePath, TEncoding::UTF8); // încarcă fișierul
+
+            if (fileContent->Count == 0) {
+                Application->MessageBox(L"Fișierul este gol!", L"Eroare", MB_OK | MB_ICONERROR);
+                delete fileContent;
+                return;
+            }
+
+            // Verificăm prima linie pentru numărul de coloane
+            TStringList* firstLineColumns = new TStringList();
+            firstLineColumns->Delimiter = ';';
+            firstLineColumns->StrictDelimiter = true;
+            firstLineColumns->DelimitedText = fileContent->Strings[0];
+
+            if (firstLineColumns->Count != 5) {
+                Application->MessageBox(L"Fișierul trebuie să aibă exact 5 coloane!", L"Eroare", MB_OK | MB_ICONERROR);
+                delete firstLineColumns;
+                delete fileContent;
+                return;
+            }
+            delete firstLineColumns;
 
             // Setează numărul de rânduri în StringGrid
             StringGrid1->RowCount = 1; // Resetăm tabelul și păstrăm header-ul
-            StringGrid1->ColCount =
-                5; // numarul de coloane in dependenta de CSV
+            StringGrid1->ColCount = 5; // numărul fix de coloane
             ResizeStringGrid();
 
-            // parcurgere fisier linie cu linie
+            // Parcurgem fișierul linie cu linie
             for (int i = 0; i < fileContent->Count; i++) {
-				String line = fileContent->Strings[i];
+                String line = fileContent->Strings[i];
                 TStringList* columns = new TStringList();
                 columns->Delimiter = ';'; // Separator
                 columns->StrictDelimiter = true;
                 columns->DelimitedText = line;
 
-                // adaugam un nou rand in StringGrid
+                // Adăugăm un nou rând în StringGrid
                 int newRow = StringGrid1->RowCount;
-				StringGrid1->RowCount = newRow + 1;
+                StringGrid1->RowCount = newRow + 1;
 
                 // Copiem datele în StringGrid
-                for (int j = 0; j < columns->Count && j < StringGrid1->ColCount;
-                     j++) {
-					StringGrid1->Cells[j][newRow] = columns->Strings[j];
+                for (int j = 0; j < columns->Count && j < StringGrid1->ColCount; j++) {
+                    StringGrid1->Cells[j][newRow] = columns->Strings[j];
                 }
 
                 delete columns; // Eliberăm memoria pentru fiecare linie
             }
         } catch (...) {
-            Application->MessageBox(
-                L"Eroare la citirea fișierului!", L"Error", MB_OK);
+            Application->MessageBox(L"Eroare la citirea fișierului!", L"Eroare", MB_OK | MB_ICONERROR);
         }
 
         delete fileContent; // Eliberăm memoria pentru fișier
     }
 }
+
 
 //---------------------------------------------------------------------------
 

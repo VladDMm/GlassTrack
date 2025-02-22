@@ -1,0 +1,79 @@
+|=========================================================================================================================|
+|       Ora         |   PID  |    Level Info    |         Functia         |      Error     |            Message           |
+|===================|========|==================|=========================|================|==============================|
+ 2025-02-21 10:11:07  11432        Exception            FormShow               L134          Eroare la incarcarea datelor: [FireDAC][Phys][MySQL] Unknown column 'a.a_marca_mode' in 'field list'
+ 2025-02-21 10:11:09  11432        Debug                FormResize                           Resize forma
+ 2025-02-21 10:11:09  11432        Info                 FormCreate                           S-a initializat programa
+ 2025-02-21 10:11:09  11432        Debug                FormResize                           Resize forma
+ 2025-02-21 10:11:12  11432        Debug                AddButtonClick                       S-a apasat butonul Adauga
+ 2025-02-21 10:11:14  11432        Treace               FormResize                           S-a sters pointerul
+ 2025-02-21 10:11:14  11432        Exception            FormShow               L134          Eroare la incarcarea datelor: [FireDAC][Phys][MySQL] Unknown column 'a.a_marca_mode' in 'field list'
+ 2025-02-21 10:11:26  5348         Debug                FormResize                           Resize forma
+ 2025-02-21 10:11:26  5348         Info                 FormShow                             S-au afisat datele cu succes
+ 2025-02-21 10:11:26  5348         Debug                FormResize                           Resize forma
+ 2025-02-21 10:11:26  5348         Info                 FormCreate                           S-a initializat programa
+ 2025-02-21 10:11:27  5348         Debug                FormResize                           Resize forma
+ 2025-02-21 10:11:31  5348         Debug                FormResize                           Resize forma
+
+|================================================ Log Date: 2025-02-22 ===============================================|
+|=========================================================================================================================|
+|       Ora         |   PID  |    Level Info    |         Functia         |      Error     |            Message           |
+|===================|========|==================|=========================|================|==============================|
+ 2025-02-22 11:08:04  12732        Info                 CONSTRUCTOR                          Ini?ializare constructor pentru TMenuForm.
+ 2025-02-22 11:08:04  12732        Info                 FormCreate                           Ini?iere creare forma ?i conexiune la baza de date.
+ 2025-02-22 11:08:04  12732        Trace                FormCreate                           Conexiunea la baza de date a fost stabilita cu succes.
+ 2025-02-22 11:08:04  12732        Info                 FormShow                             Func?ia FormShow a fost apelata.
+ 2025-02-22 11:08:04  12732        Debug                FormShow                             Execut interogarea SQL.
+ 2025-02-22 11:08:04  12732        Trace                FormShow                             Interogare SQL generata: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-02-22 11:08:05  12732        Debug                FormResize                           Apel func?ie pentru redimensionare forma.
+ 2025-02-22 11:08:05  12732        Trace                FormResize                           La?ime grid: 1277, Numar coloane: 6
+ 2025-02-22 11:08:05  12732        Trace                FormResize                           La?ime efectiva: 1259, La?ime coloana: 251, Pixeli rama?i: 4
+ 2025-02-22 11:08:05  12732        Debug                FormResize                           Redimensionarea grilei a fost finalizata.
+ 2025-02-22 11:08:05  12732        Info                 FormShow                             Datele au fost afi?ate cu succes in grid.
+ 2025-02-22 11:08:05  12732        Debug                FormResize                           Apel func?ie pentru redimensionare forma.
+ 2025-02-22 11:08:05  12732        Trace                FormResize                           La?ime grid: 1277, Numar coloane: 6
+ 2025-02-22 11:08:05  12732        Trace                FormResize                           La?ime efectiva: 1259, La?ime coloana: 251, Pixeli rama?i: 4
+ 2025-02-22 11:08:05  12732        Debug                FormResize                           Redimensionarea grilei a fost finalizata.
+ 2025-02-22 11:08:05  12732        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-02-22 11:08:05  12732        Debug                FormResize                           Apel func?ie pentru redimensionare forma.
+ 2025-02-22 11:08:05  12732        Trace                FormResize                           La?ime grid: 1277, Numar coloane: 6
+ 2025-02-22 11:08:05  12732        Trace                FormResize                           La?ime efectiva: 1259, La?ime coloana: 251, Pixeli rama?i: 4
+ 2025-02-22 11:08:05  12732        Debug                FormResize                           Redimensionarea grilei a fost finalizata.
+ 2025-02-22 11:08:07  12732        Info                 DESTRUCTOR                           Inchiderea aplica?iei ?i eliberarea resurselor.
+ 2025-02-22 11:13:07  13380        Info                 CONSTRUCTOR                          Ini?ializare constructor pentru TMenuForm.
+ 2025-02-22 11:13:07  13380        Info                 FormCreate                           Ini?iere creare forma ?i conexiune la baza de date.
+ 2025-02-22 11:13:16  13380        Trace                FormCreate                           Conexiunea la baza de date a fost stabilita cu succes.
+ 2025-02-22 11:13:16  13380        Info                 FormShow                             Func?ia FormShow a fost apelata.
+ 2025-02-22 11:13:16  13380        Debug                FormShow                             Execut interogarea SQL.
+ 2025-02-22 11:13:16  13380        Trace                FormShow                             Interogare SQL generata: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-02-22 11:13:21  13380        Debug                FormResize                           Apel func?ie pentru redimensionare forma.
+ 2025-02-22 11:13:21  13380        Trace                FormResize                           La?ime grid: 1277, Numar coloane: 6
+ 2025-02-22 11:13:21  13380        Trace                FormResize                           La?ime efectiva: 1259, La?ime coloana: 251, Pixeli rama?i: 4
+ 2025-02-22 11:13:21  13380        Debug                FormResize                           Redimensionarea grilei a fost finalizata.
+ 2025-02-22 11:13:21  13380        Info                 FormShow                             Datele au fost afi?ate cu succes in grid.
+ 2025-02-22 11:13:21  13380        Debug                FormResize                           Apel func?ie pentru redimensionare forma.
+ 2025-02-22 11:13:21  13380        Trace                FormResize                           La?ime grid: 1277, Numar coloane: 6
+ 2025-02-22 11:13:21  13380        Trace                FormResize                           La?ime efectiva: 1259, La?ime coloana: 251, Pixeli rama?i: 4
+ 2025-02-22 11:13:21  13380        Debug                FormResize                           Redimensionarea grilei a fost finalizata.
+ 2025-02-22 11:13:21  13380        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-02-22 11:18:33  16920        Info                 CONSTRUCTOR                          Initializare constructor pentru TMenuForm.
+ 2025-02-22 11:18:33  16920        Info                 FormCreate                           Initiere creare forma si conexiune la baza de date.
+ 2025-02-22 11:18:34  16920        Trace                FormCreate                           Conexiunea la baza de date a fost stabilita cu succes.
+ 2025-02-22 11:18:34  16920        Info                 FormShow                             Functia FormShow a fost apelata.
+ 2025-02-22 11:18:34  16920        Debug                FormShow                             Execut interogarea SQL.
+ 2025-02-22 11:18:34  16920        Trace                FormShow                             Interogare SQL generata: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-02-22 11:18:34  16920        Debug                FormResize                           Apel functie pentru redimensionare forma.
+ 2025-02-22 11:18:34  16920        Trace                FormResize                           Latime grid: 1277, Numar coloane: 6
+ 2025-02-22 11:18:34  16920        Trace                FormResize                           Latime efectiva: 1259, Latime coloana: 251, Pixeli ramasi: 4
+ 2025-02-22 11:18:34  16920        Debug                FormResize                           Redimensionarea grilei a fost finalizata.
+ 2025-02-22 11:18:34  16920        Info                 FormShow                             Datele au fost afisate cu succes in grid.
+ 2025-02-22 11:18:34  16920        Debug                FormResize                           Apel functie pentru redimensionare forma.
+ 2025-02-22 11:18:34  16920        Trace                FormResize                           Latime grid: 1277, Numar coloane: 6
+ 2025-02-22 11:18:34  16920        Trace                FormResize                           Latime efectiva: 1259, Latime coloana: 251, Pixeli ramasi: 4
+ 2025-02-22 11:18:34  16920        Debug                FormResize                           Redimensionarea grilei a fost finalizata.
+ 2025-02-22 11:18:34  16920        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-02-22 11:18:35  16920        Debug                FormResize                           Apel functie pentru redimensionare forma.
+ 2025-02-22 11:18:35  16920        Trace                FormResize                           Latime grid: 1277, Numar coloane: 6
+ 2025-02-22 11:18:35  16920        Trace                FormResize                           Latime efectiva: 1259, Latime coloana: 251, Pixeli ramasi: 4
+ 2025-02-22 11:18:35  16920        Debug                FormResize                           Redimensionarea grilei a fost finalizata.
+ 2025-02-22 11:18:38  16920        Info                 DESTRUCTOR                           Inchiderea aplicatiei si eliberarea resurselor.

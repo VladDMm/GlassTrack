@@ -5,9 +5,9 @@
 #include <tchar.h>
 //---------------------------------------------------------------------------
 USEFORM("glTrack.cpp", MenuForm);
-USEFORM("EditForm.cpp", EditFormProduct);
-USEFORM("AddGlass.cpp", AddFormG);
 USEFORM("LoadData.cpp", LoadDataForm);
+USEFORM("AddGlass.cpp", AddFormG);
+USEFORM("EditForm.cpp", EditFormProduct);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -19,7 +19,6 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->CreateForm(__classid(TAddFormG), &AddFormG);
 		Application->CreateForm(__classid(TEditFormProduct), &EditFormProduct);
 		Application->CreateForm(__classid(TLoadDataForm), &LoadDataForm);
-
 		Application->Run();
 	}
 	catch (Exception &exception)

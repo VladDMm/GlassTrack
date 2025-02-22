@@ -1,0 +1,15 @@
+﻿#pragma once
+#ifndef ERROR_DEFINE_H
+#define ERROR_DEFINE_H
+
+
+// 20 - 30 SQL ERRORS
+#define WARN_SQL_ERROR          20  // Eroare în execuția SQL
+#define WARN_SQL_SEARCH         21  // Eroare in cautarea SQL
+#define WARN_DATA_LOAD_FAIL     30  // Eroare la încărcarea datelor
+#define WARN_NO_SELECTED_ROW    40  // Nu există rând selectat pentru ștergere
+#define WARN_DELETE_FAILED      50  // Eroare la ștergerea datelor
+#define WARN_SLOW_RESPONSE      60  // Serverul răspunde lent
+#define WARN_LOW_RESOURCES      70  // Resurse insuficiente
+
+#endif // ERROR_DEFINE_H
