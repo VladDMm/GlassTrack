@@ -22,6 +22,9 @@
 #include <FireDAC.Stan.Intf.hpp>
 #include <FireDAC.Stan.Option.hpp>
 #include <FireDAC.Stan.Param.hpp>
+
+#include "Log.h"
+using namespace logg;
 //---------------------------------------------------------------------------
 class TLoadDataForm : public TForm
 {
@@ -38,6 +41,7 @@ __published:	// IDE-managed Components
 	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
 private:	// User declarations
 	TFDQuery* FDQuery1;
+   // logg::LogF *logger;
 public:		// User declarations
 	__fastcall TLoadDataForm(TComponent* Owner, TFDQuery* query);
 };

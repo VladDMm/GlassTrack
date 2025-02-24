@@ -19,6 +19,9 @@
 #include <FireDAC.Stan.Intf.hpp>
 #include <FireDAC.Stan.Option.hpp>
 #include <FireDAC.Stan.Param.hpp>
+#include "Log.h"
+
+using namespace logg;
 //---------------------------------------------------------------------------
 class TAddFormG : public TForm
 {
@@ -46,10 +49,11 @@ class TAddFormG : public TForm
     void __fastcall AutoComboBoxSelect(TObject* Sender);
     void __fastcall FormKeyDown(TObject* Sender, WORD &Key, TShiftState Shift);
     void __fastcall CodComboBoxExit(TObject* Sender);
-	void __fastcall AutoComboBoxExit(TObject *Sender);
+    void __fastcall AutoComboBoxExit(TObject* Sender);
   private: // User declarations
+ //	logg::LogF* logger;
   public: // User declarations
-    __fastcall TAddFormG(TComponent* Owner);
+	__fastcall TAddFormG(TComponent* Owner);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TAddFormG* AddFormG;

@@ -3,11 +3,14 @@
 #include <vcl.h>
 #pragma hdrstop
 #include <tchar.h>
+#include "Log.h"
 //---------------------------------------------------------------------------
 USEFORM("glTrack.cpp", MenuForm);
 USEFORM("LoadData.cpp", LoadDataForm);
 USEFORM("AddGlass.cpp", AddFormG);
 USEFORM("EditForm.cpp", EditFormProduct);
+using namespace logg;
+logg::LogF *logger = new logg::LogF("log/", "log.txt", 5);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {

@@ -10,9 +10,14 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
+
+extern LogF* logger;
 TAddFormG* AddFormG;
 //---------------------------------------------------------------------------
-__fastcall TAddFormG::TAddFormG(TComponent* Owner) : TForm(Owner) {}
+__fastcall TAddFormG::TAddFormG(TComponent* Owner) : TForm(Owner)
+{
+    //	this->logger = logg;
+}
 //---------------------------------------------------------------------------
 void __fastcall TAddFormG::CancelButtonClick(TObject* Sender)
 {
@@ -21,6 +26,8 @@ void __fastcall TAddFormG::CancelButtonClick(TObject* Sender)
 //---------------------------------------------------------------------------
 void __fastcall TAddFormG::Initialize_Component()
 {
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Iniţializare Componente");
     FDQuery1->Connection = MenuForm->FDConnection1;
 
     try {
@@ -64,6 +71,15 @@ void __fastcall TAddFormG::Initialize_Component()
 
         FDQuery1->Close();
     } catch (Exception &e) {
+        String str = e.Message.c_str();
+        AnsiString ansiMessage = AnsiString(e.Message);
+        std::wstring my_wstr = e.Message.c_str();
+        std::string my_str =
+            std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
+                .to_bytes(my_wstr);
+        logger->warning(WARN_DATA_LOAD_FAIL,
+            logger->charToWString(__func__).c_str(),
+            L"Eroare la încărcarea datelor: %s", str.w_str());
         ShowMessage("Eroare la încărcarea datelor: " + e.Message);
     }
 }
@@ -74,112 +90,166 @@ void __fastcall TAddFormG::Initialize_Component()
 
 void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
 {
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Buton Adăugare apăsat.");
     String marca, model, celula, cod_name;
-	int a_id = -1, p_id, celula_id = -1, cod_id = -1;
+    int a_id = -1, p_id, celula_id = -1, cod_id = -1;
 
-	if(AutoComboBox->Text == "" || CelulaComboBox->Text == ""
-	 || CodComboBox->Text == ""|| CountEdit->Text == "" || PriceEdit->Text == "")
-	{	ShowMessage(L"Completează toate câmpurile!");
-		return;
+    if (AutoComboBox->Text == "" || CelulaComboBox->Text == "" ||
+        CodComboBox->Text == "" || CountEdit->Text == "" ||
+        PriceEdit->Text == "")
+    {
+        logger->warning(WARN_FIELDS_NOT_FILLED,
+            logger->charToWString(__func__).c_str(),
+            L"Nu sunt completate toate campurile!");
+        ShowMessage(L"Completează toate câmpurile!");
+        return;
     }
 
-	// Verificam valorile introduse
-	marca = AutoComboBox->Text;
-    std::transform(marca.begin(), marca.end(), marca.begin(),::toupper);
-	celula = CelulaComboBox->Text;
-	std::transform(celula.begin(), celula.end(), celula.begin(),::toupper);
-	cod_name = CodComboBox->Text;
-	std::transform(cod_name.begin(), cod_name.end(), cod_name.begin(),::toupper);
+    // Verificam valorile introduse
+    marca = AutoComboBox->Text;
+    std::transform(marca.begin(), marca.end(), marca.begin(), ::toupper);
+    celula = CelulaComboBox->Text;
+    std::transform(celula.begin(), celula.end(), celula.begin(), ::toupper);
+    cod_name = CodComboBox->Text;
+    std::transform(
+        cod_name.begin(), cod_name.end(), cod_name.begin(), ::toupper);
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Valoare marca: %s; celula: %s, cod: %s", marca.c_str(),
+        celula.c_str(), cod_name.c_str());
 
     try {
-		// Verificam daca automobilul exista
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Verficare dacă automobil există");
+        // Verificam daca automobilul exista
         FDQuery1->SQL->Text =
             "SELECT a_id FROM vehicle_table WHERE a_marca_model = :marca";
-		FDQuery1->ParamByName("marca")->AsString = marca;
+        FDQuery1->ParamByName("marca")->AsString = marca;
         FDQuery1->Open();
 
         if (!FDQuery1->IsEmpty()) {
+            logger->info(
+                logger->charToWString(__func__).c_str(), L"Automobil gasit");
             a_id = FDQuery1->FieldByName("a_id")->AsInteger;
+            logger->debug(
+                logger->charToWString(__func__).c_str(), L"ID a_id: %d", a_id);
         } else {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Automobilul %s nu există, îl adăugăm", marca.c_str());
             // Adaugam automobilul
             FDQuery1->SQL->Text =
                 "INSERT INTO vehicle_table (a_marca_model) VALUES (:marca)";
+            logger->trace(logger->charToWString(__func__).c_str(),
+                L"Interogarea SQL pentru inserare vehicul: %s",
+                FDQuery1->SQL->Text.w_str());
             FDQuery1->ExecSQL();
             FDQuery1->SQL->Text = "SELECT LAST_INSERT_ID() AS new_a_id";
             FDQuery1->Open();
             a_id = FDQuery1->FieldByName("new_a_id")->AsInteger;
+            logger->info(
+                logger->charToWString(__func__).c_str(), L"Automobil inserat");
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"ID automobil inserat: %d", a_id);
         }
 
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Verificare daca celula exista");
         // Verificam daca celula exista
         FDQuery1->SQL->Text =
             "SELECT id_celula FROM celula_table WHERE nume_celula = :nume_celula";
         FDQuery1->ParamByName("nume_celula")->AsString = celula;
+        logger->trace(logger->charToWString(__func__).c_str(),
+            L"Interogare SQL pentru verificare existenta "
+            "celula: %s",
+            FDQuery1->SQL->Text.c_str());
         FDQuery1->Open();
 
         if (!FDQuery1->IsEmpty()) {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Celula %s exista", celula.c_str());
             celula_id = FDQuery1->FieldByName("id_celula")->AsInteger;
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"Celula id: %d", celula_id);
         } else {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Celula %s nu există, o adăugăm", celula.c_str());
             // Adaugam celula
             FDQuery1->SQL->Text =
                 "INSERT INTO celula_table (nume_celula) VALUES (:nume_celula)";
+            logger->trace(logger->charToWString(__func__).c_str(),
+                L"Interogarea SQL: %s", FDQuery1->SQL->Text.w_str());
             FDQuery1->ExecSQL();
             FDQuery1->SQL->Text = "SELECT LAST_INSERT_ID() AS celula_id";
             FDQuery1->Open();
             celula_id = FDQuery1->FieldByName("celula_id")->AsInteger;
+            logger->info(
+                logger->charToWString(__func__).c_str(), L"Celula adăugată");
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"ID celula inserat %d", celula_id);
         }
 
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Verificăm dacă codul există");
         // Verificam daca codul exista
         FDQuery1->SQL->Text =
             "SELECT id_cod FROM code_table WHERE cod = :cod_name";
         FDQuery1->ParamByName("cod_name")->AsString = cod_name;
+        logger->trace(logger->charToWString(__func__).c_str(),
+            L"Interogare SQL pentru verificare daca "
+            "codu exista: %s",
+            FDQuery1->SQL->Text.c_str());
         FDQuery1->Open();
 
         if (!FDQuery1->IsEmpty()) {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Codul %s exista", cod_name.c_str());
             cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"ID cod preluat %d", cod_id);
+
         } else {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Codul %s nu exista", cod_name.c_str());
             // Adaugam codul
             FDQuery1->SQL->Text =
                 "INSERT INTO code_table (cod) VALUES (:cod_name)";
+            logger->trace(logger->charToWString(__func__).c_str(),
+                L"Interogarea SQL pentru inserare cod: %s",
+                FDQuery1->SQL->Text.w_str());
             FDQuery1->ExecSQL();
             FDQuery1->SQL->Text = "SELECT LAST_INSERT_ID() AS id_cod";
             FDQuery1->Open();
             cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
+            logger->info(
+                logger->charToWString(__func__).c_str(), L"Cod inserat");
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"ID cod preluat %d", cod_id);
         }
 
-        // Adaugam produs
-        //        FDQuery1->SQL->Text =
-        //			"INSERT INTO product_table (p_name, p_count, p_price) VALUES (:p_name, :p_count, :p_price)";
-        //		FDQuery1->ParamByName("p_name")->AsString = PNameEdit->Text;
-        //		FDQuery1->ParamByName("p_count")->AsInteger = StrToInt(CountEdit->Text);
-        //		FDQuery1->ParamByName("p_price")->AsFloat = StrToFloat(PriceEdit->Text);
-        //        FDQuery1->ExecSQL();
-        //        FDQuery1->SQL->Text = "SELECT LAST_INSERT_ID() AS new_p_id";
-        //        FDQuery1->Open();
-        //		p_id = FDQuery1->FieldByName("new_p_id")->AsInteger;
-
-        // Adaugam date in product_auto_table
-        //        FDQuery1->SQL->Text =
-        //			"INSERT INTO product_auto_table (a_id, celula_id, id_cod,p_count, p_price) "
-        //			"VALUES (:a_id, :celula_id, :id_cod, :p_count, :p_price)";
-        //		FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-        //        FDQuery1->ParamByName("celula_id")->AsInteger = celula_id;
-        //		FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
-        //		FDQuery1->ParamByName("p_count")->AsInteger = StrToInt(CountEdit->Text);
-        //		FDQuery1->ParamByName("p_price")->AsFloat = StrToFloat(PriceEdit->Text);
-        //		FDQuery1->ExecSQL();
-
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Verificam daca exista produsul in baza de date");
         FDQuery1->SQL->Text =
             "SELECT pa_id FROM product_auto_table WHERE a_id = :a_id AND celula_id = :celula_id AND id_cod = :id_cod";
         FDQuery1->ParamByName("a_id")->AsInteger = a_id;
         FDQuery1->ParamByName("celula_id")->AsInteger = celula_id;
         FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
+        logger->trace(logger->charToWString(__func__).c_str(),
+            L"Interogarea SQL pentru verificarea existentei produsului in db: %s",
+            FDQuery1->SQL->Text.w_str());
         FDQuery1->Open();
 
         // Verificăm dacă există deja în baza de date
         if (FDQuery1->IsEmpty()) {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Produsul nu exista, facem inserarea");
             // Dacă nu există, facem inserarea
             FDQuery1->SQL->Text =
                 "INSERT INTO product_auto_table (a_id, celula_id, id_cod, p_count, p_price) VALUES (:a_id, :celula_id, :id_cod, :p_count, :p_price)";
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"Valori inainte de inserare produs."
+                " a_id: %d, celula_id: %d, id_cod: %d, p_count: %d, p_price:%d",
+                a_id, celula_id, cod_id, StrToInt(CountEdit->Text),
+                StrToFloat(PriceEdit->Text));
             FDQuery1->ParamByName("a_id")->AsInteger = a_id;
             FDQuery1->ParamByName("celula_id")->AsInteger = celula_id;
             FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
@@ -187,11 +257,16 @@ void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
                 StrToInt(CountEdit->Text);
             FDQuery1->ParamByName("p_price")->AsFloat =
                 StrToFloat(PriceEdit->Text);
+            logger->trace(logger->charToWString(__func__).c_str(),
+                L"Interogare SQL %s", FDQuery1->SQL->Text.w_str());
             FDQuery1->ExecSQL();
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Produs inserat in baza de date");
         } else {
             // Dacă există, facem update
             int pa_Id = FDQuery1->FieldByName("pa_id")->AsInteger;
-
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Produs exista, facem update pa_id: %d", pa_Id);
             FDQuery1->SQL->Text =
                 "UPDATE product_auto_table SET p_count = :p_count, p_price = :p_price WHERE pa_id = :pa_id";
             FDQuery1->ParamByName("p_count")->AsInteger =
@@ -199,12 +274,20 @@ void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
             FDQuery1->ParamByName("p_price")->AsFloat =
                 StrToFloat(PriceEdit->Text);
             FDQuery1->ParamByName("pa_id")->AsInteger = pa_Id;
+            logger->trace(logger->charToWString(__func__).c_str(),
+                L"Interogarea SQL: %s", FDQuery1->SQL->Text.w_str());
             FDQuery1->ExecSQL();
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Update produs efectuat");
         }
 
-        ShowMessage("Datele au fost salvate cu succes!");
+        ShowMessage(L"Datele au fost salvate cu succes!");
     } catch (Exception &e) {
-        ShowMessage("Eroare la salvare: " + e.Message);
+        String str = e.Message.c_str();
+        logger->warning(WARN_SAVE_DATA_TO_DB,
+            logger->charToWString(__func__).c_str(), L"Eroare la salvare:",
+            str.w_str());
+        ShowMessage(L"Eroare la salvare: " + e.Message);
     }
 }
 
@@ -212,6 +295,8 @@ void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
 
 void __fastcall TAddFormG::FormCreate(TObject* Sender)
 {
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Crearea formei de adaugare produs");
     Initialize_Component();
 }
 //-----------------------------------------------------------------------------
@@ -223,14 +308,879 @@ void __fastcall TAddFormG::FormCreate(TObject* Sender)
 void __fastcall TAddFormG::CodComboBoxKeyPress(
     TObject* Sender, System::WideChar &Key)
 {
-	if (Key != VK_RETURN)
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Este selecat codul din combobox cu tasta");
+    logger->debug(
+        logger->charToWString(__func__).c_str(), L"Tasta apasata %c", Key);
+    if (Key != VK_RETURN)
         return;
 
-	String cod_name = CodComboBox->Text;
+    String cod_name = CodComboBox->Text;
+    logger->debug(logger->charToWString(__func__).c_str(), L"Cod selectat: %s",
+        cod_name.c_str());
     if (cod_name == "") {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"ComboBox gol, se reafiseaza datele noi in comboboxuri");
+        AutoComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+        AutoComboBox->Clear();
+        CelulaComboBox->Clear();
 
-		AutoComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
+        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
+                              "FROM vehicle_table a ";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+            if (AutoComboBox->Items->IndexOf(marca) == -1)
+                AutoComboBox->Items->Add(marca);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->SQL->Text = "SELECT nume_celula "
+                              "FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+
+            FDQuery1->Next();
+        }
+
+        return;
+    }
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT id_cod FROM code_table WHERE cod = :cod_name";
+    FDQuery1->ParamByName("cod_name")->AsString = cod_name;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogare SQL verificare existenta cod: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    int cod_id = -1;
+    if (!FDQuery1->IsEmpty()) {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Cod gasit in baza de date");
+        cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
+        logger->debug(
+            logger->charToWString(__func__).c_str(), L"ID cod: %d", cod_id);
+    } else {
+        if (MessageDlg(
+                L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
+                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
+        {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Utilizatorul nu doreste sa adauge produs nou. Inchidere dialog");
+            Close();
+            return;
+        }
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Utilizatorul adauga produs nou");
+        AutoComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT a_marca_model FROM vehicle_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String marca = FDQuery1->FieldByName("a_marca_model")->AsWideString;
+            if (AutoComboBox->Items->IndexOf(marca) == -1)
+                AutoComboBox->Items->Add(marca);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+            FDQuery1->Next();
+        }
+        return;
+    }
+
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Codul selectat exista in db");
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT a.a_marca_model FROM product_auto_table pa "
+                          "JOIN vehicle_table a ON a.a_id = pa.a_id "
+                          "JOIN code_table ct ON ct.id_cod = pa.id_cod "
+                          "WHERE ct.id_cod = :id_cod";
+    FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogare SQL pentru selectare marci dupa id_cod: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    AutoComboBox->Items->Clear();
+    CelulaComboBox->Items->Clear();
+
+    while (!FDQuery1->Eof) {
+        String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+
+        if (AutoComboBox->Items->IndexOf(marca) == -1)
+            AutoComboBox->Items->Add(marca);
+
+        FDQuery1->Next();
+    }
+
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
+                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
+                          "WHERE pa.id_cod = :id_cod";
+    FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogarea SQL pentru selectare celule dupa id_cod: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    while (!FDQuery1->Eof) {
+        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
+        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
+            CelulaComboBox->Items->Add(nume_celula);
+        FDQuery1->Next();
+    }
+    logger->info(logger->charToWString(__func__).c_str(), L"Functie terminata");
+}
+
+//---------------------------------------------------------------------------
+
+// Functia care preia codul selectat din comboboxul cu codul disponibil daca
+// e, si pe baza lui se atribuie produsele si automobilul la codul dat, sau se adauga cod nou
+
+void __fastcall TAddFormG::CodComboBoxSelect(TObject* Sender)
+{
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Este selecat codul din combobox cu mouse-ul");
+    String cod_name = CodComboBox->Text;
+    logger->debug(logger->charToWString(__func__).c_str(), L"Cod selectat: %s",
+        cod_name.c_str());
+    if (cod_name == "") {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"ComboBox gol, se reafiseaza datele noi in comboboxuri");
+        AutoComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+        AutoComboBox->Clear();
+        CelulaComboBox->Clear();
+
+        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
+                              "FROM vehicle_table a ";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+            if (AutoComboBox->Items->IndexOf(marca) == -1)
+                AutoComboBox->Items->Add(marca);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->SQL->Text = "SELECT nume_celula "
+                              "FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+
+            FDQuery1->Next();
+        }
+
+        return;
+    }
+    //    int cod_id = -1;
+    //
+    //	// Verifică dacă există codul în baza de date
+    //    FDQuery1->SQL->Text = "SELECT id_cod FROM code_table WHERE cod = :cod_name";
+    //    FDQuery1->ParamByName("cod_name")->AsString = cod_name;
+    //    FDQuery1->Open();
+    //
+    //    if (!FDQuery1->IsEmpty()) {
+    //        // Codul există, extrage id_cod
+    //		cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
+    //        FDQuery1
+    //            ->Close(); // Închide FDQuery1 înainte de a face o altă interogare
+    //    } else {
+    //        // Dacă nu există, întreabă utilizatorul dacă dorește să adauge un produs nou
+    //        if (MessageDlg(
+    //                L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
+    //                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
+    //		{
+    //            Close();
+    //            return;
+    //        }
+    //
+    //        // Dacă utilizatorul răspunde cu "Yes", încarcă mașinile și celulele
+    //        AutoComboBox->Items->Clear();
+    //        CelulaComboBox->Items->Clear();
+    //
+    //        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
+    //                              "FROM vehicle_table a ";
+    //
+    //        FDQuery1->Open();
+    //
+    //        while (!FDQuery1->Eof) {
+    //            String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+    //
+    //            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+    //            if (AutoComboBox->Items->IndexOf(marca) == -1)
+    //                AutoComboBox->Items->Add(marca);
+    //
+    //            FDQuery1->Next();
+    //        }
+    //
+    //        FDQuery1->SQL->Text = "SELECT nume_celula "
+    //                              "FROM celula_table";
+    //        FDQuery1->Open();
+    //
+    //        while (!FDQuery1->Eof) {
+    //            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+    //
+    //            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+    //
+    //            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+    //                CelulaComboBox->Items->Add(celula);
+    //
+    //            FDQuery1->Next();
+    //        }
+    //        return;
+    //    }
+    //    FDQuery1->Close();
+    //    //	FDQuery1->SQL->Text = "SELECT a_marca, a_model FROM vehicle_table";
+    //    FDQuery1->SQL->Text = "SELECT a.a_marca_model "
+    //                          "FROM product_auto_table pa "
+    //                          "JOIN vehicle_table a ON a.a_id = pa.a_id "
+    //                          "JOIN code_table ct ON ct.id_cod = pa.id_cod "
+    //                          "WHERE ct.id_cod = :id_cod ";
+    //    FDQuery1->ParamByName("id_cod")->AsString = cod_id;
+    //    FDQuery1->Open();
+    //
+    //    AutoComboBox->Items->Clear();
+    //    CelulaComboBox->Items->Clear();
+    //
+    //    // umplem combo boxul automobile si modelele lor cu datele din db
+    //    while (!FDQuery1->Eof) {
+    //        String marca = FDQuery1->FieldByName("a_marca_model")->AsWideString;
+    //
+    //        if (AutoComboBox->Items->IndexOf(marca) == -1)
+    //            AutoComboBox->Items->Add(marca);
+    //
+    //        FDQuery1->Next();
+    //    }
+    //    // umplem comboboxul cu celule din db
+    //     FDQuery1->Close();
+    //    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
+    //                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
+    //                          "WHERE pa.id_cod = :id_cod";
+    //    FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
+    //    FDQuery1->Open();
+    //
+    //    while (!FDQuery1->Eof) {
+    //        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
+    //        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
+    //            CelulaComboBox->Items->Add(nume_celula);
+    //        FDQuery1->Next();
+    //	}
+
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT id_cod FROM code_table WHERE cod = :cod_name";
+    FDQuery1->ParamByName("cod_name")->AsString = cod_name;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogare SQL verificare existenta cod: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    int cod_id = -1;
+    if (!FDQuery1->IsEmpty()) {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Cod gasit in baza de date");
+        cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
+        logger->debug(
+            logger->charToWString(__func__).c_str(), L"ID cod: %d", cod_id);
+    } else {
+        if (MessageDlg(
+                L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
+                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
+        {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Utilizatorul nu doreste sa adauge produs nou. Inchidere dialog");
+            Close();
+            return;
+        }
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Utilizatorul adauga produs nou");
+        AutoComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT a_marca_model FROM vehicle_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String marca = FDQuery1->FieldByName("a_marca_model")->AsWideString;
+            if (AutoComboBox->Items->IndexOf(marca) == -1)
+                AutoComboBox->Items->Add(marca);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+            FDQuery1->Next();
+        }
+        return;
+    }
+
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Codul selectat exista in db");
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT a.a_marca_model FROM product_auto_table pa "
+                          "JOIN vehicle_table a ON a.a_id = pa.a_id "
+                          "JOIN code_table ct ON ct.id_cod = pa.id_cod "
+                          "WHERE ct.id_cod = :id_cod";
+    FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogare SQL pentru selectare marci dupa id_cod: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    AutoComboBox->Items->Clear();
+    CelulaComboBox->Items->Clear();
+
+    while (!FDQuery1->Eof) {
+        String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+
+        if (AutoComboBox->Items->IndexOf(marca) == -1)
+            AutoComboBox->Items->Add(marca);
+
+        FDQuery1->Next();
+    }
+
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
+                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
+                          "WHERE pa.id_cod = :id_cod";
+    FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogarea SQL pentru selectare celule dupa id_cod: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    while (!FDQuery1->Eof) {
+        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
+        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
+            CelulaComboBox->Items->Add(nume_celula);
+        FDQuery1->Next();
+    }
+    logger->info(logger->charToWString(__func__).c_str(), L"Functie terminata");
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TAddFormG::AutoComboBoxKeyPress(
+    TObject* Sender, System::WideChar &Key)
+{
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Este selecat automobilul din combobox cu tasta");
+    logger->debug(
+        logger->charToWString(__func__).c_str(), L"Tasta apasata %c", Key);
+
+    if (Key != VK_RETURN)
+        return;
+
+    String a_name = AutoComboBox->Text;
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Valoare automobil selectat: %s", a_name.c_str());
+    if (a_name == "") {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Valoare camp e goala, se afiseaza toate datele in comboboxuri!");
+        AutoComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+        CodComboBox->Items->Clear();
+        CodComboBox->Clear();
+        CelulaComboBox->Clear();
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
+                              "FROM vehicle_table a ";
+
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+            if (AutoComboBox->Items->IndexOf(marca) == -1)
+                AutoComboBox->Items->Add(marca);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT cod "
+                              "FROM code_table ";
+
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String cod = FDQuery1->FieldByName("cod")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+            if (CodComboBox->Items->IndexOf(cod) == -1)
+                CodComboBox->Items->Add(cod);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT nume_celula "
+                              "FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+
+            FDQuery1->Next();
+        }
+
+        return;
+    }
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Automobil introdus");
+    FDQuery1->Close();
+    FDQuery1->SQL->Text =
+        "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
+    FDQuery1->ParamByName("a_name")->AsWideString = a_name;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogare SQL pentru verificare automobil existent: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    int a_id = -1;
+    if (!FDQuery1->IsEmpty()) {
+        logger->info(
+            logger->charToWString(__func__).c_str(), L"Automobil gasit");
+        a_id = FDQuery1->FieldByName("a_id")->AsInteger;
+        logger->debug(
+            logger->charToWString(__func__).c_str(), L"a_id: %d", a_id);
+    } else {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Automobil nu este gasit. Afisare toate datele in comboboxuri");
+        CodComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT cod FROM code_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String cod_name = FDQuery1->FieldByName("cod")->AsString;
+
+            if (CodComboBox->Items->IndexOf(cod_name) == -1)
+                CodComboBox->Items->Add(cod_name);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+            FDQuery1->Next();
+        }
+        return;
+    }
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Automobil gasit, afisarea codului si celulei de unde face parte");
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
+                          "JOIN vehicle_table a ON a.a_id = pa.a_id "
+                          "JOIN code_table ct ON ct.id_cod = pa.id_cod "
+                          "WHERE a.a_id = :a_id";
+    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogarea SQL pentru selectarea codului dupa a_id: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    CodComboBox->Items->Clear();
+    CelulaComboBox->Items->Clear();
+
+    while (!FDQuery1->Eof) {
+        String cod_name = FDQuery1->FieldByName("cod")->AsString;
+
+        if (CodComboBox->Items->IndexOf(cod_name) == -1)
+            CodComboBox->Items->Add(cod_name);
+
+        FDQuery1->Next();
+    }
+
+    FDQuery1->Close();
+
+    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
+                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
+                          "WHERE pa.a_id = :a_id";
+
+    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogarea SQL pentru afisarea celulei dupa a_id: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    while (!FDQuery1->Eof) {
+        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
+        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
+            CelulaComboBox->Items->Add(nume_celula);
+        FDQuery1->Next();
+    }
+    logger->info(logger->charToWString(__func__).c_str(), L"Functie executata");
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TAddFormG::AutoComboBoxSelect(TObject* Sender)
+{
+    //	String a_name = AutoComboBox->Text;
+    //	if (a_name == "") {
+    //        AutoComboBox->Items->Clear();
+    //		CelulaComboBox->Items->Clear();
+    //		CodComboBox->Items->Clear();
+    //		CodComboBox->Clear();
+    //		CelulaComboBox->Clear();
+    //		FDQuery1->Close();
+    //        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
+    //                              "FROM vehicle_table a ";
+    //
+    //        FDQuery1->Open();
+    //
+    //        while (!FDQuery1->Eof) {
+    //			String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+    //
+    //            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+    //            if (AutoComboBox->Items->IndexOf(marca) == -1)
+    //                AutoComboBox->Items->Add(marca);
+    //
+    //            FDQuery1->Next();
+    //		}
+    //
+    //        FDQuery1->Close();
+    //		FDQuery1->SQL->Text = "SELECT cod "
+    //							  "FROM code_table ";
+    //
+    //        FDQuery1->Open();
+    //
+    //        while (!FDQuery1->Eof) {
+    //			String cod = FDQuery1->FieldByName("cod")->AsString;
+    //
+    //            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+    //			if (CodComboBox->Items->IndexOf(cod) == -1)
+    //				CodComboBox->Items->Add(cod);
+    //
+    //            FDQuery1->Next();
+    //		}
+    //
+    //        FDQuery1->Close();
+    //        FDQuery1->SQL->Text = "SELECT nume_celula "
+    //                              "FROM celula_table";
+    //        FDQuery1->Open();
+    //
+    //        while (!FDQuery1->Eof) {
+    //            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+    //
+    //            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+    //
+    //            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+    //                CelulaComboBox->Items->Add(celula);
+    //
+    //            FDQuery1->Next();
+    //        }
+    //
+    //        return;
+    //	}
+    //
+    //	FDQuery1->Close();
+    //	FDQuery1->SQL->Text = "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
+    //	FDQuery1->ParamByName("a_name")->AsWideString = a_name;
+    //	FDQuery1->Open();
+    //
+    //	int a_id = -1;
+    //    if (!FDQuery1->IsEmpty()) {
+    //		a_id = FDQuery1->FieldByName("a_id")->AsInteger;
+    //	}
+    //	   else {
+    //
+    //		CodComboBox->Items->Clear();
+    //		CelulaComboBox->Items->Clear();
+    //
+    //        FDQuery1->Close();
+    //		FDQuery1->SQL->Text = "SELECT cod FROM code_table";
+    //        FDQuery1->Open();
+    //
+    //        while (!FDQuery1->Eof) {
+    //			String cod_name = FDQuery1->FieldByName("cod")->AsString;
+    //
+    //			if (CodComboBox->Items->IndexOf(cod_name) == -1)
+    //				CodComboBox->Items->Add(cod_name);
+    //
+    //            FDQuery1->Next();
+    //        }
+    //
+    //        FDQuery1->Close();
+    //		FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
+    //        FDQuery1->Open();
+    //
+    //		while (!FDQuery1->Eof) {
+    //            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+    //            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+    //                CelulaComboBox->Items->Add(celula);
+    //			FDQuery1->Next();
+    //        }
+    //        return;
+    //    }
+    //
+    //    FDQuery1->Close();
+    //	FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
+    //						  "JOIN vehicle_table a ON a.a_id = pa.a_id "
+    //						  "JOIN code_table ct ON ct.id_cod = pa.id_cod "
+    //						  "WHERE a.a_id = :a_id";
+    //    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+    //    FDQuery1->Open();
+    //
+    //    CodComboBox->Items->Clear();
+    //    CelulaComboBox->Items->Clear();
+    //
+    //    while (!FDQuery1->Eof) {
+    //		String cod_name = FDQuery1->FieldByName("cod")->AsString;
+    //
+    //		if (CodComboBox->Items->IndexOf(cod_name) == -1)
+    //			CodComboBox->Items->Add(cod_name);
+    //
+    //        FDQuery1->Next();
+    //    }
+    //
+    //	FDQuery1->Close();
+    //
+    //    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
+    //                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
+    //						  "WHERE pa.a_id = :a_id";
+    //
+    //    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+    //	FDQuery1->Open();
+    //
+    //    while (!FDQuery1->Eof) {
+    //        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
+    //        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
+    //            CelulaComboBox->Items->Add(nume_celula);
+    //        FDQuery1->Next();
+    //	}
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Automobil selectat cu mouse-ul");
+    String a_name = AutoComboBox->Text;
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Valoare automobil selectat: %s", a_name.c_str());
+    if (a_name == "") {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Valoare camp e goala, se afiseaza toate datele in comboboxuri!");
+        AutoComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+        CodComboBox->Items->Clear();
+        CodComboBox->Clear();
+        CelulaComboBox->Clear();
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
+                              "FROM vehicle_table a ";
+
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+            if (AutoComboBox->Items->IndexOf(marca) == -1)
+                AutoComboBox->Items->Add(marca);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT cod "
+                              "FROM code_table ";
+
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String cod = FDQuery1->FieldByName("cod")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+            if (CodComboBox->Items->IndexOf(cod) == -1)
+                CodComboBox->Items->Add(cod);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT nume_celula "
+                              "FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+
+            FDQuery1->Next();
+        }
+
+        return;
+    }
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Automobil introdus");
+    FDQuery1->Close();
+    FDQuery1->SQL->Text =
+        "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
+    FDQuery1->ParamByName("a_name")->AsWideString = a_name;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogare SQL pentru verificare automobil existent: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    int a_id = -1;
+    if (!FDQuery1->IsEmpty()) {
+        logger->info(
+            logger->charToWString(__func__).c_str(), L"Automobil gasit");
+        a_id = FDQuery1->FieldByName("a_id")->AsInteger;
+        logger->debug(
+            logger->charToWString(__func__).c_str(), L"a_id: %d", a_id);
+    } else {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Automobil nu este gasit. Afisare toate datele in comboboxuri");
+        CodComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT cod FROM code_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String cod_name = FDQuery1->FieldByName("cod")->AsString;
+
+            if (CodComboBox->Items->IndexOf(cod_name) == -1)
+                CodComboBox->Items->Add(cod_name);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+            FDQuery1->Next();
+        }
+        return;
+    }
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Automobil gasit, afisarea codului si celulei de unde face parte");
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
+                          "JOIN vehicle_table a ON a.a_id = pa.a_id "
+                          "JOIN code_table ct ON ct.id_cod = pa.id_cod "
+                          "WHERE a.a_id = :a_id";
+    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogarea SQL pentru selectarea codului dupa a_id: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    CodComboBox->Items->Clear();
+    CelulaComboBox->Items->Clear();
+
+    while (!FDQuery1->Eof) {
+        String cod_name = FDQuery1->FieldByName("cod")->AsString;
+
+        if (CodComboBox->Items->IndexOf(cod_name) == -1)
+            CodComboBox->Items->Add(cod_name);
+
+        FDQuery1->Next();
+    }
+
+    FDQuery1->Close();
+
+    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
+                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
+                          "WHERE pa.a_id = :a_id";
+
+    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogarea SQL pentru afisarea celulei dupa a_id: %s",
+        FDQuery1->SQL->Text.w_str());
+    FDQuery1->Open();
+
+    while (!FDQuery1->Eof) {
+        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
+        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
+            CelulaComboBox->Items->Add(nume_celula);
+        FDQuery1->Next();
+    }
+    logger->info(logger->charToWString(__func__).c_str(), L"Functie executata");
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TAddFormG::FormKeyDown(
+    TObject* Sender, WORD &Key, TShiftState Shift)
+{
+    logger->debug(
+        logger->charToWString(__func__).c_str(), L"Tasta apasata: %d", Key);
+    if (Key == VK_ESCAPE)
+        this->Close();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TAddFormG::CodComboBoxExit(TObject* Sender)
+{
+    String cod_name = CodComboBox->Text;
+    if (cod_name == "") {
+        AutoComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
         AutoComboBox->Clear();
         CelulaComboBox->Clear();
 
@@ -265,161 +1215,17 @@ void __fastcall TAddFormG::CodComboBoxKeyPress(
         }
 
         return;
-	}
-
-    FDQuery1->Close();
-    FDQuery1->SQL->Text = "SELECT id_cod FROM code_table WHERE cod = :cod_name";
-    FDQuery1->ParamByName("cod_name")->AsString = cod_name;
-    FDQuery1->Open();
-
-    int cod_id = -1;
-    if (!FDQuery1->IsEmpty()) {
-        cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
-    } else {
-        if (MessageDlg(
-                L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
-                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
-        {
-            Close();
-            return;
-        }
-
-        AutoComboBox->Items->Clear();
-        CelulaComboBox->Items->Clear();
-
-        FDQuery1->Close();
-        FDQuery1->SQL->Text = "SELECT a_marca_model FROM vehicle_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String marca = FDQuery1->FieldByName("a_marca_model")->AsWideString;
-
-            if (AutoComboBox->Items->IndexOf(marca) == -1)
-                AutoComboBox->Items->Add(marca);
-
-            FDQuery1->Next();
-        }
-
-        FDQuery1->Close();
-        FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-            FDQuery1->Next();
-        }
-        return;
     }
-
-    FDQuery1->Close();
-    FDQuery1->SQL->Text = "SELECT a.a_marca_model FROM product_auto_table pa "
-                          "JOIN vehicle_table a ON a.a_id = pa.a_id "
-                          "JOIN code_table ct ON ct.id_cod = pa.id_cod "
-                          "WHERE ct.id_cod = :id_cod";
-    FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
-    FDQuery1->Open();
-
-    AutoComboBox->Items->Clear();
-    CelulaComboBox->Items->Clear();
-
-    while (!FDQuery1->Eof) {
-        //        String marca = FDQuery1->FieldByName("a_marca")->AsString;
-        //        String model = FDQuery1->FieldByName("a_model")->AsString;
-        //        String inceput_an = FDQuery1->FieldByName("a_year")->AsString;
-        //        String sfarsit_an = FDQuery1->FieldByName("a_year_end")->AsString;
-        //        String origine = FDQuery1->FieldByName("p_origine")->AsString;
-        //
-        //        POrigineEdit->Text = origine;
-        //
-        //        if (YearComboBox->Items->IndexOf(inceput_an) == -1)
-        //            YearComboBox->Items->Add(inceput_an);
-        //
-        //        if (EndYearComboBox->Items->IndexOf(sfarsit_an) == -1)
-        //            EndYearComboBox->Items->Add(sfarsit_an);
-        //
-
-        String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
-
-        if (AutoComboBox->Items->IndexOf(marca) == -1)
-            AutoComboBox->Items->Add(marca);
-
-        FDQuery1->Next();
-    }
-
-    FDQuery1->Close();
-    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
-                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
-                          "WHERE pa.id_cod = :id_cod";
-    FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
-    FDQuery1->Open();
-
-    while (!FDQuery1->Eof) {
-        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
-        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
-            CelulaComboBox->Items->Add(nume_celula);
-        FDQuery1->Next();
-	}
-}
-
-//---------------------------------------------------------------------------
-
-// Functia care preia codul selectat din comboboxul cu codul disponibil daca
-// e, si pe baza lui se atribuie produsele si automobilul la codul dat, sau se adauga cod nou
-
-void __fastcall TAddFormG::CodComboBoxSelect(TObject* Sender)
-{
-	String cod_name = CodComboBox->Text;
-    if (cod_name == "") {
-
-		AutoComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-		AutoComboBox->Clear();
-        CelulaComboBox->Clear();
-
-        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
-                              "FROM vehicle_table a ";
-
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-            if (AutoComboBox->Items->IndexOf(marca) == -1)
-                AutoComboBox->Items->Add(marca);
-
-            FDQuery1->Next();
-        }
-
-        FDQuery1->SQL->Text = "SELECT nume_celula "
-                              "FROM celula_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-
-            FDQuery1->Next();
-        }
-
-        return;
-	}
     int cod_id = -1;
 
-	// Verifică dacă există codul în baza de date
+    // Verifică dacă există codul în baza de date
     FDQuery1->SQL->Text = "SELECT id_cod FROM code_table WHERE cod = :cod_name";
     FDQuery1->ParamByName("cod_name")->AsString = cod_name;
     FDQuery1->Open();
 
     if (!FDQuery1->IsEmpty()) {
         // Codul există, extrage id_cod
-		cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
+        cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
         FDQuery1
             ->Close(); // Închide FDQuery1 înainte de a face o altă interogare
     } else {
@@ -427,7 +1233,7 @@ void __fastcall TAddFormG::CodComboBoxSelect(TObject* Sender)
         if (MessageDlg(
                 L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
                 mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
-		{
+        {
             Close();
             return;
         }
@@ -468,7 +1274,7 @@ void __fastcall TAddFormG::CodComboBoxSelect(TObject* Sender)
         return;
     }
     FDQuery1->Close();
-    //	FDQuery1->SQL->Text = "SELECT a_marca, a_model FROM vehicle_table";
+
     FDQuery1->SQL->Text = "SELECT a.a_marca_model "
                           "FROM product_auto_table pa "
                           "JOIN vehicle_table a ON a.a_id = pa.a_id "
@@ -490,7 +1296,7 @@ void __fastcall TAddFormG::CodComboBoxSelect(TObject* Sender)
         FDQuery1->Next();
     }
     // umplem comboboxul cu celule din db
-     FDQuery1->Close();
+    FDQuery1->Close();
     FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
                           "JOIN celula_table c ON c.id_celula = pa.celula_id "
                           "WHERE pa.id_cod = :id_cod";
@@ -502,367 +1308,21 @@ void __fastcall TAddFormG::CodComboBoxSelect(TObject* Sender)
         if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
             CelulaComboBox->Items->Add(nume_celula);
         FDQuery1->Next();
-	}
+    }
 }
 
 //---------------------------------------------------------------------------
 
-void __fastcall TAddFormG::AutoComboBoxKeyPress(TObject *Sender, System::WideChar &Key)
+void __fastcall TAddFormG::AutoComboBoxExit(TObject* Sender)
 {
-   if (Key != VK_RETURN)
-        return;
-
-	String a_name = AutoComboBox->Text;
-	if (a_name == "") {
-        AutoComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-		CodComboBox->Items->Clear();
-		CodComboBox->Clear();
-		CelulaComboBox->Clear();
-		FDQuery1->Close();
-        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
-                              "FROM vehicle_table a ";
-
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-            if (AutoComboBox->Items->IndexOf(marca) == -1)
-                AutoComboBox->Items->Add(marca);
-
-            FDQuery1->Next();
-		}
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT cod "
-							  "FROM code_table ";
-
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String cod = FDQuery1->FieldByName("cod")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-			if (CodComboBox->Items->IndexOf(cod) == -1)
-				CodComboBox->Items->Add(cod);
-
-            FDQuery1->Next();
-		}
-
-        FDQuery1->Close();
-        FDQuery1->SQL->Text = "SELECT nume_celula "
-                              "FROM celula_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-
-            FDQuery1->Next();
-        }
-
-        return;
-	}
-
-	FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
-	FDQuery1->ParamByName("a_name")->AsWideString = a_name;
-	FDQuery1->Open();
-
-	int a_id = -1;
-    if (!FDQuery1->IsEmpty()) {
-		a_id = FDQuery1->FieldByName("a_id")->AsInteger;
-    } else {
-
-		CodComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT cod FROM code_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-			if (CodComboBox->Items->IndexOf(cod_name) == -1)
-				CodComboBox->Items->Add(cod_name);
-
-            FDQuery1->Next();
-        }
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
-        FDQuery1->Open();
-
-		while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-			FDQuery1->Next();
-        }
-        return;
-    }
-
-    FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
-						  "JOIN vehicle_table a ON a.a_id = pa.a_id "
-						  "JOIN code_table ct ON ct.id_cod = pa.id_cod "
-						  "WHERE a.a_id = :a_id";
-    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-    FDQuery1->Open();
-
-    CodComboBox->Items->Clear();
-    CelulaComboBox->Items->Clear();
-
-    while (!FDQuery1->Eof) {
-
-		String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-		if (CodComboBox->Items->IndexOf(cod_name) == -1)
-			CodComboBox->Items->Add(cod_name);
-
-        FDQuery1->Next();
-    }
-
-	FDQuery1->Close();
-
-    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
-                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
-						  "WHERE pa.a_id = :a_id";
-
-    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-	FDQuery1->Open();
-
-    while (!FDQuery1->Eof) {
-        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
-        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
-            CelulaComboBox->Items->Add(nume_celula);
-        FDQuery1->Next();
-	}
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TAddFormG::AutoComboBoxSelect(TObject *Sender)
-{
-	String a_name = AutoComboBox->Text;
-	if (a_name == "") {
-        AutoComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-		CodComboBox->Items->Clear();
-		CodComboBox->Clear();
-		CelulaComboBox->Clear();
-		FDQuery1->Close();
-        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
-                              "FROM vehicle_table a ";
-
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-            if (AutoComboBox->Items->IndexOf(marca) == -1)
-                AutoComboBox->Items->Add(marca);
-
-            FDQuery1->Next();
-		}
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT cod "
-							  "FROM code_table ";
-
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String cod = FDQuery1->FieldByName("cod")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-			if (CodComboBox->Items->IndexOf(cod) == -1)
-				CodComboBox->Items->Add(cod);
-
-            FDQuery1->Next();
-		}
-
-        FDQuery1->Close();
-        FDQuery1->SQL->Text = "SELECT nume_celula "
-                              "FROM celula_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-
-            FDQuery1->Next();
-        }
-
-        return;
-	}
-
-	FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
-	FDQuery1->ParamByName("a_name")->AsWideString = a_name;
-	FDQuery1->Open();
-
-	int a_id = -1;
-    if (!FDQuery1->IsEmpty()) {
-		a_id = FDQuery1->FieldByName("a_id")->AsInteger;
-	}
-	   else {
-
-		CodComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT cod FROM code_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-			if (CodComboBox->Items->IndexOf(cod_name) == -1)
-				CodComboBox->Items->Add(cod_name);
-
-            FDQuery1->Next();
-        }
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
-        FDQuery1->Open();
-
-		while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-			FDQuery1->Next();
-        }
-        return;
-    }
-
-    FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
-						  "JOIN vehicle_table a ON a.a_id = pa.a_id "
-						  "JOIN code_table ct ON ct.id_cod = pa.id_cod "
-						  "WHERE a.a_id = :a_id";
-    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-    FDQuery1->Open();
-
-    CodComboBox->Items->Clear();
-    CelulaComboBox->Items->Clear();
-
-    while (!FDQuery1->Eof) {
-		String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-		if (CodComboBox->Items->IndexOf(cod_name) == -1)
-			CodComboBox->Items->Add(cod_name);
-
-        FDQuery1->Next();
-    }
-
-	FDQuery1->Close();
-
-    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
-                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
-						  "WHERE pa.a_id = :a_id";
-
-    FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-	FDQuery1->Open();
-
-    while (!FDQuery1->Eof) {
-        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
-        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
-            CelulaComboBox->Items->Add(nume_celula);
-        FDQuery1->Next();
-	}
-}
-
-//---------------------------------------------------------------------------
-
-void __fastcall TAddFormG::FormKeyDown(TObject *Sender, WORD &Key, TShiftState Shift)
-
-{
-	if(Key == VK_ESCAPE)
-		this->Close();
-}
-//---------------------------------------------------------------------------
-
-void __fastcall TAddFormG::CodComboBoxExit(TObject *Sender)
-{
-	String cod_name = CodComboBox->Text;
-	if (cod_name == "") {
-
-		AutoComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-        AutoComboBox->Clear();
-        CelulaComboBox->Clear();
-
-        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
-                              "FROM vehicle_table a ";
-
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-            if (AutoComboBox->Items->IndexOf(marca) == -1)
-                AutoComboBox->Items->Add(marca);
-
-            FDQuery1->Next();
-        }
-
-        FDQuery1->SQL->Text = "SELECT nume_celula "
-                              "FROM celula_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-
-            FDQuery1->Next();
-        }
-
-        return;
-	}
-    int cod_id = -1;
-
-	// Verifică dacă există codul în baza de date
-    FDQuery1->SQL->Text = "SELECT id_cod FROM code_table WHERE cod = :cod_name";
-    FDQuery1->ParamByName("cod_name")->AsString = cod_name;
-    FDQuery1->Open();
-
-    if (!FDQuery1->IsEmpty()) {
-        // Codul există, extrage id_cod
-		cod_id = FDQuery1->FieldByName("id_cod")->AsInteger;
-        FDQuery1
-            ->Close(); // Închide FDQuery1 înainte de a face o altă interogare
-    } else {
-        // Dacă nu există, întreabă utilizatorul dacă dorește să adauge un produs nou
-        if (MessageDlg(
-                L"Nu există informaţii la acest cod,\nDoriţi să adăugaţi un produs nou?",
-                mtConfirmation, TMsgDlgButtons() << mbYes << mbNo, 0) == mrNo)
-		{
-            Close();
-            return;
-        }
-
-        // Dacă utilizatorul răspunde cu "Yes", încarcă mașinile și celulele
+    String a_name = AutoComboBox->Text;
+    if (a_name == "") {
         AutoComboBox->Items->Clear();
         CelulaComboBox->Items->Clear();
-
+        CodComboBox->Items->Clear();
+        CodComboBox->Clear();
+        CelulaComboBox->Clear();
+        FDQuery1->Close();
         FDQuery1->SQL->Text = "SELECT a.a_marca_model "
                               "FROM vehicle_table a ";
 
@@ -878,6 +1338,23 @@ void __fastcall TAddFormG::CodComboBoxExit(TObject *Sender)
             FDQuery1->Next();
         }
 
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT cod "
+                              "FROM code_table ";
+
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String cod = FDQuery1->FieldByName("cod")->AsString;
+
+            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
+            if (CodComboBox->Items->IndexOf(cod) == -1)
+                CodComboBox->Items->Add(cod);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
         FDQuery1->SQL->Text = "SELECT nume_celula "
                               "FROM celula_table";
         FDQuery1->Open();
@@ -892,153 +1369,54 @@ void __fastcall TAddFormG::CodComboBoxExit(TObject *Sender)
 
             FDQuery1->Next();
         }
+
         return;
     }
-    FDQuery1->Close();
 
-	FDQuery1->SQL->Text = "SELECT a.a_marca_model "
-                          "FROM product_auto_table pa "
+    FDQuery1->Close();
+    FDQuery1->SQL->Text =
+        "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
+    FDQuery1->ParamByName("a_name")->AsWideString = a_name;
+    FDQuery1->Open();
+
+    int a_id = -1;
+    if (!FDQuery1->IsEmpty()) {
+        a_id = FDQuery1->FieldByName("a_id")->AsInteger;
+    } else {
+        CodComboBox->Items->Clear();
+        CelulaComboBox->Items->Clear();
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT cod FROM code_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String cod_name = FDQuery1->FieldByName("cod")->AsString;
+
+            if (CodComboBox->Items->IndexOf(cod_name) == -1)
+                CodComboBox->Items->Add(cod_name);
+
+            FDQuery1->Next();
+        }
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
+        FDQuery1->Open();
+
+        while (!FDQuery1->Eof) {
+            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+            if (CelulaComboBox->Items->IndexOf(celula) == -1)
+                CelulaComboBox->Items->Add(celula);
+            FDQuery1->Next();
+        }
+        return;
+    }
+
+    FDQuery1->Close();
+    FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
                           "JOIN vehicle_table a ON a.a_id = pa.a_id "
                           "JOIN code_table ct ON ct.id_cod = pa.id_cod "
-                          "WHERE ct.id_cod = :id_cod ";
-    FDQuery1->ParamByName("id_cod")->AsString = cod_id;
-    FDQuery1->Open();
-
-    AutoComboBox->Items->Clear();
-    CelulaComboBox->Items->Clear();
-
-    // umplem combo boxul automobile si modelele lor cu datele din db
-    while (!FDQuery1->Eof) {
-        String marca = FDQuery1->FieldByName("a_marca_model")->AsWideString;
-
-        if (AutoComboBox->Items->IndexOf(marca) == -1)
-            AutoComboBox->Items->Add(marca);
-
-        FDQuery1->Next();
-    }
-    // umplem comboboxul cu celule din db
-     FDQuery1->Close();
-    FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
-                          "JOIN celula_table c ON c.id_celula = pa.celula_id "
-                          "WHERE pa.id_cod = :id_cod";
-    FDQuery1->ParamByName("id_cod")->AsInteger = cod_id;
-    FDQuery1->Open();
-
-    while (!FDQuery1->Eof) {
-        String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
-        if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
-            CelulaComboBox->Items->Add(nume_celula);
-        FDQuery1->Next();
-	}
-}
-
-//---------------------------------------------------------------------------
-
-void __fastcall TAddFormG::AutoComboBoxExit(TObject *Sender)
-{
-  String a_name = AutoComboBox->Text;
-	if (a_name == "") {
-        AutoComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-		CodComboBox->Items->Clear();
-		CodComboBox->Clear();
-        CelulaComboBox->Clear();
-		FDQuery1->Close();
-        FDQuery1->SQL->Text = "SELECT a.a_marca_model "
-                              "FROM vehicle_table a ";
-
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-            if (AutoComboBox->Items->IndexOf(marca) == -1)
-                AutoComboBox->Items->Add(marca);
-
-            FDQuery1->Next();
-		}
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT cod "
-							  "FROM code_table ";
-
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String cod = FDQuery1->FieldByName("cod")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-			if (CodComboBox->Items->IndexOf(cod) == -1)
-				CodComboBox->Items->Add(cod);
-
-            FDQuery1->Next();
-		}
-
-        FDQuery1->Close();
-        FDQuery1->SQL->Text = "SELECT nume_celula "
-                              "FROM celula_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-
-            // Adaugă elemente în ComboBox doar dacă nu sunt deja adăugate
-
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-
-            FDQuery1->Next();
-        }
-
-        return;
-	}
-
-	FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name";
-	FDQuery1->ParamByName("a_name")->AsWideString = a_name;
-	FDQuery1->Open();
-
-	int a_id = -1;
-    if (!FDQuery1->IsEmpty()) {
-		a_id = FDQuery1->FieldByName("a_id")->AsInteger;
-	}
-	   else {
-
-		CodComboBox->Items->Clear();
-		CelulaComboBox->Items->Clear();
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT cod FROM code_table";
-        FDQuery1->Open();
-
-        while (!FDQuery1->Eof) {
-			String cod_name = FDQuery1->FieldByName("cod")->AsString;
-
-			if (CodComboBox->Items->IndexOf(cod_name) == -1)
-				CodComboBox->Items->Add(cod_name);
-
-            FDQuery1->Next();
-        }
-
-        FDQuery1->Close();
-		FDQuery1->SQL->Text = "SELECT nume_celula FROM celula_table";
-        FDQuery1->Open();
-
-		while (!FDQuery1->Eof) {
-            String celula = FDQuery1->FieldByName("nume_celula")->AsString;
-            if (CelulaComboBox->Items->IndexOf(celula) == -1)
-                CelulaComboBox->Items->Add(celula);
-			FDQuery1->Next();
-        }
-        return;
-    }
-
-    FDQuery1->Close();
-	FDQuery1->SQL->Text = "SELECT ct.cod FROM product_auto_table pa "
-						  "JOIN vehicle_table a ON a.a_id = pa.a_id "
-						  "JOIN code_table ct ON ct.id_cod = pa.id_cod "
-						  "WHERE a.a_id = :a_id";
+                          "WHERE a.a_id = :a_id";
     FDQuery1->ParamByName("a_id")->AsInteger = a_id;
     FDQuery1->Open();
 
@@ -1046,29 +1424,29 @@ void __fastcall TAddFormG::AutoComboBoxExit(TObject *Sender)
     CelulaComboBox->Items->Clear();
 
     while (!FDQuery1->Eof) {
-		String cod_name = FDQuery1->FieldByName("cod")->AsString;
+        String cod_name = FDQuery1->FieldByName("cod")->AsString;
 
-		if (CodComboBox->Items->IndexOf(cod_name) == -1)
-			CodComboBox->Items->Add(cod_name);
+        if (CodComboBox->Items->IndexOf(cod_name) == -1)
+            CodComboBox->Items->Add(cod_name);
 
         FDQuery1->Next();
     }
 
-	FDQuery1->Close();
+    FDQuery1->Close();
 
     FDQuery1->SQL->Text = "SELECT c.nume_celula FROM product_auto_table pa "
                           "JOIN celula_table c ON c.id_celula = pa.celula_id "
-						  "WHERE pa.a_id = :a_id";
+                          "WHERE pa.a_id = :a_id";
 
     FDQuery1->ParamByName("a_id")->AsInteger = a_id;
-	FDQuery1->Open();
+    FDQuery1->Open();
 
     while (!FDQuery1->Eof) {
         String nume_celula = FDQuery1->FieldByName("nume_celula")->AsString;
         if (CelulaComboBox->Items->IndexOf(nume_celula) == -1)
             CelulaComboBox->Items->Add(nume_celula);
         FDQuery1->Next();
-	}
+    }
 }
 //---------------------------------------------------------------------------
 

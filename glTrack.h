@@ -85,7 +85,7 @@ __published:	// IDE-managed Components
 private:	// User declarations
    //	TFDPhysMySQLDriverLink *FDPhysMySQLDriverLink1;
 	void __fastcall ConfirmDialogKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
-    logg::LogF* logger;
+  //  logg::LogF* logger;
 
 public:		// User declarations
 	__fastcall TMenuForm(TComponent* Owner);

@@ -5,16 +5,21 @@
 #include <string>
 #include <cstdarg>
 #include "ErrorDefine.h"
+#include <sstream>
+#include <locale>
+#include <codecvt>
+#include <cwchar>
 
 namespace logg
 {
+
     enum level_log
     {
         NONE,
         EXCEPTION,
         WARNING,
         INFO,
-        DEBUG,
+		DEBUG,
         TRACE
     };
 
@@ -30,7 +35,6 @@ namespace logg
         bool _isLevelTrace = false;
 
         level_log msgLevel; // default is none
-        std::string functionName;
 
         std::string baseFilePathToLog = "log/log.txt";
         std::fstream fpLog;
@@ -83,22 +87,27 @@ namespace logg
 
 		std::string getLastLogDate();
 
+		std::wstring charToWString(const char* charStr);
+
+		void add_end_line_of_program();
+
         // scriere mesaj de nivel info in log
-        void info(const char* functionName, const char* format, ...);
+        void info(const wchar_t* functionName, const wchar_t* format, ...);
 
         // scriere mesaj de nivel debug in log
-        void debug(const char* functionName, const char* format, ...);
+		void debug(const wchar_t* functionName, const wchar_t* format, ...);
 
         // scriere mesaj de nivel exception in log
         void exception(
-            int lineNumber, const char* functionName, const char* format, ...);
+			int lineNumber, const wchar_t* functionName, const wchar_t* format, ...);
 
         // scriere mesaj de nivel warning in log
         int warning(
-            int warningCode, const char* functionName, const char* format, ...);
+			int warningCode, const wchar_t* functionName, const wchar_t* format, ...);
 
         // scriere mesaj de nivel trace in log
-        void trace(const char* functionName, const char* format, ...);
+		void trace(const wchar_t* functionName, const wchar_t* format, ...);
+
 
         ~LogF()
         {

@@ -47,8 +47,6 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    ExplicitWidth = 1030
-    ExplicitHeight = 354
   end
   object ConfirmButton: TButton
     Left = 490
@@ -59,8 +57,6 @@ object LoadDataForm: TLoadDataForm
     Caption = 'Confirm'#259' Ad'#259'ugarea'
     TabOrder = 3
     OnClick = ConfirmButtonClick
-    ExplicitLeft = 489
-    ExplicitTop = 400
   end
   object OpenDialog1: TOpenDialog
     Left = 592
