@@ -255,4 +255,8 @@ object MenuForm: TMenuForm
     Left = 928
     Top = 80
   end
+  object PrintDialog1: TPrintDialog
+    Left = 944
+    Top = 248
+  end
 end

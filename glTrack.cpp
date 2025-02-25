@@ -19,7 +19,7 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
-extern LogF * logger;
+extern LogF* logger;
 
 TMenuForm* MenuForm;
 TFDMemTable* FDPhysMySQLDriverLink1;
@@ -28,7 +28,7 @@ TFDMemTable* FDPhysMySQLDriverLink1;
 __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner)
 {
     logger->info(logger->charToWString(__func__).c_str(),
-		L"Inițializare constructor pentru TMenuForm.");
+        L"Inițializare constructor pentru TMenuForm.");
 }
 
 //---------------------------------------------------------------------------
@@ -37,16 +37,16 @@ __fastcall TMenuForm::~TMenuForm()
 {
     if (logger) {
         logger->info(logger->charToWString(__func__).c_str(),
-			L"Închiderea aplicației și eliberarea resurselor.");
+            L"Închiderea aplicației și eliberarea resurselor.");
         logger->add_end_line_of_program();
         delete logger;
-		logger = nullptr;
-	} else {
-		// Dacă logger-ul a fost deja șters sau nu a fost inițializat corect
-		ShowMessage(L"[WARNING] Logger inexistent in destructor.");
-	}
+        logger = nullptr;
+    } else {
+        // Dacă logger-ul a fost deja șters sau nu a fost inițializat corect
+        ShowMessage(L"[WARNING] Logger inexistent in destructor.");
+    }
 
-	delete FDPhysMySQLDriverLink1;
+    delete FDPhysMySQLDriverLink1;
 }
 
 //---------------------------------------------------------------------------
@@ -55,15 +55,15 @@ __fastcall TMenuForm::~TMenuForm()
 
 void __fastcall TMenuForm::FormCreate(TObject* Sender)
 {
-	try {
-		logger->info(logger->charToWString(__func__).c_str(),
-			L"Inițiere creare formă și conexiune la baza de date.");
+    try {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Inițiere creare formă și conexiune la baza de date.");
 
         FDConnection1->LoginPrompt = false;
         FDConnection1->Connected = true; // Conectare la baza de date
 
         logger->trace(logger->charToWString(__func__).c_str(),
-			L"Conexiunea la baza de date a fost stabilită cu succes.");
+            L"Conexiunea la baza de date a fost stabilită cu succes.");
 
         FormShow(this);
         FormResize(this);
@@ -71,19 +71,19 @@ void __fastcall TMenuForm::FormCreate(TObject* Sender)
         logger->info(logger->charToWString(__func__).c_str(),
             L"S-a creat forma cu succes.");
 
-	} catch (Exception &e) {
-		String str = e.Message.c_str();
-//        AnsiString ansiMessage = AnsiString(e.Message);
-//        std::wstring my_wstr = e.Message.c_str();
-//        std::string my_str =
-//            std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
-//                .to_bytes(my_wstr);
+    } catch (Exception &e) {
+        String str = e.Message.c_str();
+        //        AnsiString ansiMessage = AnsiString(e.Message);
+        //        std::wstring my_wstr = e.Message.c_str();
+        //        std::string my_str =
+        //            std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
+        //                .to_bytes(my_wstr);
 
         logger->exception(__LINE__, logger->charToWString(__func__).c_str(),
             L"Eroare la conectare: %s. Închidere program.", str.w_str());
 
-		ShowMessage(L"Eroare la conectare: " + e.Message);
-		Application->Terminate();
+        ShowMessage(L"Eroare la conectare: " + e.Message);
+        Application->Terminate();
     }
 }
 
@@ -153,7 +153,7 @@ void __fastcall TMenuForm::AddButtonClick(TObject* Sender)
     logger->debug(logger->charToWString(__func__).c_str(),
         L"Butonul 'Adăugare' a fost apăsat. Se creeaza fereastra de adăugare.");
 
-	AddFormG = new TAddFormG(this);
+    AddFormG = new TAddFormG(this);
 
     logger->info(logger->charToWString(__func__).c_str(),
         L"Fereastra 'Adăugare' a fost creata.");
@@ -184,21 +184,21 @@ void __fastcall TMenuForm::FormShow(TObject* Sender)
         logger->debug(logger->charToWString(__func__).c_str(),
             L"Execut interogarea SQL.");
 
-        FDQuery1->SQL->Text = "SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price "
+        FDQuery1->SQL->Text =
+            "SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price "
             "FROM product_auto_table pp "
             "JOIN vehicle_table a ON a.a_id = pp.a_id "
             "JOIN celula_table c ON c.id_celula = pp.celula_id "
-			"JOIN code_table ct ON ct.id_cod = pp.id_cod";
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod";
 
         logger->trace(logger->charToWString(__func__).c_str(),
-            L"Interogare SQL generată: %s",
-			FDQuery1->SQL->Text.w_str());
-		FDQuery1->Open();
+            L"Interogare SQL generată: %s", FDQuery1->SQL->Text.w_str());
+        FDQuery1->Open();
 
         FormResize(MenuForm);
         logger->info(logger->charToWString(__func__).c_str(),
             L"Datele au fost afișate cu succes în grid.");
-	} catch (Exception &e) {
+    } catch (Exception &e) {
         String str = e.Message.c_str();
         std::wstring my_wstr = e.Message.c_str();
         std::string my_str =
@@ -236,14 +236,15 @@ void __fastcall TMenuForm::SearchBoxChange(TObject* Sender)
         logger->debug(logger->charToWString(__func__).c_str(),
             L"Execut interogarea SQL.");
 
-		FDQuery1->SQL->Text = "SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price "
+        FDQuery1->SQL->Text =
+            "SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price "
             "FROM product_auto_table pp "
             "JOIN vehicle_table a ON a.a_id = pp.a_id "
             "JOIN celula_table c ON c.id_celula = pp.celula_id "
             "JOIN code_table ct ON ct.id_cod = pp.id_cod "
             "WHERE a.a_marca_model LIKE :searchText "
             "OR ct.cod LIKE :searchText OR pp.p_price LIKE :searchText "
-			"OR pp.p_count LIKE :searchText";
+            "OR pp.p_count LIKE :searchText";
 
         FDQuery1->ParamByName("searchText")->AsString = "%" + searchText + "%";
 
@@ -273,7 +274,7 @@ void __fastcall TMenuForm::ConfirmDialogKeyDown(
     TObject* Sender, WORD &Key, TShiftState Shift)
 {
     logger->trace(
-		logger->charToWString(__func__).c_str(), L"Tasta apasată: %d", Key);
+        logger->charToWString(__func__).c_str(), L"Tasta apasată: %d", Key);
     if (Key == VK_SPACE) {
         logger->debug(logger->charToWString(__func__).c_str(),
             L"Tasta SPACE a fost blocată.");
@@ -435,6 +436,85 @@ int __fastcall TMenuForm::ShowConfirmationDialog()
     return Result;
 }
 
+void PrintSaleReceipt(
+    String marca, String cod, String celula, double pret, int cantitate)
+{
+    Printer()->BeginDoc();
+
+    int marginLeft = 300; // Marginea din stânga
+    int marginTop = 200; // Marginea de sus
+    int colWidths[] = { 800, 1200, 1000, 800, 800 }; // Lățimi pentru coloane
+    int rowHeight = 140; // Înălțimea unui rând
+    int tableWidth = 0; // Calculăm lățimea totală a tabelului
+    for (int i = 0; i < 5; i++)
+        tableWidth += colWidths[i];
+
+    int x = marginLeft, y = marginTop;
+
+    // *** Titlul ***
+    Printer()->Canvas->Font->Size = 16;
+    Printer()->Canvas->TextOut(x + tableWidth / 3, y, L"Bon de Vânzare");
+    y += 200;
+
+    // *** Desenare tabel ***
+    Printer()->Canvas->Font->Size = 12;
+
+    // Linie orizontală superioară
+    Printer()->Canvas->MoveTo(x, y);
+    Printer()->Canvas->LineTo(x + tableWidth, y);
+
+    // *** Antet tabel ***
+    String headers[] = { L"Marcă", L"Cod Produs", L"Celulă Depozit", L"Preț",
+        L"Cantitate" };
+    for (int i = 0; i < 5; i++) {
+        Printer()->Canvas->TextOut(
+            x + 20, y + 20, headers[i]); // Scriem antetul
+        x += colWidths[i];
+
+        // Linie verticală între coloane
+        Printer()->Canvas->MoveTo(x, y);
+        Printer()->Canvas->LineTo(x, y + rowHeight);
+    }
+    y += rowHeight;
+
+    // Linie orizontală sub antet
+    x = marginLeft;
+    Printer()->Canvas->MoveTo(x, y);
+    Printer()->Canvas->LineTo(x + tableWidth, y);
+
+    // *** Date produse ***
+    for (int i = 0; i < 1; i++) { // Poți înlocui 10 cu numărul real de produse
+        String values[] = { marca, cod, celula,
+            FormatFloat(L"0.00", pret) + L" MDL", IntToStr(cantitate) };
+
+        for (int j = 0; j < 5; j++) {
+            Printer()->Canvas->TextOut(
+                x + 20, y + 20, values[j]); // Scriem datele
+            x += colWidths[j];
+
+            // Linie verticală
+            Printer()->Canvas->MoveTo(x, y);
+            Printer()->Canvas->LineTo(x, y + rowHeight);
+        }
+
+        y += rowHeight;
+
+        // Linie orizontală după fiecare rând
+        x = marginLeft;
+        Printer()->Canvas->MoveTo(x, y);
+        Printer()->Canvas->LineTo(x + tableWidth, y);
+    }
+
+    // *** Mulțumiri ***
+    y += 100;
+    Printer()->Canvas->Font->Size = 10;
+    Printer()->Canvas->TextOut(
+        x + tableWidth / 3, y, L"Mulțumim pentru achiziție!");
+
+    // *** Finalizare printare ***
+    Printer()->EndDoc();
+}
+
 void __fastcall TMenuForm::MenuItemVindeClick(TObject* Sender)
 {
     logger->info(
@@ -464,6 +544,12 @@ void __fastcall TMenuForm::MenuItemVindeClick(TObject* Sender)
         logger->debug(logger->charToWString(__func__).c_str(),
             L"Începe actualizarea bazei de date pentru ID: %d", pa_id);
 
+        String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+        String cod = FDQuery1->FieldByName("cod")->AsString;
+        String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+        double pret = FDQuery1->FieldByName("p_price")->AsFloat;
+        int cantitate = 1; // Se vinde un produs
+
         FDQuery1->Close();
         FDQuery1->SQL->Text =
             "UPDATE product_auto_table SET p_count = p_count - 1 "
@@ -471,22 +557,22 @@ void __fastcall TMenuForm::MenuItemVindeClick(TObject* Sender)
         FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
         FDQuery1->ExecSQL();
 
+        PrintSaleReceipt(marca, cod, celula, pret, cantitate); // Imprimă bonul
+
         FormShow(this);
         logger->info(logger->charToWString(__func__).c_str(),
             L"Produs vândut cu succes!");
         ShowMessage(L"Produs Vândut!");
+
     } catch (Exception &e) {
-        std::wstring my_wstr = e.Message.c_str();
-        std::string my_str =
-            std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
-                .to_bytes(my_wstr);
-		logger->warning(WARN_SQL_UPDATE,
+        String str = e.Message.c_str();
+        logger->warning(WARN_SQL_UPDATE,
             logger->charToWString(__func__).c_str(),
-            L"Eroare la actualizarea bazei de date: %s", my_str.c_str());
+            L"Eroare la actualizarea bazei de date: %s", str.w_str());
         ShowMessage(L"Eroare la vânzare: " + e.Message);
     }
 
-	logger->info(
+    logger->info(
         logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
 }
 
@@ -509,8 +595,9 @@ void __fastcall TMenuForm::MenuItemEditClick(TObject* Sender)
     logger->debug(logger->charToWString(__func__).c_str(),
         L"ID rând selectat: %d", pa_id);
 
-	logger->debug(logger->charToWString(__func__).c_str(),
+    logger->debug(logger->charToWString(__func__).c_str(),
         L"Deschiderea formei de editare pentru ID: %d", pa_id);
+
     TEditFormProduct* EditForm = new TEditFormProduct(this, FDQuery1, pa_id);
 
     if (EditForm->ShowModal() == mrOk) {
@@ -550,7 +637,7 @@ void __fastcall TMenuForm::DBGrid1DrawColumnCell(TObject* Sender,
 }
 
 //---------------------------------------------------------------------------
-
+// Forma LoadData
 void __fastcall TMenuForm::Button2Click(TObject* Sender)
 {
     logger->info(
@@ -645,9 +732,9 @@ void __fastcall TMenuForm::DBGrid1TitleClick(TColumn* Column)
             "ORDER BY " +
             columnName + " " + sortOrder;
 
-       // String search_query = FDQuery1->SQL->Text;
+        // String search_query = FDQuery1->SQL->Text;
         logger->trace(logger->charToWString(__func__).c_str(),
-			L"Interogarea SQL este: %s", FDQuery1->SQL->Text.w_str());
+            L"Interogarea SQL este: %s", FDQuery1->SQL->Text.w_str());
 
         FDQuery1->Open();
         sortAsc = !sortAsc;

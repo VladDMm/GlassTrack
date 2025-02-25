@@ -33,6 +33,8 @@
 #include <Datasnap.DBClient.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include "Log.h"
+#include <Vcl.Dialogs.hpp>
+#include <Vcl.ComCtrls.hpp>
 
 //---------------------------------------------------------------------------
 class TMenuForm : public TForm
@@ -58,6 +60,7 @@ __published:	// IDE-managed Components
 	TMemoField *FDQuery1cod;
 	TMemoField *FDQuery1nume_celula;
 	TTimer *Timer1;
+	TPrintDialog *PrintDialog1;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
 	//void __fastcall DBGrid1MouseDown(TObject *Sender, TMouseButton Button,
@@ -68,6 +71,7 @@ __published:	// IDE-managed Components
   //	void __fastcall FDQuery1AfterPost(TDataSet *DataSet);
    //	void __fastcall DBGrid1CellClick(TColumn *Column);
    //	void __fastcall FDQuery1CalcFields(TDataSet *DataSet);
+
 	void __fastcall DBGrid1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall MenuItemVindeClick(TObject *Sender);
     void __fastcall FormShow(TObject* Sender);
