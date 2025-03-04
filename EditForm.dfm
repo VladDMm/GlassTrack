@@ -121,6 +121,7 @@ object EditFormProduct: TEditFormProduct
     Top = 25
     Width = 243
     Height = 28
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -134,6 +135,7 @@ object EditFormProduct: TEditFormProduct
     Top = 67
     Width = 243
     Height = 28
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -147,20 +149,7 @@ object EditFormProduct: TEditFormProduct
     Top = 155
     Width = 243
     Height = 28
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = 20
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 2
-  end
-  object PriceEdit: TEdit
-    Left = 142
-    Top = 198
-    Width = 243
-    Height = 28
-    Anchors = [akLeft, akTop, akRight]
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -169,11 +158,14 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
     TabOrder = 3
   end
-  object CelulaEdit: TEdit
-    Left = 140
-    Top = 109
-    Width = 245
+  object PriceEdit: TEdit
+    Left = 142
+    Top = 198
+    Width = 243
     Height = 28
+    Cursor = crHandPoint
+    Anchors = [akLeft, akTop, akRight]
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -182,11 +174,26 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
     TabOrder = 4
   end
+  object CelulaEdit: TEdit
+    Left = 140
+    Top = 109
+    Width = 245
+    Height = 28
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+  end
   object ConfirmButton: TButton
     Left = 273
     Top = 285
     Width = 101
     Height = 35
+    Cursor = crHandPoint
     Anchors = [akBottom]
     Caption = 'Confirmare'
     Font.Charset = DEFAULT_CHARSET
@@ -197,13 +204,15 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
     TabOrder = 5
     OnClick = ConfirmButtonClick
-    ExplicitTop = 246
+    ExplicitLeft = 272
+    ExplicitTop = 277
   end
   object CancelButton: TButton
-    Left = 87
-    Top = 286
+    Left = 103
+    Top = 285
     Width = 91
     Height = 35
+    Cursor = crHandPoint
     Anchors = [akBottom]
     Cancel = True
     Caption = 'Anulare'
@@ -216,6 +225,5 @@ object EditFormProduct: TEditFormProduct
     TabOrder = 6
     OnClick = CancelButtonClick
     OnKeyDown = CancelButtonKeyDown
-    ExplicitTop = 278
   end
 end

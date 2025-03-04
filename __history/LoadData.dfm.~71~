@@ -47,8 +47,8 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 811
-    Top = 41
+    Left = 820
+    Top = 43
     Width = 160
     Height = 20
     Anchors = [akTop, akRight]
@@ -80,6 +80,13 @@ object LoadDataForm: TLoadDataForm
     Top = 25
     Width = 264
     Height = 23
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 1
   end
   object StringGrid1: TStringGrid
@@ -88,6 +95,8 @@ object LoadDataForm: TLoadDataForm
     Width = 1032
     Height = 330
     Anchors = [akLeft, akTop, akRight, akBottom]
+    BevelKind = bkFlat
+    BorderStyle = bsNone
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -95,16 +104,14 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    ExplicitWidth = 1030
-    ExplicitHeight = 322
   end
   object ConfirmButton: TButton
-    Left = 490
+    Left = 466
     Top = 408
-    Width = 121
+    Width = 159
     Height = 25
     Anchors = [akBottom]
-    Caption = 'Confirm'#259
+    Caption = 'Confirm'#259' Modific'#259'rile'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -113,7 +120,7 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
     TabOrder = 3
     OnClick = ConfirmButtonClick
-    ExplicitLeft = 489
+    ExplicitLeft = 465
     ExplicitTop = 400
   end
   object PrinterComboBox: TComboBox
@@ -123,13 +130,15 @@ object LoadDataForm: TLoadDataForm
     Height = 23
     Anchors = [akTop, akRight]
     TabOrder = 4
+    ExplicitLeft = 558
   end
   object CopyCountEdit: TEdit
     Left = 558
-    Top = 43
+    Top = 46
     Width = 49
-    Height = 28
+    Height = 23
     Anchors = [akTop, akRight]
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -139,7 +148,7 @@ object LoadDataForm: TLoadDataForm
     TabOrder = 5
   end
   object ChangePassButton: TButton
-    Left = 928
+    Left = 925
     Top = 8
     Width = 113
     Height = 25
@@ -153,13 +162,21 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
     TabOrder = 6
     OnClick = ChangePassButtonClick
+    ExplicitLeft = 923
   end
   object LEdit: TEdit
-    Left = 983
-    Top = 39
-    Width = 56
-    Height = 27
+    Left = 987
+    Top = 43
+    Width = 46
+    Height = 23
     Anchors = [akTop, akRight]
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 7
   end
   object OpenDialog1: TOpenDialog

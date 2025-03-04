@@ -23,7 +23,7 @@ __fastcall TEditFormProduct::TEditFormProduct(
     FDQuery1->Close();
     FDQuery1->SQL->Text =
         "SELECT pp.pa_id, a.a_marca_model, ct.cod, "
-        "c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at "
+		"c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at "
         "FROM product_auto_table pp "
         "JOIN vehicle_table a ON a.a_id = pp.a_id "
         "JOIN celula_table c ON c.id_celula = pp.celula_id "

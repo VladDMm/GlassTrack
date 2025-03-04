@@ -80,6 +80,13 @@ object LoadDataForm: TLoadDataForm
     Top = 25
     Width = 264
     Height = 23
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 1
   end
   object StringGrid1: TStringGrid
@@ -88,6 +95,10 @@ object LoadDataForm: TLoadDataForm
     Width = 1032
     Height = 330
     Anchors = [akLeft, akTop, akRight, akBottom]
+    BevelInner = bvNone
+    BevelKind = bkFlat
+    BevelOuter = bvNone
+    BorderStyle = bsNone
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -95,8 +106,6 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    ExplicitWidth = 1030
-    ExplicitHeight = 322
   end
   object ConfirmButton: TButton
     Left = 466
@@ -113,6 +122,8 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
     TabOrder = 3
     OnClick = ConfirmButtonClick
+    ExplicitLeft = 465
+    ExplicitTop = 400
   end
   object PrinterComboBox: TComboBox
     Left = 560
@@ -121,13 +132,15 @@ object LoadDataForm: TLoadDataForm
     Height = 23
     Anchors = [akTop, akRight]
     TabOrder = 4
+    ExplicitLeft = 558
   end
   object CopyCountEdit: TEdit
     Left = 558
-    Top = 43
+    Top = 46
     Width = 49
-    Height = 28
+    Height = 23
     Anchors = [akTop, akRight]
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
@@ -151,13 +164,21 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
     TabOrder = 6
     OnClick = ChangePassButtonClick
+    ExplicitLeft = 923
   end
   object LEdit: TEdit
     Left = 987
-    Top = 41
+    Top = 43
     Width = 46
-    Height = 30
+    Height = 23
     Anchors = [akTop, akRight]
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 7
   end
   object OpenDialog1: TOpenDialog

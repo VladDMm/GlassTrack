@@ -45,7 +45,7 @@ object MenuForm: TMenuForm
     PopupMenu = PopupMenu1
     ReadOnly = True
     ShowHint = False
-    TabOrder = 0
+    TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
@@ -124,6 +124,7 @@ object MenuForm: TMenuForm
     Top = 8
     Width = 120
     Height = 36
+    Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Caption = 'Adaug'#259
     Font.Charset = DEFAULT_CHARSET
@@ -132,7 +133,7 @@ object MenuForm: TMenuForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
     OnClick = AddButtonClick
     ExplicitLeft = 906
   end
@@ -141,25 +142,27 @@ object MenuForm: TMenuForm
     Top = 11
     Width = 201
     Height = 33
+    Cursor = crIBeam
     Alignment = taCenter
     Anchors = [akTop, akRight]
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = [fsItalic]
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 1
     OnChange = SearchBoxChange
     OnClick = SearchBoxClick
     OnKeyDown = SearchBoxKeyDown
-    ExplicitLeft = 674
   end
   object Button2: TButton
     Left = 8
     Top = 11
-    Width = 144
+    Width = 89
     Height = 33
+    Cursor = crHandPoint
     Caption = 'Set'#259'ri'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -167,7 +170,7 @@ object MenuForm: TMenuForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 0
     OnClick = Button2Click
   end
   object FDQuery1: TFDQuery
@@ -255,7 +258,6 @@ object MenuForm: TMenuForm
       'Password=root')
     UpdateOptions.AssignedValues = [uvAutoCommitUpdates]
     UpdateOptions.AutoCommitUpdates = True
-    Connected = True
     Left = 704
     Top = 160
   end

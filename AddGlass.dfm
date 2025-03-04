@@ -92,7 +92,7 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 0
+    TabOrder = 1
     OnExit = AutoComboBoxExit
     OnKeyPress = AutoComboBoxKeyPress
     OnSelect = AutoComboBoxSelect
@@ -102,32 +102,35 @@ object AddFormG: TAddFormG
     Top = 159
     Width = 235
     Height = 28
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 3
   end
   object PriceEdit: TEdit
     Left = 139
     Top = 207
     Width = 235
     Height = 28
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 4
   end
   object AddButton: TButton
     Left = 245
     Top = 269
     Width = 97
     Height = 33
+    Cursor = crHandPoint
     Caption = 'Adaug'#259
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -135,7 +138,7 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 5
     OnClick = AddButtonClick
   end
   object CancelButton: TButton
@@ -143,6 +146,7 @@ object AddFormG: TAddFormG
     Top = 269
     Width = 91
     Height = 33
+    Cursor = crHandPoint
     Cancel = True
     Caption = 'Anuleaz'#259
     Font.Charset = DEFAULT_CHARSET
@@ -151,7 +155,7 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 4
+    TabOrder = 6
     OnClick = CancelButtonClick
   end
   object CelulaComboBox: TComboBox
@@ -165,7 +169,7 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 5
+    TabOrder = 2
   end
   object CodComboBox: TComboBox
     Left = 139
@@ -178,7 +182,7 @@ object AddFormG: TAddFormG
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 6
+    TabOrder = 0
     OnExit = CodComboBoxExit
     OnKeyPress = CodComboBoxKeyPress
     OnSelect = CodComboBoxSelect

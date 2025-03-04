@@ -64,34 +64,39 @@ UnicodeString HashPassword(const UnicodeString &password)
 }
 //---------------------------------------------------------------------------
 
-bool VerifyOldPassword(const UnicodeString &oldPassword)
+bool __fastcall TEditFormProduct::VerifyOldPassword(
+    const UnicodeString &oldPassword)
 {
     UnicodeString hashedOldPass = HashPassword(oldPassword);
-
+    TFDQuery* newFdQuery = new TFDQuery(this);
+    newFdQuery->Connection = FDQuery1->Connection;
     try {
-        FDQuery1->SQL->Text =
+        newFdQuery->SQL->Text =
             L"SELECT COUNT(*) FROM pass_table WHERE password = :pass";
-        FDQuery1->ParamByName(L"pass")->AsString = hashedOldPass;
-        query->Open();
+        newFdQuery->ParamByName(L"pass")->AsString = hashedOldPass;
+        newFdQuery->Open();
 
-        int count = query->Fields->Fields[0]->AsInteger;
-        FDQuery1->Close();
+        int count = newFdQuery->Fields->Fields[0]->AsInteger;
+        newFdQuery->Close();
+        delete newFdQuery;
         return count > 0; // Dacă există cel puțin o parolă, este corectă
     } catch (...) {
+        delete newFdQuery;
         return false;
     }
 }
 
 //-------------------------------------------------------------------------
 
-bool __fastcall TMenuForm::ShowPasswordDialog(UnicodeString &enteredPassword)
+bool __fastcall TEditFormProduct::ShowPasswordDialog(
+    UnicodeString &enteredPassword)
 {
     TForm* PasswordDialog = new TForm(this);
     PasswordDialog->Caption = "Introdu parola";
     PasswordDialog->Position = poScreenCenter;
     PasswordDialog->BorderStyle = bsDialog;
     PasswordDialog->Width = 300;
-    PasswordDialog->Height = 160;
+    PasswordDialog->Height = 180;
 
     TLabel* Label = new TLabel(PasswordDialog);
     Label->Parent = PasswordDialog;
@@ -119,7 +124,8 @@ bool __fastcall TMenuForm::ShowPasswordDialog(UnicodeString &enteredPassword)
     CancelButton->Caption = "Anulează";
     CancelButton->ModalResult = mrCancel;
     CancelButton->Left = 150;
-    CancelButton->Top = 90;
+	CancelButton->Top = 90;
+    CancelButton->Cancel = true;
 
     PasswordDialog->KeyPreview = true;
 
@@ -153,12 +159,13 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
     }
 
     UnicodeString enteredPassword;
-    if (ShowPasswordDialog(enteredPassword)) {
-        if (!VerifyOldPassword(enteredPassword)) {
-            ShowMessage(L"Parola nu este corectă!");
-            delete newFDQuery;
-            return;
-        }
+    if (!ShowPasswordDialog(enteredPassword)) {
+        return; // Oprește execuția dacă utilizatorul a anulat
+    }
+
+    if (!VerifyOldPassword(enteredPassword)) {
+        ShowMessage(L"Parola nu este corectă!");
+        return;
     }
 
     TFDQuery* newFDQuery = new TFDQuery(

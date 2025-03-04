@@ -18,7 +18,7 @@ object MenuForm: TMenuForm
   TextHeight = 15
   object Label1: TLabel
     Left = 596
-    Top = 11
+    Top = 13
     Width = 60
     Height = 25
     Anchors = [akTop, akRight]
@@ -29,7 +29,6 @@ object MenuForm: TMenuForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    ExplicitLeft = 600
   end
   object DBGrid1: TDBGrid
     AlignWithMargins = True
@@ -37,6 +36,7 @@ object MenuForm: TMenuForm
     Top = 50
     Width = 1038
     Height = 410
+    Cursor = crSizeWE
     Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
     DataSource = DataSource1
@@ -45,7 +45,7 @@ object MenuForm: TMenuForm
     PopupMenu = PopupMenu1
     ReadOnly = True
     ShowHint = False
-    TabOrder = 0
+    TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
@@ -76,6 +76,7 @@ object MenuForm: TMenuForm
         Expanded = False
         FieldName = 'cod'
         ReadOnly = False
+        Title.Alignment = taCenter
         Title.Caption = 'Cod'
         Visible = True
       end
@@ -84,6 +85,7 @@ object MenuForm: TMenuForm
         Expanded = False
         FieldName = 'nume_celula'
         ReadOnly = False
+        Title.Alignment = taCenter
         Title.Caption = 'Celula'
         Width = 70
         Visible = True
@@ -93,6 +95,7 @@ object MenuForm: TMenuForm
         Expanded = False
         FieldName = 'p_count'
         ReadOnly = False
+        Title.Alignment = taCenter
         Title.Caption = 'Cantitatea'
         Width = 60
         Visible = True
@@ -102,6 +105,7 @@ object MenuForm: TMenuForm
         Expanded = False
         FieldName = 'p_price'
         ReadOnly = False
+        Title.Alignment = taCenter
         Title.Caption = 'Pre'#355
         Width = 80
         Visible = True
@@ -120,6 +124,7 @@ object MenuForm: TMenuForm
     Top = 8
     Width = 120
     Height = 36
+    Cursor = crHandPoint
     Anchors = [akTop, akRight]
     Caption = 'Adaug'#259
     Font.Charset = DEFAULT_CHARSET
@@ -128,7 +133,7 @@ object MenuForm: TMenuForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
     OnClick = AddButtonClick
     ExplicitLeft = 906
   end
@@ -136,26 +141,28 @@ object MenuForm: TMenuForm
     Left = 676
     Top = 11
     Width = 201
-    Height = 33
+    Height = 29
+    Cursor = crIBeam
     Alignment = taCenter
     Anchors = [akTop, akRight]
+    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = [fsItalic]
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 1
     OnChange = SearchBoxChange
     OnClick = SearchBoxClick
     OnKeyDown = SearchBoxKeyDown
-    ExplicitLeft = 674
   end
   object Button2: TButton
     Left = 8
     Top = 11
-    Width = 144
+    Width = 89
     Height = 33
+    Cursor = crHandPoint
     Caption = 'Set'#259'ri'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -163,11 +170,13 @@ object MenuForm: TMenuForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 0
     OnClick = Button2Click
   end
   object FDQuery1: TFDQuery
+    Active = True
     AutoCalcFields = False
+    Filtered = True
     CachedUpdates = True
     Connection = FDConnection1
     FormatOptions.AssignedValues = [fvSortOptions]
@@ -256,7 +265,7 @@ object MenuForm: TMenuForm
     Top = 160
   end
   object FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink
-    VendorLib = 'libmysql.dll'
+    VendorLib = 'C:\RAD Project\GlassTrack\Win32\Debug\libmysql.dll'
     Left = 840
     Top = 160
   end
