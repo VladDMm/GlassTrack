@@ -46,7 +46,9 @@ class TAddFormG : public TForm
     void __fastcall CodComboBoxSelect(TObject* Sender);
     void __fastcall AutoComboBoxKeyPress(
         TObject* Sender, System::WideChar &Key);
-    void __fastcall AutoComboBoxSelect(TObject* Sender);
+	void __fastcall AutoComboBoxSelect(TObject* Sender);
+    bool __fastcall VerifyOldPassword(const UnicodeString &oldPassword);
+    bool __fastcall ShowPasswordDialog(UnicodeString &enteredPassword);
     void __fastcall FormKeyDown(TObject* Sender, WORD &Key, TShiftState Shift);
     void __fastcall CodComboBoxExit(TObject* Sender);
     void __fastcall AutoComboBoxExit(TObject* Sender);

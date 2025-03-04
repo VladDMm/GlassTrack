@@ -2,6 +2,9 @@
 
 #include <vcl.h>
 #include <algorithm>
+
+#include <System.Hash.hpp> // Pentru SHA-256
+
 #include "set"
 #pragma hdrstop
 
@@ -24,6 +27,36 @@ void __fastcall TAddFormG::CancelButtonClick(TObject* Sender)
     this->Close();
 }
 //---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+UnicodeString HashPassword(const UnicodeString &password)
+{
+    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall TAddFormG::VerifyOldPassword(const UnicodeString &oldPassword)
+{
+    UnicodeString hashedOldPass = HashPassword(oldPassword);
+    TFDQuery* newFdQuery = new TFDQuery(this);
+    newFdQuery->Connection = FDQuery1->Connection;
+    try {
+        newFdQuery->SQL->Text =
+            L"SELECT COUNT(*) FROM pass_table WHERE password = :pass";
+        newFdQuery->ParamByName(L"pass")->AsString = hashedOldPass;
+        newFdQuery->Open();
+
+        int count = newFdQuery->Fields->Fields[0]->AsInteger;
+        newFdQuery->Close();
+        delete newFdQuery;
+        return count > 0; // Dacă există cel puțin o parolă, este corectă
+    } catch (...) {
+        delete newFdQuery;
+        return false;
+    }
+}
+//-------------------------------------------------------------------------
+
 void __fastcall TAddFormG::Initialize_Component()
 {
     logger->info(
@@ -86,6 +119,58 @@ void __fastcall TAddFormG::Initialize_Component()
 
 //-----------------------------------------------------------------------------
 
+bool __fastcall TAddFormG::ShowPasswordDialog(UnicodeString &enteredPassword)
+{
+    TForm* PasswordDialog = new TForm(this);
+    PasswordDialog->Caption = "Introdu parola";
+    PasswordDialog->Position = poScreenCenter;
+    PasswordDialog->BorderStyle = bsDialog;
+    PasswordDialog->Width = 300;
+    PasswordDialog->Height = 180;
+
+    TLabel* Label = new TLabel(PasswordDialog);
+    Label->Parent = PasswordDialog;
+    Label->Caption = L"Introduceți parola:";
+    Label->Left = 20;
+    Label->Top = 20;
+    Label->AutoSize = true;
+
+    TEdit* PasswordEdit = new TEdit(PasswordDialog);
+    PasswordEdit->Parent = PasswordDialog;
+    PasswordEdit->Left = 20;
+    PasswordEdit->Top = 50;
+    PasswordEdit->Width = 250;
+    PasswordEdit->PasswordChar = '*'; // Ascunde caracterele introduse
+
+    TButton* OkButton = new TButton(PasswordDialog);
+    OkButton->Parent = PasswordDialog;
+    OkButton->Caption = "OK";
+    OkButton->ModalResult = mrOk;
+    OkButton->Left = 50;
+    OkButton->Top = 90;
+
+    TButton* CancelButton = new TButton(PasswordDialog);
+    CancelButton->Parent = PasswordDialog;
+    CancelButton->Caption = "Anulează";
+    CancelButton->ModalResult = mrCancel;
+    CancelButton->Left = 150;
+	CancelButton->Top = 90;
+    CancelButton->Cancel = true;
+
+    PasswordDialog->KeyPreview = true;
+
+    // Afișează dialogul și verifică rezultatul
+    bool result = (PasswordDialog->ShowModal() == mrOk);
+    if (result) {
+        enteredPassword = PasswordEdit->Text.Trim();
+    }
+
+    delete PasswordDialog;
+    return result;
+}
+
+//-----------------------------------------------------------------------------
+
 // Functia butonului de adaugare ca sa inseram datele in db
 
 void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
@@ -103,6 +188,16 @@ void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
             logger->charToWString(__func__).c_str(),
             L"Nu sunt completate toate campurile!");
         ShowMessage(L"Completează toate câmpurile!");
+        return;
+    }
+
+    UnicodeString enteredPassword;
+    if (!ShowPasswordDialog(enteredPassword)) {
+        return; // Oprește execuția dacă utilizatorul a anulat
+    }
+
+    if (!VerifyOldPassword(enteredPassword)) {
+        ShowMessage(L"Parola nu este corectă!");
         return;
     }
 
@@ -238,13 +333,13 @@ void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
             FDQuery1->SQL->Text.w_str());
         FDQuery1->Open();
 
-        // Verificăm dacă există deja în baza de date
+        // Verificăm dacă produsul există deja în baza de date
         if (FDQuery1->IsEmpty()) {
             logger->info(logger->charToWString(__func__).c_str(),
                 L"Produsul nu exista, facem inserarea");
             // Dacă nu există, facem inserarea
             FDQuery1->SQL->Text =
-                "INSERT INTO product_auto_table (a_id, celula_id, id_cod, p_count, p_price) VALUES (:a_id, :celula_id, :id_cod, :p_count, :p_price)";
+                "INSERT INTO product_auto_table (a_id, celula_id, id_cod, p_count, p_price, price_updated_at, is_updated) VALUES (:a_id, :celula_id, :id_cod, :p_count, :p_price, CURRENT_TIMESTAMP, 'Actualizat')";
             logger->debug(logger->charToWString(__func__).c_str(),
                 L"Valori inainte de inserare produs."
                 " a_id: %d, celula_id: %d, id_cod: %d, p_count: %d, p_price:%d",

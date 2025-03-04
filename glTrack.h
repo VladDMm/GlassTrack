@@ -61,6 +61,8 @@ __published:	// IDE-managed Components
 	TMemoField *FDQuery1nume_celula;
 	TTimer *Timer1;
 	TPrintDialog *PrintDialog1;
+	TStringField *FDQuery1is_updated;
+	TSQLTimeStampField *FDQuery1price_updated_at;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
 	//void __fastcall DBGrid1MouseDown(TObject *Sender, TMouseButton Button,
@@ -82,9 +84,12 @@ __published:	// IDE-managed Components
 	void __fastcall SearchBoxClick(TObject *Sender);
     int __fastcall ShowConfirmationDeleteDialog();
 	int __fastcall ShowConfirmationDialog();
+    bool __fastcall ShowPasswordDialog(UnicodeString &enteredPassword);
 	void __fastcall SearchBoxKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall DBGrid1TitleClick(TColumn *Column);
 	void __fastcall Timer1Timer(TObject *Sender);
+	void __fastcall CheckPriceUpdateStatus();
+	bool __fastcall VerifyOldPassword(const UnicodeString &oldPassword);
 
 private:	// User declarations
    //	TFDPhysMySQLDriverLink *FDPhysMySQLDriverLink1;

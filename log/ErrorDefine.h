@@ -22,6 +22,7 @@
 #define WARN_NOT_FIVE_COLONS     43  // Nu sunt 5 coloane in fisier
 #define WARN_ERROR_READ_FILE     44  // Eroare la citirea fișierului
 #define WARN_FIELDS_NOT_FILLED   45  // Campuri necompletate
+#define WARN_PRODUCT_OUT_OF_STOCK 46 // Nu este produs in stoc
 
 // 50 - 60 ERRORS IN DELETE DATA
 #define WARN_DELETE_FAILED       50  // Eroare la ștergerea datelor

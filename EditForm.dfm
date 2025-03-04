@@ -3,7 +3,7 @@ object EditFormProduct: TEditFormProduct
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Editare Produs'
-  ClientHeight = 289
+  ClientHeight = 328
   ClientWidth = 455
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,7 +15,7 @@ object EditFormProduct: TEditFormProduct
   Scaled = False
   DesignSize = (
     455
-    289)
+    328)
   TextHeight = 15
   object Label1: TLabel
     Left = 60
@@ -72,7 +72,7 @@ object EditFormProduct: TEditFormProduct
   object Label6: TLabel
     Left = 62
     Top = 197
-    Width = 29
+    Width = 31
     Height = 25
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Pre'#355
@@ -82,7 +82,39 @@ object EditFormProduct: TEditFormProduct
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    ExplicitWidth = 31
+  end
+  object Label3: TLabel
+    Left = 16
+    Top = 244
+    Width = 115
+    Height = 20
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    Caption = 'Pre'#355' Actualizat La'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object DateLabel: TLabel
+    Left = 142
+    Top = 244
+    Width = 4
+    Height = 20
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
   end
   object CodEdit: TEdit
     Left = 142
@@ -126,7 +158,7 @@ object EditFormProduct: TEditFormProduct
   object PriceEdit: TEdit
     Left = 142
     Top = 198
-    Width = 235
+    Width = 243
     Height = 28
     Anchors = [akLeft, akTop, akRight]
     Font.Charset = DEFAULT_CHARSET
@@ -152,7 +184,7 @@ object EditFormProduct: TEditFormProduct
   end
   object ConfirmButton: TButton
     Left = 273
-    Top = 246
+    Top = 285
     Width = 101
     Height = 35
     Anchors = [akBottom]
@@ -165,10 +197,11 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
     TabOrder = 5
     OnClick = ConfirmButtonClick
+    ExplicitTop = 246
   end
   object CancelButton: TButton
-    Left = 71
-    Top = 246
+    Left = 87
+    Top = 286
     Width = 91
     Height = 35
     Anchors = [akBottom]
@@ -183,5 +216,6 @@ object EditFormProduct: TEditFormProduct
     TabOrder = 6
     OnClick = CancelButtonClick
     OnKeyDown = CancelButtonKeyDown
+    ExplicitTop = 278
   end
 end

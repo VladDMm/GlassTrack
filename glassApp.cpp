@@ -5,10 +5,14 @@
 #include <tchar.h>
 #include "Log.h"
 //---------------------------------------------------------------------------
-USEFORM("glTrack.cpp", MenuForm);
+#include <Vcl.Styles.hpp>
+#include <Vcl.Themes.hpp>
 USEFORM("LoadData.cpp", LoadDataForm);
+USEFORM("glTrack.cpp", MenuForm);
 USEFORM("AddGlass.cpp", AddFormG);
 USEFORM("EditForm.cpp", EditFormProduct);
+USEFORM("ChangePassForm.cpp", TChangePassForm);
+//---------------------------------------------------------------------------
 using namespace logg;
 logg::LogF *logger = new logg::LogF("log/", "log.txt", 5);
 //---------------------------------------------------------------------------
@@ -18,10 +22,12 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 	{
 		Application->Initialize();
 		Application->MainFormOnTaskBar = true;
+		TStyleManager::TrySetStyle("Aqua Light Slate");
 		Application->CreateForm(__classid(TMenuForm), &MenuForm);
 		Application->CreateForm(__classid(TAddFormG), &AddFormG);
 		Application->CreateForm(__classid(TEditFormProduct), &EditFormProduct);
 		Application->CreateForm(__classid(TLoadDataForm), &LoadDataForm);
+		Application->CreateForm(__classid(TTChangePassForm), &TChangePassForm);
 		Application->Run();
 	}
 	catch (Exception &exception)

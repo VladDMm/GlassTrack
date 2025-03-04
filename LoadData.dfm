@@ -18,27 +18,75 @@ object LoadDataForm: TLoadDataForm
     1058
     441)
   TextHeight = 15
+  object Label1: TLabel
+    Left = 456
+    Top = 8
+    Width = 86
+    Height = 20
+    Anchors = [akTop, akRight]
+    Caption = 'Alege Printer'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 456
+    Top = 46
+    Width = 84
+    Height = 20
+    Anchors = [akTop, akRight]
+    Caption = 'Num'#259'r Copii'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label3: TLabel
+    Left = 820
+    Top = 43
+    Width = 160
+    Height = 20
+    Anchors = [akTop, akRight]
+    Caption = 'Pre'#355' '#238'nvechit de la (lun'#259')'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
   object AddFileButton: TButton
     Left = 8
-    Top = 8
-    Width = 75
+    Top = 23
+    Width = 91
     Height = 25
     Caption = 'Alege Fi'#351'ier'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 0
     OnClick = AddFileButtonClick
   end
   object PathEdit: TEdit
-    Left = 96
-    Top = 8
-    Width = 289
+    Left = 113
+    Top = 25
+    Width = 264
     Height = 23
     TabOrder = 1
   end
   object StringGrid1: TStringGrid
     Left = 8
-    Top = 39
+    Top = 72
     Width = 1032
-    Height = 362
+    Height = 330
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = RUSSIAN_CHARSET
     Font.Color = clWindowText
@@ -47,19 +95,73 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 2
+    ExplicitWidth = 1030
+    ExplicitHeight = 322
   end
   object ConfirmButton: TButton
-    Left = 490
+    Left = 466
     Top = 408
-    Width = 121
+    Width = 159
     Height = 25
     Anchors = [akBottom]
-    Caption = 'Confirm'#259' Ad'#259'ugarea'
+    Caption = 'Confirm'#259' Modific'#259'rile'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
     TabOrder = 3
     OnClick = ConfirmButtonClick
   end
-  object OpenDialog1: TOpenDialog
-    Left = 592
+  object PrinterComboBox: TComboBox
+    Left = 560
     Top = 8
+    Width = 189
+    Height = 23
+    Anchors = [akTop, akRight]
+    TabOrder = 4
+  end
+  object CopyCountEdit: TEdit
+    Left = 558
+    Top = 43
+    Width = 49
+    Height = 28
+    Anchors = [akTop, akRight]
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 5
+  end
+  object ChangePassButton: TButton
+    Left = 925
+    Top = 8
+    Width = 113
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = 'Schimb'#259' Parola'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 6
+    OnClick = ChangePassButtonClick
+  end
+  object LEdit: TEdit
+    Left = 987
+    Top = 43
+    Width = 46
+    Height = 30
+    Anchors = [akTop, akRight]
+    TabOrder = 7
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 424
+    Top = 88
   end
 end

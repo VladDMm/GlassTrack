@@ -2,6 +2,8 @@
 
 #include <vcl.h>
 #include <algorithm>
+
+#include <System.Hash.hpp> // Pentru SHA-256
 #pragma hdrstop
 
 #include "glTrack.h"
@@ -19,13 +21,14 @@ __fastcall TEditFormProduct::TEditFormProduct(
     FDQuery1(query), ProductId(pa_id)
 {
     FDQuery1->Close();
-    FDQuery1->SQL->Text = "SELECT pp.pa_id, a.a_marca_model, ct.cod, "
-                          "c.nume_celula, pp.p_count, pp.p_price "
-                          "FROM product_auto_table pp "
-                          "JOIN vehicle_table a ON a.a_id = pp.a_id "
-                          "JOIN celula_table c ON c.id_celula = pp.celula_id "
-                          "JOIN code_table ct ON ct.id_cod = pp.id_cod "
-                          "WHERE pp.pa_id = :pa_id";
+    FDQuery1->SQL->Text =
+        "SELECT pp.pa_id, a.a_marca_model, ct.cod, "
+        "c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at "
+        "FROM product_auto_table pp "
+        "JOIN vehicle_table a ON a.a_id = pp.a_id "
+        "JOIN celula_table c ON c.id_celula = pp.celula_id "
+        "JOIN code_table ct ON ct.id_cod = pp.id_cod "
+        "WHERE pp.pa_id = :pa_id";
 
     FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
     FDQuery1->Open();
@@ -36,6 +39,14 @@ __fastcall TEditFormProduct::TEditFormProduct(
         CelulaEdit->Text = FDQuery1->FieldByName("nume_celula")->AsString;
         CountEdit->Text = FDQuery1->FieldByName("p_count")->AsString;
         PriceEdit->Text = FDQuery1->FieldByName("p_price")->AsString;
+        if (!FDQuery1->FieldByName("price_updated_at")->IsNull) {
+            TDateTime priceUpdateTime =
+                FDQuery1->FieldByName("price_updated_at")->AsDateTime;
+            DateLabel->Caption =
+                FormatDateTime("yyyy-mm-dd hh:nn:ss", priceUpdateTime);
+        } else {
+            DateLabel->Caption = "N/A";
+        }
     }
 }
 //---------------------------------------------------------------------------
@@ -44,8 +55,91 @@ void __fastcall TEditFormProduct::CancelButtonClick(TObject* Sender)
 {
     this->Close();
 }
+
 //---------------------------------------------------------------------------
 
+UnicodeString HashPassword(const UnicodeString &password)
+{
+    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
+}
+//---------------------------------------------------------------------------
+
+bool __fastcall TEditFormProduct::VerifyOldPassword(
+    const UnicodeString &oldPassword)
+{
+    UnicodeString hashedOldPass = HashPassword(oldPassword);
+    TFDQuery* newFdQuery = new TFDQuery(this);
+    newFdQuery->Connection = FDQuery1->Connection;
+    try {
+        newFdQuery->SQL->Text =
+            L"SELECT COUNT(*) FROM pass_table WHERE password = :pass";
+        newFdQuery->ParamByName(L"pass")->AsString = hashedOldPass;
+        newFdQuery->Open();
+
+        int count = newFdQuery->Fields->Fields[0]->AsInteger;
+        newFdQuery->Close();
+        delete newFdQuery;
+        return count > 0; // Dacă există cel puțin o parolă, este corectă
+    } catch (...) {
+        delete newFdQuery;
+        return false;
+    }
+}
+
+//-------------------------------------------------------------------------
+
+bool __fastcall TEditFormProduct::ShowPasswordDialog(
+    UnicodeString &enteredPassword)
+{
+    TForm* PasswordDialog = new TForm(this);
+    PasswordDialog->Caption = "Introdu parola";
+    PasswordDialog->Position = poScreenCenter;
+    PasswordDialog->BorderStyle = bsDialog;
+    PasswordDialog->Width = 300;
+    PasswordDialog->Height = 180;
+
+    TLabel* Label = new TLabel(PasswordDialog);
+    Label->Parent = PasswordDialog;
+    Label->Caption = L"Introduceți parola:";
+    Label->Left = 20;
+    Label->Top = 20;
+    Label->AutoSize = true;
+
+    TEdit* PasswordEdit = new TEdit(PasswordDialog);
+    PasswordEdit->Parent = PasswordDialog;
+    PasswordEdit->Left = 20;
+    PasswordEdit->Top = 50;
+    PasswordEdit->Width = 250;
+    PasswordEdit->PasswordChar = '*'; // Ascunde caracterele introduse
+
+    TButton* OkButton = new TButton(PasswordDialog);
+    OkButton->Parent = PasswordDialog;
+    OkButton->Caption = "OK";
+    OkButton->ModalResult = mrOk;
+    OkButton->Left = 50;
+    OkButton->Top = 90;
+
+    TButton* CancelButton = new TButton(PasswordDialog);
+    CancelButton->Parent = PasswordDialog;
+    CancelButton->Caption = "Anulează";
+    CancelButton->ModalResult = mrCancel;
+    CancelButton->Left = 150;
+	CancelButton->Top = 90;
+    CancelButton->Cancel = true;
+
+    PasswordDialog->KeyPreview = true;
+
+    // Afișează dialogul și verifică rezultatul
+    bool result = (PasswordDialog->ShowModal() == mrOk);
+    if (result) {
+        enteredPassword = PasswordEdit->Text.Trim();
+    }
+
+    delete PasswordDialog;
+    return result;
+}
+
+//-----------------------------------------------------------------------
 // Functia butonului de confirmare pentru a adauga datele in db
 
 void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
@@ -56,13 +150,24 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
     }
 
     if (!StrToInt(PriceEdit->Text) && StrToInt(PriceEdit->Text) != 0) {
-		ShowMessage(L"Doar Cifre!");
+        ShowMessage(L"Doar Cifre!");
         return;
     }
     if (!StrToInt(CountEdit->Text) && StrToInt(CountEdit->Text) != 0) {
-		ShowMessage(L"Doar Cifre!");
-		return;
-	}
+        ShowMessage(L"Doar Cifre!");
+        return;
+    }
+
+    UnicodeString enteredPassword;
+    if (!ShowPasswordDialog(enteredPassword)) {
+        return; // Oprește execuția dacă utilizatorul a anulat
+    }
+
+    if (!VerifyOldPassword(enteredPassword)) {
+        ShowMessage(L"Parola nu este corectă!");
+        return;
+    }
+
     TFDQuery* newFDQuery = new TFDQuery(
         this); // Creează un nou FDQuery temporar  sa nu faca conflict cu cel principal
     try {
@@ -158,9 +263,43 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
         newFDQuery->ParamByName("pa_id")->AsInteger = ProductId;
         newFDQuery->ExecSQL();
 
-        // Update product_auto_table cu pret nou sau vechi inserat
+        //		// Update product_auto_table cu pret nou sau vechi inserat
+        //        newFDQuery->SQL->Text =
+        //            "UPDATE product_auto_table SET p_count = :p_count, p_price = :price WHERE pa_id = :pa_id";
+        //        newFDQuery->ParamByName("p_count")->AsInteger =
+        //            StrToIntDef(CountEdit->Text, 0);
+        //        newFDQuery->ParamByName("price")->AsFloat =
+        //            StrToFloatDef(PriceEdit->Text, 0);
+        //        newFDQuery->ParamByName("pa_id")->AsInteger = ProductId;
+        //        newFDQuery->ExecSQL();
+
+        // Verificare dacă prețul s - a schimbat newFDQuery->Close();
         newFDQuery->SQL->Text =
-            "UPDATE product_auto_table SET p_count = :p_count, p_price = :price WHERE pa_id = :pa_id";
+            "SELECT p_price FROM product_auto_table WHERE pa_id = :pa_id";
+        newFDQuery->ParamByName("pa_id")->AsInteger = ProductId;
+        newFDQuery->Open();
+
+        bool priceChanged = false;
+        if (!newFDQuery->IsEmpty()) {
+            double currentPrice = newFDQuery->FieldByName("p_price")->AsFloat;
+            double newPrice = StrToFloatDef(PriceEdit->Text, 0);
+
+            if (currentPrice != newPrice) {
+                priceChanged = true;
+            }
+        }
+
+        newFDQuery->Close();
+
+        // Update product_auto_table cu preț nou și, dacă e necesar, actualizează price_updated_at
+        if (priceChanged) {
+            newFDQuery->SQL->Text =
+                "UPDATE product_auto_table SET p_count = :p_count, p_price = :price, price_updated_at = CURRENT_TIMESTAMP, is_updated = 'Actualizat' WHERE pa_id = :pa_id";
+        } else {
+            newFDQuery->SQL->Text =
+                "UPDATE product_auto_table SET p_count = :p_count, p_price = :price WHERE pa_id = :pa_id";
+        }
+
         newFDQuery->ParamByName("p_count")->AsInteger =
             StrToIntDef(CountEdit->Text, 0);
         newFDQuery->ParamByName("price")->AsFloat =
