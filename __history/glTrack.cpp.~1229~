@@ -33,7 +33,8 @@ TFDMemTable* FDPhysMySQLDriverLink1;
 __fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner)
 {
     logger->info(logger->charToWString(__func__).c_str(),
-        L"Inițializare constructor pentru TMenuForm.");
+		L"Inițializare constructor pentru TMenuForm.");
+
     //      UnicodeString hashedNewPass = HashPassword("administrator");
     //
     //    try {
@@ -278,23 +279,42 @@ void PrintSalesReceipt(const String &marca, const String &cod,
 
 //---------------------------------------------------------------------------
 
-// Verifica produsele unde price_updated_at este mai vechi de o luna
 void __fastcall TMenuForm::CheckPriceUpdateStatus()
 {
     try {
+        // Citește intervalul de luni din fișierul settings.cfg
+        UnicodeString settingsFile = ExtractFilePath(Application->ExeName) + L"settings.cfg";
+        TStringList* fileContent = new TStringList();
+        int monthInterval = 1; // Valoare implicită
+
+        if (FileExists(settingsFile)) {
+            fileContent->LoadFromFile(settingsFile, TEncoding::UTF8);
+            for (int i = 0; i < fileContent->Count; i++) {
+                UnicodeString line = fileContent->Strings[i];
+				if (line.Pos(L"MonthInterval=") == 1)
+				{
+                    monthInterval = StrToIntDef(line.SubString(15, line.Length() - 14), 1);
+                    break;
+                }
+            }
+        }
+        delete fileContent;
+
+        // Construiește interogarea SQL cu intervalul de luni citit
         TFDQuery* query = new TFDQuery(this);
         query->Connection = FDConnection1;
 
-        // Verifică produsele unde price_updated_at este mai vechi de o lună
         query->SQL->Text =
             "UPDATE product_auto_table "
             "SET is_updated = 'Neactualizat' "
-            "WHERE price_updated_at < DATE_SUB(NOW(), INTERVAL 1 MONTH) "
-            "AND is_updated <> 'Neactualizat'"; // Evită actualizări inutile
+            "WHERE price_updated_at < DATE_SUB(NOW(), INTERVAL :months MONTH) "
+            "AND is_updated <> 'Neactualizat'";
+
+        query->ParamByName("months")->AsInteger = monthInterval;
 
         query->ExecSQL();
-
         delete query;
+
     } catch (Exception &e) {
         String str = e.Message.c_str();
         logger->warning(WARN_SQL_UPDATE,
@@ -303,6 +323,7 @@ void __fastcall TMenuForm::CheckPriceUpdateStatus()
             L"Eroare la verificarea actualizării prețurilor: " + e.Message);
     }
 }
+
 
 //----------------------------------------------------------------------------
 
@@ -579,7 +600,7 @@ bool __fastcall TMenuForm::ShowPasswordDialog(UnicodeString &enteredPassword)
     CancelButton->Caption = "Anulează";
     CancelButton->ModalResult = mrCancel;
     CancelButton->Left = 150;
-	CancelButton->Top = 90;
+    CancelButton->Top = 90;
     CancelButton->Cancel = true;
 
     PasswordDialog->KeyPreview = true;
@@ -666,7 +687,7 @@ void __fastcall TMenuForm::DBGrid1KeyDown(
         } break;
         case VK_F9: // Vindere produs
         {
-            logger->info(logger->charToWString("VK_F2").c_str(),
+            logger->info(logger->charToWString("VK_F9").c_str(),
                 L"Butonul a fost apasat");
 
             if (!FDQuery1->Active || FDQuery1->IsEmpty()) {
@@ -698,11 +719,13 @@ void __fastcall TMenuForm::DBGrid1KeyDown(
             }
 
             UnicodeString enteredPassword;
-            if (ShowPasswordDialog(enteredPassword)) {
-                if (!VerifyOldPassword(enteredPassword)) {
-                    ShowMessage(L"Parola nu este corectă!");
-                    return;
-                }
+            if (!ShowPasswordDialog(enteredPassword)) {
+                return; // Oprește execuția dacă utilizatorul a anulat
+            }
+
+            if (!VerifyOldPassword(enteredPassword)) {
+                ShowMessage(L"Parola nu este corectă!");
+                return;
             }
 
             int Result = ShowConfirmationDialog();
@@ -970,38 +993,38 @@ void __fastcall TMenuForm::MenuItemEditClick(TObject* Sender)
     TEditFormProduct* EditForm = new TEditFormProduct(this, FDQuery1, pa_id);
 
     if (EditForm->ShowModal() == mrOk) {
-        logger->info(logger->charToWString(__func__).c_str(),
-            L"Editare confirmată, reafișare date.");
-        FormShow(this);
-    }
+		logger->info(logger->charToWString(__func__).c_str(),
+			L"Editare confirmată, reafișare date.");
+		FormShow(this);
+	}
 
-    delete EditForm;
-    FormShow(this);
+	delete EditForm;
+	FormShow(this);
 
-    logger->trace(
-        logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
+	logger->trace(
+		logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
 }
 
 //---------------------------------------------------------------------------
 
 // Functie de colorare a continutului daca cantitatea este pe 0
 void __fastcall TMenuForm::DBGrid1DrawColumnCell(TObject* Sender,
-    const TRect &Rect, int DataCol, TColumn* Column, TGridDrawState State)
+	const TRect &Rect, int DataCol, TColumn* Column, TGridDrawState State)
 {
-    int p_count =
-        DBGrid1->DataSource->DataSet->FieldByName("p_count")->AsInteger;
-    bool isSelected = (State.Contains(gdSelected));
+	int p_count =
+		DBGrid1->DataSource->DataSet->FieldByName("p_count")->AsInteger;
+	bool isSelected = (State.Contains(gdSelected));
 
-    if (p_count == 0 && !isSelected) {
-        DBGrid1->Canvas->Brush->Color =
-            clInfoBk; // Fundal pentru produse epuizate
-        DBGrid1->Canvas->Font->Color = clInactiveCaptionText; // Text alb
-        DBGrid1->Canvas->FillRect(Rect);
-    }
+	if (p_count == 0 && !isSelected) {
+		DBGrid1->Canvas->Brush->Color =
+			clInfoBk; // Fundal pentru produse epuizate
+		DBGrid1->Canvas->Font->Color = clInactiveCaptionText; // Text alb
+		DBGrid1->Canvas->FillRect(Rect);
+	}
 
-    if (!isSelected || p_count != 0) {
-        DBGrid1->DefaultDrawColumnCell(Rect, DataCol, Column, State);
-    }
+	if (!isSelected || p_count != 0) {
+		DBGrid1->DefaultDrawColumnCell(Rect, DataCol, Column, State);
+	}
 }
 
 //---------------------------------------------------------------------------

@@ -155,6 +155,7 @@ object MenuForm: TMenuForm
     OnChange = SearchBoxChange
     OnClick = SearchBoxClick
     OnKeyDown = SearchBoxKeyDown
+    ExplicitLeft = 674
   end
   object Button2: TButton
     Left = 8
@@ -251,11 +252,11 @@ object MenuForm: TMenuForm
     Params.Strings = (
       'DriverID=MySQL'
       'Database=glasstrack_db'
-      'Server=127.0.0.1'
+      'Server=95.65.99.175'
       'User_Name=root'
       'Port=3306'
       'CharacterSet=cp1251'
-      'Password=root')
+      'Password=Halley2025!')
     UpdateOptions.AssignedValues = [uvAutoCommitUpdates]
     UpdateOptions.AutoCommitUpdates = True
     Left = 704

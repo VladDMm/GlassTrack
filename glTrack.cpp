@@ -203,7 +203,7 @@ void PrintSalesReceipt(const String &marca, const String &cod,
     Prntr->Copies = numCopies;
     Prntr->BeginDoc();
 
-    //    Prntr->Title = "Bon de Vânzare";
+    //  Prntr->Title = "Bon de Vânzare";
     //	Prntr->Copies = numCopies;
     //	Prntr->BeginDoc();
 
@@ -1157,7 +1157,6 @@ void __fastcall TMenuForm::Timer1Timer(TObject* Sender)
 {
     logger->trace(
         logger->charToWString(__func__).c_str(), L"Funcția a fost apelată");
-
     try {
         logger->info(logger->charToWString(__func__).c_str(),
             L"Se încearca reconectarea la baza de date...");

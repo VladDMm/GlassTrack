@@ -18,7 +18,7 @@ object MenuForm: TMenuForm
   TextHeight = 15
   object Label1: TLabel
     Left = 596
-    Top = 11
+    Top = 13
     Width = 60
     Height = 25
     Anchors = [akTop, akRight]
@@ -29,7 +29,6 @@ object MenuForm: TMenuForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    ExplicitLeft = 600
   end
   object DBGrid1: TDBGrid
     AlignWithMargins = True
@@ -45,7 +44,7 @@ object MenuForm: TMenuForm
     PopupMenu = PopupMenu1
     ReadOnly = True
     ShowHint = False
-    TabOrder = 2
+    TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
@@ -133,7 +132,7 @@ object MenuForm: TMenuForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 2
     OnClick = AddButtonClick
     ExplicitLeft = 906
   end
@@ -141,7 +140,7 @@ object MenuForm: TMenuForm
     Left = 676
     Top = 11
     Width = 201
-    Height = 33
+    Height = 29
     Cursor = crIBeam
     Alignment = taCenter
     Anchors = [akTop, akRight]
@@ -175,6 +174,7 @@ object MenuForm: TMenuForm
   end
   object FDQuery1: TFDQuery
     AutoCalcFields = False
+    Filtered = True
     CachedUpdates = True
     Connection = FDConnection1
     FormatOptions.AssignedValues = [fvSortOptions]

@@ -105,7 +105,7 @@ object AddFormG: TAddFormG
     BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 20
+    Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -119,7 +119,7 @@ object AddFormG: TAddFormG
     BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 20
+    Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False

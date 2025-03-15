@@ -84,8 +84,8 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
   end
   object Label3: TLabel
-    Left = 16
-    Top = 244
+    Left = 9
+    Top = 248
     Width = 115
     Height = 20
     Margins.Left = 4
@@ -103,15 +103,15 @@ object EditFormProduct: TEditFormProduct
   object DateLabel: TLabel
     Left = 142
     Top = 244
-    Width = 4
-    Height = 20
+    Width = 5
+    Height = 25
     Margins.Left = 4
     Margins.Top = 4
     Margins.Right = 4
     Margins.Bottom = 4
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 20
+    Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -124,7 +124,7 @@ object EditFormProduct: TEditFormProduct
     BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 20
+    Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -138,7 +138,7 @@ object EditFormProduct: TEditFormProduct
     BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 20
+    Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -152,7 +152,7 @@ object EditFormProduct: TEditFormProduct
     BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 20
+    Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -163,12 +163,12 @@ object EditFormProduct: TEditFormProduct
     Top = 198
     Width = 243
     Height = 28
-    Cursor = crHandPoint
+    Cursor = crIBeam
     Anchors = [akLeft, akTop, akRight]
     BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 20
+    Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -182,7 +182,7 @@ object EditFormProduct: TEditFormProduct
     BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 20
+    Font.Height = 25
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -204,8 +204,6 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
     TabOrder = 5
     OnClick = ConfirmButtonClick
-    ExplicitLeft = 272
-    ExplicitTop = 277
   end
   object CancelButton: TButton
     Left = 103

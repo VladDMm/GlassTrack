@@ -22,7 +22,7 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 	{
 		Application->Initialize();
 		Application->MainFormOnTaskBar = true;
-		TStyleManager::TrySetStyle("Aqua Light Slate");
+		TStyleManager::TrySetStyle("Smokey Quartz Kamri");
 		Application->CreateForm(__classid(TMenuForm), &MenuForm);
 		Application->CreateForm(__classid(TAddFormG), &AddFormG);
 		Application->CreateForm(__classid(TEditFormProduct), &EditFormProduct);
