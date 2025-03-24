@@ -1,0 +1,1197 @@
+﻿#include <vcl.h>
+#pragma hdrstop
+
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Phys.MySQL.hpp>
+
+#include <FireDAC.Phys.MySQL.hpp>
+#include <FireDAC.Phys.MySQLDef.hpp>
+#include <Vcl.Controls.hpp>
+
+
+#include "algorithm"
+
+#include "glTrack.h"
+#include "AddGlass.h"
+#include "EditForm.h"
+#include "LoadData.h"
+#include <ustring.h>
+#include <Printers.hpp>
+#include <vector>
+#include <sstream>
+#include <string>
+
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+extern LogF*
+    logger; // variabila externa pentru adaugarea informatiilor in logger
+
+TMenuForm* MenuForm;
+TFDMemTable* FDPhysMySQLDriverLink1;
+
+__fastcall TMenuForm::TMenuForm(TComponent* Owner) : TForm(Owner)
+{
+    logger->info(logger->charToWString(__func__).c_str(),
+		L"Inițializare constructor pentru TMenuForm.");
+
+    //      UnicodeString hashedNewPass = HashPassword("administrator");
+    //
+    //    try {
+    //		FDQuery1->SQL->Text = L"UPDATE pass_table SET password = :newPass WHERE pass_id = 1";
+    //		FDQuery1->ParamByName(L"newPass")->AsString = hashedNewPass;
+    //		FDQuery1->ExecSQL();
+    //	}catch(...)
+    //	{
+    //		throw Exception(L"Eroare la actualizarea parolei!");
+    //    }
+}
+
+//---------------------------------------------------------------------------
+
+__fastcall TMenuForm::~TMenuForm()
+{
+    if (logger) {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Închiderea aplicației și eliberarea resurselor.");
+        logger->add_end_line_of_program();
+        delete logger;
+        logger = nullptr;
+    } else {
+        // Dacă logger-ul a fost deja șters sau nu a fost inițializat corect
+        ShowMessage(L"[WARNING] Logger inexistent in destructor.");
+    }
+
+    delete FDPhysMySQLDriverLink1;
+}
+
+//---------------------------------------------------------------------------
+
+// Crearea Formei Principale cu afisarea datelor
+void __fastcall TMenuForm::FormCreate(TObject* Sender)
+{
+    try {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Inițiere creare formă și conexiune la baza de date.");
+
+        FDConnection1->LoginPrompt = false;
+        FDConnection1->Connected = true; // Conectare la baza de date
+
+		logger->trace(logger->charToWString(__func__).c_str(),
+			L"Conexiunea la baza de date a fost stabilită cu succes.");
+        CheckPriceUpdateStatus(); // verificare daca actualizarea pretului se incadreaza intr-o luna
+        FormShow(this);
+        FormResize(this);
+
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"S-a creat forma cu succes.");
+
+    } catch (Exception &e) {
+        String str = e.Message.c_str();
+        logger->exception(__LINE__, logger->charToWString(__func__).c_str(),
+            L"Eroare la conectare: %s. Închidere program.", str.w_str());
+
+        ShowMessage(L"Eroare la conectare: " + e.Message);
+        Application->Terminate();
+    }
+}
+
+//---------------------------------------------------------------------------
+UnicodeString HashPassword(const UnicodeString &password)
+{
+    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
+}
+//---------------------------------------------------------------------------
+bool __fastcall TMenuForm::VerifyOldPassword(const UnicodeString &oldPassword)
+{
+	logger->info(logger->charToWString(__func__).c_str(),
+			L"Verificare corectitudine parolă.");
+	UnicodeString hashedOldPass = HashPassword(oldPassword);
+    TFDQuery* newFdQuery = new TFDQuery(this);
+    newFdQuery->Connection = FDQuery1->Connection;
+    try {
+		newFdQuery->SQL->Text =
+            L"SELECT COUNT(*) FROM pass_table WHERE password = :pass";
+        newFdQuery->ParamByName(L"pass")->AsString = hashedOldPass;
+		newFdQuery->Open();
+
+		logger->debug(logger->charToWString(__func__).c_str(),L"Valoare parola: %s", oldPassword.c_str());
+		logger->trace(logger->charToWString(__func__).c_str(),
+			L"Interogarea SQL generata %s", newFdQuery->SQL->Text.w_str());
+
+		int count = newFdQuery->Fields->Fields[0]->AsInteger;
+        newFdQuery->Close();
+		delete newFdQuery;
+		logger->info(logger->charToWString(__func__).c_str(), L"Parola corecta? (>0 corecta): %d", count);
+        return count > 0; // Dacă există cel puțin o parolă, este corectă
+    } catch (...) {
+		delete newFdQuery;
+        logger->warning(UNDEFINED_WARN, logger->charToWString(__func__).c_str(), L"Eroare necunoscuta");
+        return false;
+    }
+}
+//-------------------------------------------------------------------------
+
+// Verifică dacă imprimanta există
+bool PrinterExists(const String &printerName)
+{
+    for (int i = 0; i < Printer()->Printers->Count; i++) {
+        if (Printer()->Printers->Strings[i] == printerName)
+            return true;
+    }
+    return false;
+}
+
+//--------------------------------------------------------------------------
+
+// Citire setari pentru printer din fisier
+void ReadPrinterSettingsFromCFG(
+    const String &filePath, String &printerName, int &numCopies)
+{
+	logger->info(logger->charToWString(__func__).c_str(), L"Functie apelata");
+
+    TStringList* fileContent = new TStringList();
+
+    try {
+        fileContent->LoadFromFile(filePath, TEncoding::UTF8);
+
+        if (fileContent->Count == 0) {
+            throw Exception(L"Fișierul de configurare este gol!");
+        }
+
+        for (int i = 0; i < fileContent->Count; i++) {
+            String line = fileContent->Strings[i].Trim();
+
+            if (line.Pos(L"Printer=") == 1) {
+                printerName = line.SubString(9, line.Length() - 8).Trim();
+            } else if (line.Pos(L"Copies=") == 1) {
+                numCopies =
+                    line.SubString(8, line.Length() - 7).Trim().ToIntDef(1);
+            }
+        }
+
+        if (printerName.IsEmpty()) {
+            throw Exception(L"Nu s-a găsit setarea pentru imprimantă!");
+        }
+
+    } catch (const Exception &e) {
+        ShowMessage(L"Eroare la citirea setărilor imprimantei: " + e.Message);
+        printerName = "";
+        numCopies = 1; // Valoare implicită
+    }
+
+	delete fileContent;
+	logger->info(logger->charToWString(__func__).c_str(), L"Functie incheiata");
+}
+
+//--------------------------------------------------------------------------
+
+// Functie pentru tiparirea bonului
+void PrintSalesReceipt(const String &marca, const String &cod,
+    const String &celula, double pret, int cantitate)
+{
+	logger->info(logger->charToWString(__func__).c_str(), L"Functie apelata");
+    TPrinter* Prntr = Printer();
+    String printerName;
+    int numCopies = 1;
+
+    // Citește setările imprimantei din CSV
+    ReadPrinterSettingsFromCFG("settings.cfg", printerName, numCopies);
+
+	if (!PrinterExists(printerName)) {
+        ShowMessage(L"Imprimanta " + printerName + " nu este disponibilă!");
+        return;
+    }
+    // Setează imprimanta selectată
+    //    for (int i = 0; i < Prntr->Printers->Count; i++) {
+    //		if (Prntr->Printers->Strings[i] == printerName) {
+    //			Prntr->PrinterIndex = i;
+    //			break;
+    //		}
+    //	}
+    // Selectăm imprimanta corectă
+	Prntr->PrinterIndex = Prntr->Printers->IndexOf(printerName);
+    Prntr->Title = "Bon de Vânzare";
+    Prntr->Copies = numCopies;
+    Prntr->BeginDoc();
+
+    //  Prntr->Title = "Bon de Vânzare";
+    //	Prntr->Copies = numCopies;
+    //	Prntr->BeginDoc();
+
+    if (Prntr->Printing) {
+        int marginLeft = 300, marginTop = 200;
+        int colWidths[] = { 1300, 1000, 800, 800, 800 };
+        int rowHeight = 140;
+        int tableWidth = 0;
+
+        for (int i = 0; i < 5; i++)
+            tableWidth += colWidths[i];
+
+        int x = marginLeft, y = marginTop;
+
+        // *** Titlul ***
+        Prntr->Canvas->Font->Size = 16;
+        Prntr->Canvas->TextOut(x + tableWidth / 3, y, L"Bon de Vânzare");
+        y += 200;
+
+        // *** Desenare tabel ***
+        Prntr->Canvas->Font->Size = 12;
+
+        // Linie orizontală superioară
+        Prntr->Canvas->MoveTo(x, y);
+        Prntr->Canvas->LineTo(x + tableWidth, y);
+
+        // *** Antet tabel ***
+        String headers[] = { L"Marcă", L"Cod Produs", L"Celulă Depozit",
+            L"Preț", L"Cantitate" };
+        for (int i = 0; i < 5; i++) {
+            Prntr->Canvas->TextOut(x + 20, y + 20, headers[i]);
+            x += colWidths[i];
+
+            // Linie verticală între coloane
+            Prntr->Canvas->MoveTo(x, y);
+            Prntr->Canvas->LineTo(x, y + rowHeight);
+        }
+        y += rowHeight;
+
+        // Linie orizontală sub antet
+        x = marginLeft;
+        Prntr->Canvas->MoveTo(x, y);
+        Prntr->Canvas->LineTo(x + tableWidth, y);
+
+        // *** Date produse ***
+        String values[] = { marca, cod, celula,
+            FormatFloat(L"0.00", pret) + L" MDL", IntToStr(cantitate) };
+        for (int j = 0; j < 5; j++) {
+            Prntr->Canvas->TextOut(x + 20, y + 20, values[j]);
+            x += colWidths[j];
+
+            // Linie verticală
+            Prntr->Canvas->MoveTo(x, y);
+            Prntr->Canvas->LineTo(x, y + rowHeight);
+        }
+
+        y += rowHeight;
+
+        // Linie orizontală după rând
+        x = marginLeft;
+        Prntr->Canvas->MoveTo(x, y);
+        Prntr->Canvas->LineTo(x + tableWidth, y);
+
+        // *** Mulțumiri ***
+        y += 100;
+        Prntr->Canvas->Font->Size = 10;
+        Prntr->Canvas->TextOut(
+            x + tableWidth / 3, y, L"Mulțumim pentru achiziție!");
+
+		Prntr->EndDoc();
+		logger->info(logger->charToWString(__func__).c_str(), L"Functie incheiata");
+    }
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TMenuForm::CheckPriceUpdateStatus()
+{
+	try {
+		logger->info(logger->charToWString(__func__).c_str(), L"Functie apelata");
+        // Citește intervalul de luni din fișierul settings.cfg
+        UnicodeString settingsFile = ExtractFilePath(Application->ExeName) + L"settings.cfg";
+        TStringList* fileContent = new TStringList();
+        int monthInterval = 1; // Valoare implicită
+
+        if (FileExists(settingsFile)) {
+            fileContent->LoadFromFile(settingsFile, TEncoding::UTF8);
+            for (int i = 0; i < fileContent->Count; i++) {
+                UnicodeString line = fileContent->Strings[i];
+				if (line.Pos(L"MonthInterval=") == 1)
+				{
+                    monthInterval = StrToIntDef(line.SubString(15, line.Length() - 14), 1);
+                    break;
+                }
+            }
+        }
+        delete fileContent;
+
+        // Construiește interogarea SQL cu intervalul de luni citit
+        TFDQuery* query = new TFDQuery(this);
+        query->Connection = FDConnection1;
+
+        query->SQL->Text =
+            "UPDATE product_auto_table "
+            "SET is_updated = 'Neactualizat' "
+            "WHERE price_updated_at < DATE_SUB(NOW(), INTERVAL :months MONTH) "
+            "AND is_updated <> 'Neactualizat'";
+
+        query->ParamByName("months")->AsInteger = monthInterval;
+
+        query->ExecSQL();
+        delete query;
+		logger->info(logger->charToWString(__func__).c_str(), L"Functie incheiata");
+    } catch (Exception &e) {
+        String str = e.Message.c_str();
+        logger->warning(WARN_SQL_UPDATE,
+            L"Eroare la verificarea actualizării prețurilor: %s", str.c_str());
+        ShowMessage(
+            L"Eroare la verificarea actualizării prețurilor: " + e.Message);
+    }
+}
+
+
+//----------------------------------------------------------------------------
+
+// Eveniment pentru redimensionarea formei
+void __fastcall TMenuForm::FormResize(TObject* Sender)
+{
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Apel funcție pentru redimensionare formă.");
+
+    DBGrid1->AlignWithMargins = true; // Activăm alinierea cu margini
+
+    int gridWidth = DBGrid1->ClientWidth; // Lățimea disponibilă
+    int colCount = DBGrid1->Columns->Count; // Numărul total de coloane
+
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Lațime grid: %d, Număr coloane: %d", gridWidth, colCount);
+
+    if (colCount <= 1) // Dacă există doar ID-ul sau nicio coloană, ieșim
+    {
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Număr insuficient de coloane (%d). Ieșire funcție.", colCount);
+        return;
+    }
+
+    int totalMargin =
+        DBGrid1->Margins->Left + DBGrid1->Margins->Right; // Marginea totală
+    int effectiveWidth =
+        gridWidth - totalMargin - 10; // Scădem 10 pixeli pentru ajustare
+
+    int visibleCols = colCount - 1; // Excludem coloana ID
+    int baseColWidth = effectiveWidth / visibleCols;
+    int remainingWidth = effectiveWidth % visibleCols;
+
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Lațime efectivă: %d, Lațime coloană: %d, Pixeli rămași: %d",
+        effectiveWidth, baseColWidth, remainingWidth);
+
+    for (int i = 0; i < colCount; i++) {
+        if (DBGrid1->Columns->Items[i]->FieldName == "id") {
+            DBGrid1->Columns->Items[i]->Width = 0; // Ascundem ID-ul
+            logger->trace(logger->charToWString(__func__).c_str(),
+                L"Coloana 'id' ascunsă.");
+        } else {
+            DBGrid1->Columns->Items[i]->Width =
+                baseColWidth - 1; // Reducem cu 1 pixel fiecare coloană
+        }
+    }
+
+    // Distribuim pixelii rămași pentru a evita marginile goale
+    for (int i = 0; i < remainingWidth; i++) {
+        DBGrid1->Columns->Items[i % visibleCols]->Width += 1;
+    }
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Redimensionarea grilei a fost finalizată.");
+}
+
+//---------------------------------------------------------------------------
+
+// Deschiderea formei pentru Adaugare Produs
+void __fastcall TMenuForm::AddButtonClick(TObject* Sender)
+{
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Butonul 'Adăugare' a fost apăsat. Se creeaza fereastra de adăugare.");
+
+    AddFormG = new TAddFormG(this);
+
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Fereastra 'Adăugare' a fost creata.");
+
+    AddFormG->ShowModal();
+
+    delete AddFormG;
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Fereastra 'Adăugare' a fost distrusă.");
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Se reîncarcă datele în grid.");
+    FormShow(this);
+}
+
+//---------------------------------------------------------------------------
+
+// Functie pentru a adauga datele din baza de date in DBGrid
+void __fastcall TMenuForm::FormShow(TObject* Sender)
+{
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Funcția a fost apelată.");
+
+    try {
+        FDQuery1->Close();
+
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Execut interogarea SQL.");
+
+        FDQuery1->SQL->Text =
+            "SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at "
+            "FROM product_auto_table pp "
+            "JOIN vehicle_table a ON a.a_id = pp.a_id "
+            "JOIN celula_table c ON c.id_celula = pp.celula_id "
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod";
+
+        logger->trace(logger->charToWString(__func__).c_str(),
+            L"Interogare SQL generată: %s", FDQuery1->SQL->Text.w_str());
+        FDQuery1->Open();
+
+        FormResize(MenuForm);
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Datele au fost afișate cu succes în grid.");
+    } catch (Exception &e) {
+        String str = e.Message.c_str();
+        std::wstring my_wstr = e.Message.c_str();
+        std::string my_str =
+            std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
+                .to_bytes(my_wstr);
+
+        logger->warning(WARN_DATA_LOAD_FAIL,
+            logger->charToWString(__func__).c_str(),
+            L"Eroare CRITICĂ la încarcarea datelor: %s", str.w_str());
+        ShowMessage(L"Eroare CRITICA la incarcarea datelor: " + e.Message);
+    }
+}
+
+//---------------------------------------------------------------------------
+
+// Functie pentru afisarea rezultatelor cautate in SearchBox
+void __fastcall TMenuForm::SearchBoxChange(TObject* Sender)
+{
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Funcția de căutare a fost apelată.");
+
+    String searchText = SearchBox->Text.Trim();
+    std::wstring my_wstr = searchText.c_str();
+    std::string my_str =
+        std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
+            .to_bytes(my_wstr);
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Valoarea searchText: %s", my_str.c_str());
+
+    try {
+        FDQuery1->Close();
+
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Execut interogarea SQL.");
+
+        FDQuery1->SQL->Text =
+            "SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at "
+            "FROM product_auto_table pp "
+            "JOIN vehicle_table a ON a.a_id = pp.a_id "
+            "JOIN celula_table c ON c.id_celula = pp.celula_id "
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod "
+            "WHERE a.a_marca_model LIKE :searchText "
+            "OR ct.cod LIKE :searchText OR pp.p_price LIKE :searchText "
+            "OR pp.p_count LIKE :searchText";
+
+        FDQuery1->ParamByName("searchText")->AsString = "%" + searchText + "%";
+
+        logger->trace(logger->charToWString(__func__).c_str(),
+            L"Interogare SQL generată: %s", FDQuery1->SQL->Text.w_str());
+        FDQuery1->Open();
+
+        FormResize(this);
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Căutarea s-a finalizat cu succes.");
+    } catch (Exception &e) {
+        std::wstring my_wstr = e.Message.c_str();
+        std::string my_str =
+            std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
+                .to_bytes(my_wstr);
+
+        logger->warning(WARN_SQL_SEARCH,
+            logger->charToWString(__func__).c_str(),
+            L"Eroare la căutarea datelor: %s", my_str.c_str());
+        ShowMessage(L"Eroare la afişarea datelor din cautare: " + e.Message);
+    }
+}
+
+//---------------------------------------------------------------------------
+
+// Eveniment care blocheaza tasta space ca sa evite confirmarea in situatii neprevazute
+void __fastcall TMenuForm::ConfirmDialogKeyDown(
+    TObject* Sender, WORD &Key, TShiftState Shift)
+{
+    logger->trace(
+        logger->charToWString(__func__).c_str(), L"Tasta apasată: %d", Key);
+    if (Key == VK_SPACE) {
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Tasta SPACE a fost blocată.");
+        Key = 0;
+    }
+}
+
+//---------------------------------------------------------------------------
+
+// Afisarea dialogului de confirmare la stergerea produsului
+int __fastcall TMenuForm::ShowConfirmationDeleteDialog()
+{
+    TForm* ConfirmDialog = new TForm(this);
+    ConfirmDialog->Caption = "Confirmare";
+    ConfirmDialog->Position = poScreenCenter;
+    ConfirmDialog->BorderStyle = bsDialog;
+    ConfirmDialog->Width = 300;
+    ConfirmDialog->Height = 150;
+
+    TLabel* Label = new TLabel(ConfirmDialog);
+    Label->Parent = ConfirmDialog;
+    Label->Caption = L"Doreşti să ştergi produsul?";
+    Label->Left = 50;
+    Label->Top = 30;
+    Label->AutoSize = true;
+
+    TButton* YesButton = new TButton(ConfirmDialog);
+    YesButton->Parent = ConfirmDialog;
+    YesButton->Caption = "Da";
+    YesButton->ModalResult = mrYes;
+    YesButton->Left = 50;
+    YesButton->Top = 70;
+
+    TButton* NoButton = new TButton(ConfirmDialog);
+    NoButton->Parent = ConfirmDialog;
+    NoButton->Caption = "Nu";
+    NoButton->ModalResult = mrNo;
+    NoButton->Left = 150;
+    NoButton->Top = 70;
+    NoButton->Cancel = true;
+    NoButton->TabStop = true;
+
+    // Permite procesarea tastelor înainte de controalele din fereastră
+    ConfirmDialog->KeyPreview = true;
+
+    // Asociază metoda ConfirmDialogKeyDown
+    ConfirmDialog->OnKeyDown = ConfirmDialogKeyDown;
+
+    int Result = ConfirmDialog->ShowModal();
+    delete ConfirmDialog;
+    return Result;
+}
+
+//--------------------------------------------------------------------------
+
+bool __fastcall TMenuForm::ShowPasswordDialog(UnicodeString &enteredPassword)
+{
+    TForm* PasswordDialog = new TForm(this);
+    PasswordDialog->Caption = "Introdu parola";
+    PasswordDialog->Position = poScreenCenter;
+    PasswordDialog->BorderStyle = bsDialog;
+    PasswordDialog->Width = 300;
+    PasswordDialog->Height = 180;
+
+    TLabel* Label = new TLabel(PasswordDialog);
+    Label->Parent = PasswordDialog;
+    Label->Caption = L"Introduceți parola:";
+    Label->Left = 20;
+    Label->Top = 20;
+    Label->AutoSize = true;
+
+    TEdit* PasswordEdit = new TEdit(PasswordDialog);
+    PasswordEdit->Parent = PasswordDialog;
+    PasswordEdit->Left = 20;
+    PasswordEdit->Top = 50;
+    PasswordEdit->Width = 250;
+    PasswordEdit->PasswordChar = '*'; // Ascunde caracterele introduse
+
+    TButton* OkButton = new TButton(PasswordDialog);
+    OkButton->Parent = PasswordDialog;
+    OkButton->Caption = "OK";
+    OkButton->ModalResult = mrOk;
+    OkButton->Left = 50;
+    OkButton->Top = 90;
+
+    TButton* CancelButton = new TButton(PasswordDialog);
+    CancelButton->Parent = PasswordDialog;
+    CancelButton->Caption = "Anulează";
+    CancelButton->ModalResult = mrCancel;
+    CancelButton->Left = 150;
+    CancelButton->Top = 90;
+    CancelButton->Cancel = true;
+
+    PasswordDialog->KeyPreview = true;
+
+    // Afișează dialogul și verifică rezultatul
+    bool result = (PasswordDialog->ShowModal() == mrOk);
+    if (result) {
+        enteredPassword = PasswordEdit->Text.Trim();
+    }
+
+    delete PasswordDialog;
+    return result;
+}
+
+//--------------------------------------------------------------------------
+// Eveniment declansat in dbgrid la apasarea cu tastele F2, F3, F9, Delete
+void __fastcall TMenuForm::DBGrid1KeyDown(
+    TObject* Sender, WORD &Key, TShiftState Shift)
+{
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția a fost apelată");
+
+    switch (Key) {
+        case VK_DELETE: // Stergere Produs
+        {
+            logger->info(logger->charToWString("VK_DELETE").c_str(),
+                L"Butonul a fost apasat");
+
+            if (FDQuery1->RecordCount == 0) {
+                logger->warning(WARN_NO_SELECTED_ROW,
+                    logger->charToWString(__func__).c_str(),
+                    L"Nu există rând selectat!");
+                ShowMessage(L"Nu există rând selectat!");
+                return;
+            }
+
+            UnicodeString enteredPassword;
+            if (ShowPasswordDialog(enteredPassword)) {
+                if (!VerifyOldPassword(enteredPassword)) {
+                    ShowMessage(L"Parola nu este corectă!");
+                    return;
+                }
+            }
+
+            int Result = ShowConfirmationDeleteDialog();
+            if (Result != mrYes) { // Acceptă doar mrYes pentru ștergere
+                logger->info(logger->charToWString(__func__).c_str(),
+                    L"Ștergerea a fost anulată de utilizator.");
+                return;
+            }
+
+            try {
+                int pa_id = FDQuery1->FieldByName("pa_id")
+                                ->AsInteger; // ID-ul rândului selectat
+                logger->debug(logger->charToWString(__func__).c_str(),
+                    L"ID rând selectat pentru ștergere: %d", pa_id);
+
+                logger->info(logger->charToWString(__func__).c_str(),
+                    L"Începe ștergerea produsului ID: %d", pa_id);
+
+                FDQuery1->Close();
+                FDQuery1->SQL->Text =
+                    "DELETE FROM product_auto_table WHERE pa_id = :pa_id";
+                FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
+                FDQuery1->ExecSQL();
+
+                FDQuery1->Close();
+
+                logger->info(logger->charToWString(__func__).c_str(),
+                    L"Produsul a fost șters cu succes.");
+                ShowMessage(L"Produsul a fost șters cu succes.");
+                FormShow(this);
+            } catch (Exception &e) {
+                std::wstring my_wstr = e.Message.c_str();
+                std::string my_str = std::wstring_convert<
+                    std::codecvt_utf8_utf16<System::Char> > {}
+                                         .to_bytes(my_wstr);
+                logger->warning(WARN_DELETE_FAILED,
+                    logger->charToWString(__func__).c_str(),
+                    L"Eroare la ștergere: %s", my_str.c_str());
+                ShowMessage(L"Eroare la ștergere: " + e.Message);
+            }
+
+        } break;
+        case VK_F9: // Vindere produs
+        {
+            logger->info(logger->charToWString("VK_F9").c_str(),
+                L"Butonul a fost apasat");
+
+            if (!FDQuery1->Active || FDQuery1->IsEmpty()) {
+                logger->warning(WARN_NO_SELECTED_PRODUCT,
+                    logger->charToWString(__func__).c_str(),
+                    L"Nu există un produs selectat!");
+                ShowMessage(L"Nu există un produs selectat!");
+                return;
+            }
+
+            int pa_id = FDQuery1->FieldByName("pa_id")
+                            ->AsInteger; // Preia id-ul produsului
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"ID produs selectat: %d", pa_id);
+
+            int p_count = FDQuery1->FieldByName("p_count")
+                              ->AsInteger; // Preia cantitatea produsului
+
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"ID produs selectat: %d, Cantitate: %d", pa_id, p_count);
+
+            // daca produsul e in stoc
+            if (p_count <= 0) {
+                logger->warning(WARN_PRODUCT_OUT_OF_STOCK,
+                    logger->charToWString(__func__).c_str(),
+                    L"Produsul cu ID %d nu este în stoc!", pa_id);
+                ShowMessage(L"Produsul nu este în stoc!");
+                return;
+            }
+
+            UnicodeString enteredPassword;
+            if (!ShowPasswordDialog(enteredPassword)) {
+                return; // Oprește execuția dacă utilizatorul a anulat
+            }
+
+            if (!VerifyOldPassword(enteredPassword)) {
+                ShowMessage(L"Parola nu este corectă!");
+                return;
+            }
+
+            int Result = ShowConfirmationDialog();
+            if (Result != mrYes) { // Acceptă doar mrYes pentru vânzare
+                logger->info(logger->charToWString(__func__).c_str(),
+                    L"Vânzare anulată de utilizator.");
+                return;
+            }
+
+            try {
+                logger->debug(logger->charToWString(__func__).c_str(),
+                    L"Începe actualizarea bazei de date pentru ID: %d", pa_id);
+
+                String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+                String cod = FDQuery1->FieldByName("cod")->AsString;
+                String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+                double pret = FDQuery1->FieldByName("p_price")->AsFloat;
+                int cantitate = 1; // Se vinde un produs
+
+                FDQuery1->Close();
+                FDQuery1->SQL->Text =
+                    "UPDATE product_auto_table SET p_count = p_count - 1 "
+                    "WHERE pa_id = :pa_id AND p_count > 0";
+                FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
+                FDQuery1->ExecSQL();
+
+                PrintSalesReceipt(
+                    marca, cod, celula, pret, cantitate); // Imprimă bonul
+
+                FormShow(this);
+                logger->info(logger->charToWString(__func__).c_str(),
+                    L"Produs vândut cu succes!");
+                ShowMessage(L"Produs Vândut!");
+
+            } catch (Exception &e) {
+                String str = e.Message.c_str();
+                logger->warning(WARN_SQL_UPDATE,
+                    logger->charToWString(__func__).c_str(),
+                    L"Eroare la actualizarea bazei de date: %s", str.w_str());
+                ShowMessage(L"Eroare la vânzare: " + e.Message);
+            }
+
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Funcția s-a încheiat");
+        } break;
+
+        case VK_F3: //  Cautarea produsului
+        {
+            if (SearchBox && SearchBox->HandleAllocated()) {
+                SearchBox->OnChange = nullptr; // Dezactivează OnChange
+                SearchBox->SetFocus();
+                SearchBoxChange(this);
+                SearchBox->OnChange = SearchBoxChange; // Reactivează OnChange
+            }
+
+        } break;
+
+        case VK_F2: // Editarea produsului
+        {
+            logger->info(logger->charToWString(__func__).c_str(),
+                L"Funcția a fost apelată");
+
+            if (FDQuery1->IsEmpty()) {
+                logger->warning(WARN_NO_SELECTED_ROW,
+                    logger->charToWString(__func__).c_str(),
+                    L"Nu există rând selectat.");
+                ShowMessage(L"Nu există rând selectat.");
+                return;
+            }
+
+            int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger; // id rand
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"ID rând selectat: %d", pa_id);
+
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"Deschiderea formei de editare pentru ID: %d", pa_id);
+
+            TEditFormProduct* EditForm =
+                new TEditFormProduct(this, FDQuery1, pa_id);
+
+            if (EditForm->ShowModal() == mrOk) {
+                logger->info(logger->charToWString(__func__).c_str(),
+                    L"Editare confirmată, reafișare date.");
+                FormShow(this);
+            }
+
+            delete EditForm;
+            FormShow(this);
+
+            logger->trace(logger->charToWString(__func__).c_str(),
+                L"Funcția s-a încheiat");
+        } break;
+
+        default:
+            return;
+            ;
+    }
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
+}
+
+//--------------------------------------------------------------------------
+
+// Afiarea dialogului de confirmare la vinderea produsului
+int __fastcall TMenuForm::ShowConfirmationDialog()
+{
+    TForm* ConfirmDialog = new TForm(Application);
+    ConfirmDialog->Caption = L"Confirmare";
+    ConfirmDialog->Position = poScreenCenter;
+    ConfirmDialog->BorderStyle = bsDialog;
+    ConfirmDialog->Width = 300;
+    ConfirmDialog->Height = 150;
+
+    TLabel* Label = new TLabel(ConfirmDialog);
+    Label->Parent = ConfirmDialog;
+    Label->Caption = L"Doreşti să vinzi produsul?";
+    Label->Left = 50;
+    Label->Top = 30;
+    Label->AutoSize = true;
+
+    TButton* YesButton = new TButton(ConfirmDialog);
+    YesButton->Parent = ConfirmDialog;
+    YesButton->Caption = "Da";
+    YesButton->ModalResult = mrYes;
+    YesButton->Left = 50;
+    YesButton->Top = 70;
+
+    // Permite procesarea tastelor înainte de controalele din fereastră
+    ConfirmDialog->KeyPreview = true;
+
+    TButton* NoButton = new TButton(ConfirmDialog);
+    NoButton->Parent = ConfirmDialog;
+    NoButton->Caption = "Nu";
+    NoButton->ModalResult = mrNo;
+    NoButton->Left = 150;
+    NoButton->Top = 70;
+    NoButton->Cancel = true;
+
+    // Eveniment pentru prevenirea confirmării la Space
+    ConfirmDialog->OnKeyDown = ConfirmDialogKeyDown;
+
+    int Result = ConfirmDialog->ShowModal();
+    delete ConfirmDialog;
+    return Result;
+}
+
+//--------------------------------------------------------------------------
+
+// Vinderea produsului la click dreapta
+void __fastcall TMenuForm::MenuItemVindeClick(TObject* Sender)
+{
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția a fost apelată");
+
+    if (!FDQuery1->Active || FDQuery1->IsEmpty()) {
+        logger->warning(WARN_NO_SELECTED_PRODUCT,
+            logger->charToWString(__func__).c_str(),
+            L"Nu există un produs selectat!");
+        ShowMessage(L"Nu există un produs selectat!");
+        return;
+    }
+
+    UnicodeString enteredPassword;
+    if (ShowPasswordDialog(enteredPassword)) {
+        if (!VerifyOldPassword(enteredPassword)) {
+            ShowMessage(L"Parola nu este corectă!");
+            return;
+        }
+    }
+
+    int pa_id =
+        FDQuery1->FieldByName("pa_id")->AsInteger; // Preia id-ul produsului
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"ID produs selectat: %d", pa_id);
+
+    int p_count = FDQuery1->FieldByName("p_count")
+                      ->AsInteger; // Preia cantitatea produsului
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"ID produs selectat: %d, Cantitate: %d", pa_id, p_count);
+
+    // daca produsul e in stoc
+    if (p_count <= 0) {
+        logger->warning(WARN_PRODUCT_OUT_OF_STOCK,
+            logger->charToWString(__func__).c_str(),
+            L"Produsul cu ID %d nu este în stoc!", pa_id);
+        ShowMessage(L"Produsul nu este în stoc!");
+        return;
+    }
+
+    int Result = ShowConfirmationDialog();
+    if (Result != mrYes) { // Acceptă doar mrYes pentru vânzare
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Vânzare anulată de utilizator.");
+        return;
+    }
+
+    try {
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Începe actualizarea bazei de date pentru ID: %d", pa_id);
+
+        String marca = FDQuery1->FieldByName("a_marca_model")->AsString;
+        String cod = FDQuery1->FieldByName("cod")->AsString;
+        String celula = FDQuery1->FieldByName("nume_celula")->AsString;
+        double pret = FDQuery1->FieldByName("p_price")->AsFloat;
+        int cantitate = 1; // Se vinde un produs
+
+		FDQuery1->Close();
+        FDQuery1->SQL->Text =
+            "UPDATE product_auto_table SET p_count = p_count - 1 "
+            "WHERE pa_id = :pa_id AND p_count > 0";
+        FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
+        FDQuery1->ExecSQL();
+		logger->trace(logger->charToWString(__func__).c_str(),
+			L"Interogare SQL generata: %s", FDQuery1->SQL->Text.w_str());
+
+        PrintSalesReceipt(marca, cod, celula, pret, cantitate); // Imprimă bonul
+
+        FormShow(this);
+		logger->info(logger->charToWString(__func__).c_str(),
+			L"Produs vândut cu succes!");
+        ShowMessage(L"Produs Vândut!");
+
+    } catch (Exception &e) {
+        String str = e.Message.c_str();
+        logger->warning(WARN_SQL_UPDATE,
+            logger->charToWString(__func__).c_str(),
+            L"Eroare la actualizarea bazei de date: %s", str.w_str());
+        ShowMessage(L"Eroare la vânzare: " + e.Message);
+    }
+
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
+}
+
+//---------------------------------------------------------------------------
+
+// Editarea produsului la click dreapta
+void __fastcall TMenuForm::MenuItemEditClick(TObject* Sender)
+{
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția a fost apelată");
+
+    if (FDQuery1->IsEmpty()) {
+        logger->warning(WARN_NO_SELECTED_ROW,
+            logger->charToWString(__func__).c_str(),
+            L"Nu există rând selectat.");
+        ShowMessage(L"Nu există rând selectat.");
+        return;
+    }
+
+    int pa_id = FDQuery1->FieldByName("pa_id")->AsInteger; // id rand
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"ID rând selectat: %d", pa_id);
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Deschiderea formei de editare pentru ID: %d", pa_id);
+
+    TEditFormProduct* EditForm = new TEditFormProduct(this, FDQuery1, pa_id);
+
+    if (EditForm->ShowModal() == mrOk) {
+		logger->info(logger->charToWString(__func__).c_str(),
+			L"Editare confirmată, reafișare date.");
+		FormShow(this);
+	}
+
+	delete EditForm;
+	FormShow(this);
+
+	logger->info(
+		logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
+}
+
+//---------------------------------------------------------------------------
+
+// Functie de colorare a continutului daca cantitatea este pe 0
+void __fastcall TMenuForm::DBGrid1DrawColumnCell(TObject* Sender,
+	const TRect &Rect, int DataCol, TColumn* Column, TGridDrawState State)
+{
+	int p_count =
+		DBGrid1->DataSource->DataSet->FieldByName("p_count")->AsInteger;
+	bool isSelected = (State.Contains(gdSelected));
+
+	if (p_count == 0 && !isSelected) {
+		DBGrid1->Canvas->Brush->Color =
+			clInfoBk; // Fundal pentru produse epuizate
+		DBGrid1->Canvas->Font->Color = clInactiveCaptionText; // Text alb
+		DBGrid1->Canvas->FillRect(Rect);
+	}
+
+	if (!isSelected || p_count != 0) {
+		DBGrid1->DefaultDrawColumnCell(Rect, DataCol, Column, State);
+	}
+}
+
+//---------------------------------------------------------------------------
+// Forma LoadData/Setari
+void __fastcall TMenuForm::Button2Click(TObject* Sender)
+{
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcţia a fost apelată");
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Se creează formularul TLoadDataForm.");
+    TLoadDataForm* LoadForm = new TLoadDataForm(this, FDQuery1);
+
+    if (LoadForm->ShowModal() == mrOk) {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Utilizatorul a confirmat (mrOk). Se reafişează datele.");
+        FormShow(this); // Se reafisează datele
+    }
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Se şterge formularul TLoadDataForm.");
+    delete LoadForm;
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Se reafişează datele în FormShow.");
+    FormShow(this);
+
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcţia s-a încheiat");
+}
+
+//---------------------------------------------------------------------------
+
+// Eveniment la click pe SearchBox se sterge continutul din el
+void __fastcall TMenuForm::SearchBoxClick(TObject* Sender)
+{
+    SearchBox->Clear();
+}
+
+//---------------------------------------------------------------------------
+
+// Eveniment la apasarea tastei ESCAPE se sterge continutul din SearchBox
+void __fastcall TMenuForm::SearchBoxKeyDown(
+    TObject* Sender, WORD &Key, TShiftState Shift)
+{
+	logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția a fost apelată");
+	logger->debug(
+        logger->charToWString(__func__).c_str(), L"Tasta apasată: %d", Key);
+
+    if (Key == VK_ESCAPE) {
+		logger->info(logger->charToWString(__func__).c_str(),
+			L"S-a apăsat ESC. Se șterge conținutul căutarii.");
+        SearchBox->Clear();
+    }
+
+	logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
+}
+
+//---------------------------------------------------------------------------
+
+// Eveniment declansat la click pe header dbgrid care ulterior sorteaza produsele dupa un mod oarecare
+void __fastcall TMenuForm::DBGrid1TitleClick(TColumn* Column)
+{
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția a fost apelată");
+
+    static bool sortAsc = true;
+    String sortOrder = sortAsc ? "ASC" : "DESC";
+
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"Ordonarea în mod: %s", sortOrder.c_str());
+
+    String columnName = Column->FieldName; // Obține numele câmpului
+    if (columnName == "cod") {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Sortarea ignorată pentru coloana 'cod'");
+        return;
+    }
+
+    try {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Utilizatorul a apăsat pe coloana: %s", columnName.c_str());
+
+        FDQuery1->Close();
+        FDQuery1->SQL->Text =
+            "SELECT pp.pa_id AS pa_id, "
+            "a.a_marca_model AS a_marca_model, "
+            "ct.cod AS cod, "
+            "c.nume_celula AS nume_celula, "
+            "pp.p_count AS p_count, "
+            "pp.is_updated AS is_updated, "
+            "pp.price_updated_at AS price_updated_at, "
+            "pp.p_price AS p_price "
+            "FROM product_auto_table pp "
+            "JOIN vehicle_table a ON a.a_id = pp.a_id "
+            "JOIN celula_table c ON c.id_celula = pp.celula_id "
+            "JOIN code_table ct ON ct.id_cod = pp.id_cod "
+            "ORDER BY " +
+            columnName + " " + sortOrder;
+
+        // String search_query = FDQuery1->SQL->Text;
+        logger->trace(logger->charToWString(__func__).c_str(),
+            L"Interogarea SQL este: %s", FDQuery1->SQL->Text.w_str());
+
+        FDQuery1->Open();
+        sortAsc = !sortAsc;
+
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Sortare realizată cu succes pentru coloana: %s",
+            columnName.c_str());
+    } catch (Exception &e) {
+        String str = e.Message.c_str();
+
+        logger->warning(WARN_SQL_SORT, logger->charToWString(__func__).c_str(),
+            L"Eroare la sortare: %s", str.w_str());
+
+        ShowMessage(L"Eroare la sortare: " + e.Message);
+    }
+
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
+}
+
+//---------------------------------------------------------------------------
+
+// Timer care verifica la fiecare 10 min. daca este conectat la baza de date
+void __fastcall TMenuForm::Timer1Timer(TObject* Sender)
+{
+    logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția a fost apelată");
+    try {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Se încearca reconectarea la baza de date...");
+        FDConnection1->Connected = true;
+        logger->info(
+            logger->charToWString(__func__).c_str(), L"Conectare reușita.");
+    } catch (Exception &e) {
+        AnsiString ansiMessage = AnsiString(e.Message);
+        std::wstring my_wstr = e.Message.c_str();
+        std::string my_str =
+            std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
+                .to_bytes(my_wstr);
+
+        logger->warning(WARN_NO_RESPONSE_SERVER,
+            logger->charToWString(__func__).c_str(), L"Eroare la conectare: %s",
+            my_str.c_str());
+        logger->exception(__LINE__, logger->charToWString(__func__).c_str(),
+            L"Conexiune eșuata! Aplicația se va închide. Mesaj: %s",
+            my_str.c_str());
+
+        ShowMessage(L"Eroare la conectare: " + e.Message);
+        Application->Terminate();
+    }
+
+	logger->info(
+        logger->charToWString(__func__).c_str(), L"Funcția s-a încheiat");
+}
+
+//---------------------------------------------------------------------------
+

@@ -1,0 +1,193 @@
+|=========================================================================================================================|
+|       Ora         |   PID  |    Level Info    |         Functia         |      Error     |            Message           |
+|===================|========|==================|=========================|================|==============================|
+
+|================================================== Log Date: 2025-03-15 =================================================|
+|=========================================================================================================================|
+|       Ora         |   PID  |    Level Info    |         Functia         |      Error     |            Message           |
+|===================|========|==================|=========================|================|==============================|
+ 2025-03-15 19:20:38  13096        Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-03-15 19:20:38  13096        Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-03-15 19:20:38  13096        Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-03-15 19:20:38  13096        Info                 FormShow                             Funcția FormShow a fost apelată.
+ 2025-03-15 19:20:38  13096        Debug                FormShow                             Execut interogarea SQL.
+ 2025-03-15 19:20:38  13096        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-03-15 19:20:38  13096        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 19:20:38  13096        Trace                FormResize                           Lațime grid: 1277, Număr coloane: 7
+ 2025-03-15 19:20:38  13096        Trace                FormResize                           Lațime efectivă: 1259, Lațime coloană: 209, Pixeli rămași: 5
+ 2025-03-15 19:20:38  13096        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 19:20:38  13096        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-03-15 19:20:38  13096        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 19:20:38  13096        Trace                FormResize                           Lațime grid: 1277, Număr coloane: 7
+ 2025-03-15 19:20:38  13096        Trace                FormResize                           Lațime efectivă: 1259, Lațime coloană: 209, Pixeli rămași: 5
+ 2025-03-15 19:20:38  13096        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 19:20:38  13096        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-03-15 19:20:38  13096        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-03-15 19:20:38  13096        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-03-15 19:20:38  13096        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 19:20:38  13096        Trace                FormResize                           Lațime grid: 1277, Număr coloane: 7
+ 2025-03-15 19:20:38  13096        Trace                FormResize                           Lațime efectivă: 1259, Lațime coloană: 209, Pixeli rămași: 5
+ 2025-03-15 19:20:38  13096        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 19:20:40  13096        Debug                AddButtonClick                       Butonul 'Adăugare' a fost apăsat. Se creeaza fereastra de adăugare.
+ 2025-03-15 19:20:40  13096        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-03-15 19:20:40  13096        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-03-15 19:20:40  13096        Info                 AddButtonClick                       Fereastra 'Adăugare' a fost creata.
+ 2025-03-15 19:20:50  13096        Trace                AddButtonClick                       Fereastra 'Adăugare' a fost distrusă.
+ 2025-03-15 19:20:50  13096        Debug                AddButtonClick                       Se reîncarcă datele în grid.
+ 2025-03-15 19:20:50  13096        Info                 FormShow                             Funcția FormShow a fost apelată.
+ 2025-03-15 19:20:50  13096        Debug                FormShow                             Execut interogarea SQL.
+ 2025-03-15 19:20:50  13096        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-03-15 19:20:50  13096        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 19:20:50  13096        Trace                FormResize                           Lațime grid: 1277, Număr coloane: 7
+ 2025-03-15 19:20:50  13096        Trace                FormResize                           Lațime efectivă: 1259, Lațime coloană: 209, Pixeli rămași: 5
+ 2025-03-15 19:20:50  13096        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 19:20:50  13096        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-03-15 19:20:51  13096        Info                 SearchBoxChange                      Funcția de căutare a fost apelată.
+ 2025-03-15 19:20:51  13096        Debug                SearchBoxChange                      Valoarea searchText: 甀£
+ 2025-03-15 19:20:51  13096        Debug                SearchBoxChange                      Execut interogarea SQL.
+ 2025-03-15 19:20:51  13096        Trace                SearchBoxChange                      Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod WHERE a.a_marca_model LIKE :searchText OR ct.cod LIKE :searchText OR pp.p_price LIKE :searchText OR pp.p_count LIKE :searchText
+ 2025-03-15 19:20:51  13096        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 19:20:51  13096        Trace                FormResize                           Lațime grid: 1277, Număr coloane: 7
+ 2025-03-15 19:20:51  13096        Trace                FormResize                           Lațime efectivă: 1259, Lațime coloană: 209, Pixeli rămași: 5
+ 2025-03-15 19:20:51  13096        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 19:20:51  13096        Info                 SearchBoxChange                      Căutarea s-a finalizat cu succes.
+ 2025-03-15 19:20:53  13096        Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-03-15 19:20:53
+
+ 2025-03-15 20:17:41  13120        Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-03-15 20:17:41  13120        Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-03-15 20:17:41  13120        Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-03-15 20:17:41  13120        Info                 FormShow                             Funcția FormShow a fost apelată.
+ 2025-03-15 20:17:41  13120        Debug                FormShow                             Execut interogarea SQL.
+ 2025-03-15 20:17:41  13120        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-03-15 20:17:41  13120        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 20:17:41  13120        Trace                FormResize                           Lațime grid: 1277, Număr coloane: 7
+ 2025-03-15 20:17:41  13120        Trace                FormResize                           Lațime efectivă: 1259, Lațime coloană: 209, Pixeli rămași: 5
+ 2025-03-15 20:17:41  13120        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 20:17:41  13120        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-03-15 20:17:41  13120        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 20:17:41  13120        Trace                FormResize                           Lațime grid: 1277, Număr coloane: 7
+ 2025-03-15 20:17:41  13120        Trace                FormResize                           Lațime efectivă: 1259, Lațime coloană: 209, Pixeli rămași: 5
+ 2025-03-15 20:17:41  13120        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 20:17:41  13120        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-03-15 20:17:41  13120        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-03-15 20:17:41  13120        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-03-15 20:17:41  13120        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 20:17:41  13120        Trace                FormResize                           Lațime grid: 1277, Număr coloane: 7
+ 2025-03-15 20:17:41  13120        Trace                FormResize                           Lațime efectivă: 1259, Lațime coloană: 209, Pixeli rămași: 5
+ 2025-03-15 20:17:41  13120        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 20:17:45  13120        Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-03-15 20:17:45
+
+ 2025-03-15 21:11:42  13984        Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-03-15 21:11:42  13984        Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-03-15 21:11:42  13984        Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-03-15 21:11:42  13984        Info                 FormShow                             Funcția FormShow a fost apelată.
+ 2025-03-15 21:11:42  13984        Debug                FormShow                             Execut interogarea SQL.
+ 2025-03-15 21:11:42  13984        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-03-15 21:11:42  13984        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:11:42  13984        Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:11:42  13984        Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:11:42  13984        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:11:42  13984        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-03-15 21:11:42  13984        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:11:42  13984        Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:11:42  13984        Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:11:42  13984        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:11:42  13984        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-03-15 21:11:42  13984        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-03-15 21:11:42  13984        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-03-15 21:11:42  13984        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:11:42  13984        Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:11:42  13984        Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:11:42  13984        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:11:43  13984        Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-03-15 21:11:43
+
+ 2025-03-15 21:12:49  5500         Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-03-15 21:12:49  5500         Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-03-15 21:12:49  5500         Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-03-15 21:12:49  5500         Info                 FormShow                             Funcția FormShow a fost apelată.
+ 2025-03-15 21:12:49  5500         Debug                FormShow                             Execut interogarea SQL.
+ 2025-03-15 21:12:49  5500         Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-03-15 21:12:49  5500         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:12:49  5500         Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:12:49  5500         Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:12:49  5500         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:12:49  5500         Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-03-15 21:12:49  5500         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:12:49  5500         Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:12:49  5500         Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:12:49  5500         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:12:49  5500         Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-03-15 21:12:49  5500         Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-03-15 21:12:49  5500         Info                 Initialize_Component                 Iniţializare Componente
+ 2025-03-15 21:12:50  5500         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:12:50  5500         Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:12:50  5500         Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:12:50  5500         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:12:53  5500         Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-03-15 21:12:53
+
+ 2025-03-15 21:13:50  9576         Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-03-15 21:13:50  9576         Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-03-15 21:13:50  9576         Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-03-15 21:13:50  9576         Info                 FormShow                             Funcția FormShow a fost apelată.
+ 2025-03-15 21:13:50  9576         Debug                FormShow                             Execut interogarea SQL.
+ 2025-03-15 21:13:50  9576         Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-03-15 21:13:50  9576         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:13:50  9576         Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:13:50  9576         Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:13:50  9576         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:13:50  9576         Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-03-15 21:13:50  9576         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:13:50  9576         Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:13:50  9576         Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:13:50  9576         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:13:50  9576         Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-03-15 21:13:50  9576         Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-03-15 21:13:50  9576         Info                 Initialize_Component                 Iniţializare Componente
+ 2025-03-15 21:13:50  9576         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:13:50  9576         Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:13:50  9576         Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:13:50  9576         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:13:52  9576         Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-03-15 21:13:52
+
+ 2025-03-15 21:21:11  12976        Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-03-15 21:21:11  12976        Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-03-15 21:21:11  12976        Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-03-15 21:21:11  12976        Info                 FormShow                             Funcția FormShow a fost apelată.
+ 2025-03-15 21:21:11  12976        Debug                FormShow                             Execut interogarea SQL.
+ 2025-03-15 21:21:11  12976        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-03-15 21:21:11  12976        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:21:11  12976        Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:21:11  12976        Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:21:11  12976        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:21:11  12976        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-03-15 21:21:11  12976        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:21:11  12976        Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:21:11  12976        Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:21:11  12976        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:21:11  12976        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-03-15 21:21:11  12976        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-03-15 21:21:11  12976        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-03-15 21:21:11  12976        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-03-15 21:21:11  12976        Trace                FormResize                           Lațime grid: 1274, Număr coloane: 7
+ 2025-03-15 21:21:11  12976        Trace                FormResize                           Lațime efectivă: 1256, Lațime coloană: 209, Pixeli rămași: 2
+ 2025-03-15 21:21:11  12976        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-03-15 21:21:13  12976        Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-03-15 21:21:13
+

@@ -2,8 +2,8 @@ object MenuForm: TMenuForm
   Left = 0
   Top = 0
   Caption = 'MenuForm'
-  ClientHeight = 468
-  ClientWidth = 1064
+  ClientHeight = 452
+  ClientWidth = 1060
   Color = clSilver
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,11 +13,11 @@ object MenuForm: TMenuForm
   OnCreate = FormCreate
   OnResize = FormResize
   DesignSize = (
-    1064
-    468)
+    1060
+    452)
   TextHeight = 15
   object Label1: TLabel
-    Left = 596
+    Left = 592
     Top = 13
     Width = 60
     Height = 25
@@ -29,13 +29,14 @@ object MenuForm: TMenuForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ExplicitLeft = 596
   end
   object DBGrid1: TDBGrid
     AlignWithMargins = True
     Left = 8
     Top = 50
-    Width = 1038
-    Height = 410
+    Width = 1034
+    Height = 394
     Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
     DataSource = DataSource1
@@ -114,30 +115,30 @@ object MenuForm: TMenuForm
         Expanded = False
         FieldName = 'is_updated'
         Title.Alignment = taCenter
-        Title.Caption = 'Pre'#355' Actualizat ?'
+        Title.Caption = 'Stare Pre'#355
         Visible = True
       end>
   end
   object AddButton: TButton
-    Left = 908
+    Left = 896
     Top = 8
-    Width = 120
+    Width = 146
     Height = 36
     Cursor = crHandPoint
     Anchors = [akTop, akRight]
-    Caption = 'Adaug'#259
+    Caption = 'Adaug'#259' Produs'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 25
+    Font.Height = 23
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
     TabOrder = 2
     OnClick = AddButtonClick
-    ExplicitLeft = 906
+    ExplicitLeft = 894
   end
   object SearchBox: TEdit
-    Left = 676
+    Left = 672
     Top = 11
     Width = 201
     Height = 29
@@ -155,7 +156,7 @@ object MenuForm: TMenuForm
     OnChange = SearchBoxChange
     OnClick = SearchBoxClick
     OnKeyDown = SearchBoxKeyDown
-    ExplicitLeft = 674
+    ExplicitLeft = 670
   end
   object Button2: TButton
     Left = 8
@@ -252,11 +253,11 @@ object MenuForm: TMenuForm
     Params.Strings = (
       'DriverID=MySQL'
       'Database=glasstrack_db'
-      'Server=95.65.99.175'
+      'Server=127.0.0.1'
       'User_Name=root'
       'Port=3306'
       'CharacterSet=cp1251'
-      'Password=Halley2025!')
+      'Password=root')
     UpdateOptions.AssignedValues = [uvAutoCommitUpdates]
     UpdateOptions.AutoCommitUpdates = True
     Left = 704

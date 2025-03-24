@@ -45,7 +45,7 @@ object EditFormProduct: TEditFormProduct
   end
   object Label4: TLabel
     Left = 40
-    Top = 154
+    Top = 158
     Width = 79
     Height = 25
     Caption = 'Cantitatea'
@@ -57,7 +57,7 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
   end
   object Label5: TLabel
-    Left = 60
+    Left = 53
     Top = 108
     Width = 47
     Height = 25
@@ -72,7 +72,7 @@ object EditFormProduct: TEditFormProduct
   object Label6: TLabel
     Left = 62
     Top = 197
-    Width = 31
+    Width = 29
     Height = 25
     Anchors = [akLeft, akTop, akRight]
     Caption = 'Pre'#355
@@ -82,6 +82,7 @@ object EditFormProduct: TEditFormProduct
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ExplicitWidth = 31
   end
   object Label3: TLabel
     Left = 9
@@ -116,15 +117,31 @@ object EditFormProduct: TEditFormProduct
     Font.Style = []
     ParentFont = False
   end
+  object Label7: TLabel
+    Left = 224
+    Top = 197
+    Width = 37
+    Height = 25
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    Caption = 'MDL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
   object CodEdit: TEdit
     Left = 142
     Top = 25
     Width = 243
     Height = 28
-    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 25
+    Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -135,10 +152,9 @@ object EditFormProduct: TEditFormProduct
     Top = 67
     Width = 243
     Height = 28
-    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 25
+    Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -147,12 +163,11 @@ object EditFormProduct: TEditFormProduct
   object CountEdit: TEdit
     Left = 142
     Top = 155
-    Width = 243
+    Width = 75
     Height = 28
-    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 25
+    Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -161,35 +176,33 @@ object EditFormProduct: TEditFormProduct
   object PriceEdit: TEdit
     Left = 142
     Top = 198
-    Width = 243
+    Width = 75
     Height = 28
     Cursor = crIBeam
     Anchors = [akLeft, akTop, akRight]
-    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 25
+    Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
     TabOrder = 4
   end
   object CelulaEdit: TEdit
-    Left = 140
+    Left = 142
     Top = 109
-    Width = 245
+    Width = 77
     Height = 28
-    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 25
+    Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
     TabOrder = 2
   end
   object ConfirmButton: TButton
-    Left = 273
+    Left = 269
     Top = 285
     Width = 101
     Height = 35
@@ -204,9 +217,11 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
     TabOrder = 5
     OnClick = ConfirmButtonClick
+    ExplicitLeft = 268
+    ExplicitTop = 277
   end
   object CancelButton: TButton
-    Left = 103
+    Left = 101
     Top = 285
     Width = 91
     Height = 35
@@ -223,5 +238,7 @@ object EditFormProduct: TEditFormProduct
     TabOrder = 6
     OnClick = CancelButtonClick
     OnKeyDown = CancelButtonKeyDown
+    ExplicitLeft = 100
+    ExplicitTop = 277
   end
 end

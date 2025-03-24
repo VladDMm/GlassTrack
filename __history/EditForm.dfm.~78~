@@ -1,0 +1,249 @@
+object EditFormProduct: TEditFormProduct
+  Left = 0
+  Top = 0
+  BorderStyle = bsDialog
+  Caption = 'Editare Produs'
+  ClientHeight = 328
+  ClientWidth = 455
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Position = poMainFormCenter
+  Scaled = False
+  DesignSize = (
+    455
+    328)
+  TextHeight = 15
+  object Label1: TLabel
+    Left = 60
+    Top = 24
+    Width = 33
+    Height = 25
+    Caption = 'Cod'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 34
+    Top = 66
+    Width = 85
+    Height = 25
+    Caption = 'Automobil'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label4: TLabel
+    Left = 40
+    Top = 158
+    Width = 79
+    Height = 25
+    Caption = 'Cantitatea'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label5: TLabel
+    Left = 53
+    Top = 108
+    Width = 47
+    Height = 25
+    Caption = 'Celula'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label6: TLabel
+    Left = 62
+    Top = 197
+    Width = 29
+    Height = 25
+    Anchors = [akLeft, akTop, akRight]
+    Caption = 'Pre'#355
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    ExplicitWidth = 31
+  end
+  object Label3: TLabel
+    Left = 9
+    Top = 248
+    Width = 115
+    Height = 20
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    Caption = 'Pre'#355' Actualizat La'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 20
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object DateLabel: TLabel
+    Left = 142
+    Top = 244
+    Width = 5
+    Height = 25
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label7: TLabel
+    Left = 224
+    Top = 197
+    Width = 37
+    Height = 25
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    Caption = 'MDL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object CodEdit: TEdit
+    Left = 142
+    Top = 25
+    Width = 243
+    Height = 28
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+  end
+  object AutoEdit: TEdit
+    Left = 142
+    Top = 67
+    Width = 243
+    Height = 28
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 1
+  end
+  object CountEdit: TEdit
+    Left = 142
+    Top = 155
+    Width = 75
+    Height = 28
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+  end
+  object PriceEdit: TEdit
+    Left = 142
+    Top = 198
+    Width = 75
+    Height = 28
+    Cursor = crIBeam
+    Anchors = [akLeft, akTop, akRight]
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 4
+  end
+  object CelulaEdit: TEdit
+    Left = 140
+    Top = 109
+    Width = 77
+    Height = 28
+    BorderStyle = bsNone
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 2
+  end
+  object ConfirmButton: TButton
+    Left = 269
+    Top = 285
+    Width = 101
+    Height = 35
+    Cursor = crHandPoint
+    Anchors = [akBottom]
+    Caption = 'Confirmare'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 5
+    OnClick = ConfirmButtonClick
+    ExplicitLeft = 268
+    ExplicitTop = 277
+  end
+  object CancelButton: TButton
+    Left = 101
+    Top = 285
+    Width = 91
+    Height = 35
+    Cursor = crHandPoint
+    Anchors = [akBottom]
+    Cancel = True
+    Caption = 'Anulare'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 6
+    OnClick = CancelButtonClick
+    OnKeyDown = CancelButtonKeyDown
+    ExplicitLeft = 100
+    ExplicitTop = 277
+  end
+end

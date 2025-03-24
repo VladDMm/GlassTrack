@@ -39,8 +39,10 @@ __published:	// IDE-managed Components
 	TButton *CancelButton;
 	TLabel *Label3;
 	TLabel *DateLabel;
+	TLabel *Label7;
 	void __fastcall CancelButtonClick(TObject *Sender);
 	void __fastcall ConfirmButtonClick(TObject *Sender);
+   // static UnicodeString HashPassword(const UnicodeString &password);
 	bool __fastcall ShowPasswordDialog(UnicodeString &enteredPassword);
     bool __fastcall VerifyOldPassword(const UnicodeString &oldPassword);
 	void __fastcall CancelButtonKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);

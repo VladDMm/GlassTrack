@@ -41,6 +41,8 @@ __published:	// IDE-managed Components
 	TButton *ChangePassButton;
 	TEdit *LEdit;
 	TLabel *Label3;
+	TLabel *Label4;
+	TComboBox *LogLevelComboBox;
 	void __fastcall AddFileButtonClick(TObject *Sender);
 	void __fastcall ConfirmButtonClick(TObject *Sender);
     void __fastcall ResizeStringGrid();

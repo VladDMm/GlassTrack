@@ -43,7 +43,7 @@ object TChangePassForm: TTChangePassForm
     ParentFont = False
   end
   object OldPassEdit: TEdit
-    Left = 128
+    Left = 126
     Top = 21
     Width = 241
     Height = 28
@@ -55,9 +55,10 @@ object TChangePassForm: TTChangePassForm
     Font.Style = []
     ParentFont = False
     TabOrder = 0
+    ExplicitLeft = 128
   end
   object NewPassEdit: TEdit
-    Left = 128
+    Left = 126
     Top = 64
     Width = 241
     Height = 28
@@ -69,9 +70,10 @@ object TChangePassForm: TTChangePassForm
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    ExplicitLeft = 128
   end
   object ConfirmButton: TButton
-    Left = 128
+    Left = 127
     Top = 104
     Width = 129
     Height = 33
@@ -85,6 +87,7 @@ object TChangePassForm: TTChangePassForm
     ParentFont = False
     TabOrder = 2
     OnClick = ConfirmButtonClick
+    ExplicitLeft = 128
     ExplicitTop = 115
   end
 end

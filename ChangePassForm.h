@@ -19,6 +19,7 @@ __published:	// IDE-managed Components
 	TLabel *Label1;
 	TLabel *Label2;
 	TButton *ConfirmButton;
+    static UnicodeString HashPassword(const UnicodeString &password);
 	void __fastcall ConfirmButtonClick(TObject *Sender);
     void __fastcall UpdatePasswordInDB(TFDQuery*& query, const UnicodeString &newPassword);
 private:	// User declarations

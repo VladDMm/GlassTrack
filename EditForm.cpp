@@ -67,8 +67,8 @@ UnicodeString HashPassword(const UnicodeString &password)
 bool __fastcall TEditFormProduct::VerifyOldPassword(
     const UnicodeString &oldPassword)
 {
-    UnicodeString hashedOldPass = HashPassword(oldPassword);
-    TFDQuery* newFdQuery = new TFDQuery(this);
+	UnicodeString hashedOldPass = HashPassword(oldPassword);
+	TFDQuery* newFdQuery = new TFDQuery(this);
     newFdQuery->Connection = FDQuery1->Connection;
     try {
         newFdQuery->SQL->Text =

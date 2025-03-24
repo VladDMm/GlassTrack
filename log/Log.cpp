@@ -201,7 +201,7 @@ void LogF::info(const wchar_t* functionName, const wchar_t* format, ...)
     va_list args;
     va_start(args, format);
     wchar_t buffer[1024];
-	vswprintf(buffer, format, args);  // Borland permite doar 3 parametri
+	vswprintf(buffer, format, args);
 buffer[_countof(buffer) - 1] = L'\0';
 	va_end(args);
 

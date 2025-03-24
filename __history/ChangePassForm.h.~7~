@@ -1,0 +1,33 @@
+//---------------------------------------------------------------------------
+
+#ifndef ChangePassFormH
+#define ChangePassFormH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <System.Hash.hpp> // Pentru SHA-256
+#include <Vcl.Controls.hpp>
+#include <Vcl.StdCtrls.hpp>
+#include <Vcl.Forms.hpp>
+#include <FireDAC.Comp.Client.hpp>
+#include <FireDAC.Stan.Param.hpp>
+//---------------------------------------------------------------------------
+class TTChangePassForm : public TForm
+{
+__published:	// IDE-managed Components
+	TEdit *OldPassEdit;
+	TEdit *NewPassEdit;
+	TLabel *Label1;
+	TLabel *Label2;
+	TButton *ConfirmButton;
+	void __fastcall ConfirmButtonClick(TObject *Sender);
+    __fastcall	UnicodeString HashPassword(const UnicodeString &password);
+    void __fastcall UpdatePasswordInDB(TFDQuery*& query, const UnicodeString &newPassword);
+private:	// User declarations
+	TFDQuery* FDQuery1;
+public:		// User declarations
+	__fastcall TTChangePassForm(TComponent* Owner, TFDQuery* query);
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TTChangePassForm *TChangePassForm;
+//---------------------------------------------------------------------------
+#endif

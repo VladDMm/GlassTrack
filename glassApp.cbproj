@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{A61F44E7-DB46-4F19-987F-F264F1889D1F}</ProjectGuid>
-        <ProjectVersion>20.2</ProjectVersion>
+        <ProjectVersion>20.3</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <AppType>Application</AppType>
         <MainSource>glassApp.cpp</MainSource>
@@ -164,7 +164,9 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <BCC_EnableRTTI>false</BCC_EnableRTTI>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;dbrtl.bpi;vcldb.bpi;vclwinx.bpi;vclimg.bpi;bindengine.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vclx.bpi;FireDACMySQLDriver.bpi;dsnap.bpi</LinkPackageImports>
+        <UsePackages>false</UsePackages>
+        <LinkPackageStatics>rtl.lib;vcl.lib;dbrtl.lib;vcldb.lib;vclwinx.lib;vclimg.lib;bindengine.lib;vclFireDAC.lib;FireDAC.lib;FireDACCommonDriver.lib;FireDACCommon.lib;xmlrtl.lib;vclx.lib;FireDACMySQLDriver.lib;dsnap.lib</LinkPackageStatics>
+        <DynamicRTL>false</DynamicRTL>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -184,8 +186,10 @@
         <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;dbrtl.bpi;vcldb.bpi;vclwinx.bpi;vclimg.bpi;bindengine.bpi;vclFireDAC.bpi;FireDAC.bpi;FireDACCommonDriver.bpi;FireDACCommon.bpi;xmlrtl.bpi;vclx.bpi;FireDACMySQLDriver.bpi;dsnap.bpi</LinkPackageImports>
         <DynamicRTL>false</DynamicRTL>
+        <BCC_EnableRTTI>false</BCC_EnableRTTI>
+        <LinkPackageStatics>rtl.lib;vcl.lib;dbrtl.lib;vcldb.lib;vclwinx.lib;vclimg.lib;bindengine.lib;vclFireDAC.lib;FireDAC.lib;FireDACCommonDriver.lib;FireDACCommon.lib;xmlrtl.lib;vclx.lib;FireDACMySQLDriver.lib;dsnap.lib</LinkPackageStatics>
+        <UsePackages>false</UsePackages>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
@@ -557,6 +561,16 @@
                     </Platform>
                     <Platform Name="Android64">
                         <RemoteDir>res\values-v31</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidSplashStylesV35">
+                    <Platform Name="Android">
+                        <RemoteDir>res\values-v35</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>res\values-v35</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>

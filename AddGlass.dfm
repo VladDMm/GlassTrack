@@ -56,7 +56,7 @@ object AddFormG: TAddFormG
     ParentFont = False
   end
   object TLabel
-    Left = 59
+    Left = 57
     Top = 206
     Width = 31
     Height = 25
@@ -69,11 +69,28 @@ object AddFormG: TAddFormG
     ParentFont = False
   end
   object Label7: TLabel
-    Left = 46
+    Left = 47
     Top = 115
     Width = 47
     Height = 25
     Caption = 'Celula'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = 25
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label2: TLabel
+    Left = 232
+    Top = 206
+    Width = 37
+    Height = 25
+    Margins.Left = 4
+    Margins.Top = 4
+    Margins.Right = 4
+    Margins.Bottom = 4
+    Caption = 'MDL'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 25
@@ -100,12 +117,11 @@ object AddFormG: TAddFormG
   object CountEdit: TEdit
     Left = 139
     Top = 159
-    Width = 235
+    Width = 86
     Height = 28
-    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 25
+    Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
@@ -114,19 +130,18 @@ object AddFormG: TAddFormG
   object PriceEdit: TEdit
     Left = 139
     Top = 207
-    Width = 235
+    Width = 86
     Height = 28
-    BorderStyle = bsNone
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = 25
+    Font.Height = 20
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
     TabOrder = 4
   end
   object AddButton: TButton
-    Left = 245
+    Left = 261
     Top = 269
     Width = 97
     Height = 33
@@ -142,13 +157,13 @@ object AddFormG: TAddFormG
     OnClick = AddButtonClick
   end
   object CancelButton: TButton
-    Left = 60
+    Left = 76
     Top = 269
     Width = 91
     Height = 33
     Cursor = crHandPoint
     Cancel = True
-    Caption = 'Anuleaz'#259
+    Caption = 'Anulare'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = 25
@@ -161,7 +176,7 @@ object AddFormG: TAddFormG
   object CelulaComboBox: TComboBox
     Left = 139
     Top = 116
-    Width = 235
+    Width = 86
     Height = 28
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText

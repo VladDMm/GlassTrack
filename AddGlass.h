@@ -37,6 +37,7 @@ class TAddFormG : public TForm
     TLabel* Label7;
     TComboBox* CelulaComboBox;
     TComboBox* CodComboBox;
+	TLabel *Label2;
     void __fastcall CancelButtonClick(TObject* Sender);
     void __fastcall Initialize_Component();
     void __fastcall AddButtonClick(TObject* Sender);

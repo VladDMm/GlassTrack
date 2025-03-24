@@ -35,6 +35,7 @@
 #include "Log.h"
 #include <Vcl.Dialogs.hpp>
 #include <Vcl.ComCtrls.hpp>
+#include <System.Hash.hpp> // Pentru SHA-256
 
 //---------------------------------------------------------------------------
 class TMenuForm : public TForm
@@ -65,15 +66,8 @@ __published:	// IDE-managed Components
 	TSQLTimeStampField *FDQuery1price_updated_at;
 	void __fastcall FormCreate(TObject *Sender);
 	void __fastcall FormResize(TObject *Sender);
-	//void __fastcall DBGrid1MouseDown(TObject *Sender, TMouseButton Button,
-    //  TShiftState Shift, int X, int Y);
-	//void __fastcall Initialize_Component();
 	void __fastcall AddButtonClick(TObject *Sender);
 	void __fastcall SearchBoxChange(TObject *Sender);
-  //	void __fastcall FDQuery1AfterPost(TDataSet *DataSet);
-   //	void __fastcall DBGrid1CellClick(TColumn *Column);
-   //	void __fastcall FDQuery1CalcFields(TDataSet *DataSet);
-
 	void __fastcall DBGrid1KeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 	void __fastcall MenuItemVindeClick(TObject *Sender);
     void __fastcall FormShow(TObject* Sender);
@@ -91,6 +85,7 @@ __published:	// IDE-managed Components
 	void __fastcall CheckPriceUpdateStatus();
 	bool __fastcall VerifyOldPassword(const UnicodeString &oldPassword);
 
+//    static UnicodeString HashPassword(const UnicodeString &password);
 private:	// User declarations
    //	TFDPhysMySQLDriverLink *FDPhysMySQLDriverLink1;
 	void __fastcall ConfirmDialogKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);

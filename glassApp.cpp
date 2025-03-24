@@ -1,10 +1,9 @@
-//---------------------------------------------------------------------------
-
-#include <vcl.h>
+﻿#include <vcl.h>
 #pragma hdrstop
 #include <tchar.h>
 #include "Log.h"
-//---------------------------------------------------------------------------
+#include <fstream>
+// ---------------------------------------------------------------------------
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
 USEFORM("LoadData.cpp", LoadDataForm);
@@ -12,40 +11,107 @@ USEFORM("glTrack.cpp", MenuForm);
 USEFORM("AddGlass.cpp", AddFormG);
 USEFORM("EditForm.cpp", EditFormProduct);
 USEFORM("ChangePassForm.cpp", TChangePassForm);
-//---------------------------------------------------------------------------
-using namespace logg;
-logg::LogF *logger = new logg::LogF("log/", "log.txt", 5);
-//---------------------------------------------------------------------------
-int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
-{
-	try
-	{
-		Application->Initialize();
-		Application->MainFormOnTaskBar = true;
-		TStyleManager::TrySetStyle("Smokey Quartz Kamri");
-		Application->CreateForm(__classid(TMenuForm), &MenuForm);
-		Application->CreateForm(__classid(TAddFormG), &AddFormG);
-		Application->CreateForm(__classid(TEditFormProduct), &EditFormProduct);
-		Application->CreateForm(__classid(TLoadDataForm), &LoadDataForm);
-		Application->CreateForm(__classid(TTChangePassForm), &TChangePassForm);
-		Application->Run();
-	}
-	catch (Exception &exception)
-	{
-		Application->ShowException(&exception);
-	}
-	catch (...)
-	{
-		try
-		{
-			throw Exception("");
-		}
-		catch (Exception &exception)
-		{
-			Application->ShowException(&exception);
 
-		}
-	}
-	return 0;
+using namespace logg;
+int logIndex = 0;
+logg::LogF *logger = nullptr; // Inițializare pointer pentru logger
+
+void LoadLogLevel() {
+    UnicodeString settingsFile = ExtractFilePath(Application->ExeName) + L"settings.cfg";
+
+    if (!FileExists(settingsFile)) {
+        return; // Ieșim dacă fișierul nu există
+    }
+
+    TStringList* fileContent = new TStringList();
+    try {
+        fileContent->LoadFromFile(settingsFile, TEncoding::UTF8);
+        for (int i = 0; i < fileContent->Count; i++) {
+            UnicodeString line = fileContent->Strings[i];
+            if (line.Pos(L"LevelLog=") == 1) {
+                UnicodeString value = line.SubString(10, line.Length() - 9);
+                if (!value.IsEmpty()) {
+                    logIndex = StrToIntDef(value, 0);
+                }
+            }
+        }
+    } catch (...) {
+        ShowMessage(L"Eroare la citirea fișierului settings.cfg!");
+    }
+    delete fileContent; // Eliberare memorie
 }
-//---------------------------------------------------------------------------
+
+int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
+    try {
+        LoadLogLevel(); // Încarcă nivelul de log înainte de inițializare
+        logger = new logg::LogF("log/", "log.txt", logIndex); // Creează logger-ul
+
+        Application->Initialize();
+        Application->MainFormOnTaskBar = true;
+        Application->CreateForm(__classid(TMenuForm), &MenuForm);
+        Application->CreateForm(__classid(TAddFormG), &AddFormG);
+        Application->CreateForm(__classid(TEditFormProduct), &EditFormProduct);
+        Application->CreateForm(__classid(TLoadDataForm), &LoadDataForm);
+        Application->CreateForm(__classid(TTChangePassForm), &TChangePassForm);
+        Application->Run();
+    } catch (Exception &exception) {
+        Application->ShowException(&exception);
+    } catch (...) {
+        try {
+            throw Exception("");
+        } catch (Exception &exception) {
+            Application->ShowException(&exception);
+        }
+    }
+
+    return 0;
+}
+
+
+//// ---------------------------------------------------------------------------
+//
+//#include <vcl.h>
+//#pragma hdrstop
+//#include <tchar.h>
+//#include "Log.h"
+//#include <fstream>
+//// ---------------------------------------------------------------------------
+//#include <Vcl.Styles.hpp>
+//#include <Vcl.Themes.hpp>
+//USEFORM("LoadData.cpp", LoadDataForm);
+//USEFORM("glTrack.cpp", MenuForm);
+//USEFORM("AddGlass.cpp", AddFormG);
+//USEFORM("EditForm.cpp", EditFormProduct);
+//USEFORM("ChangePassForm.cpp", TChangePassForm);
+//// ---------------------------------------------------------------------------
+//using namespace logg;
+//
+//logg::LogF *logger = new logg::LogF("log/", "log.txt", logIndex);
+//
+//// ---------------------------------------------------------------------------
+//int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int) {
+//	try {
+//		Application->Initialize();
+//		Application->MainFormOnTaskBar = true;
+//		Application->CreateForm(__classid(TMenuForm), &MenuForm);
+//		Application->CreateForm(__classid(TAddFormG), &AddFormG);
+//		Application->CreateForm(__classid(TEditFormProduct), &EditFormProduct);
+//		Application->CreateForm(__classid(TLoadDataForm), &LoadDataForm);
+//		Application->CreateForm(__classid(TTChangePassForm), &TChangePassForm);
+//		Application->Run();
+//	}
+//	catch (Exception &exception) {
+//		Application->ShowException(&exception);
+//	}
+//	catch (...) {
+//		try {
+//			throw Exception("");
+//		}
+//		catch (Exception &exception) {
+//			Application->ShowException(&exception);
+//
+//		}
+//	}
+//	return 0;
+//}
+//// ---------------------------------------------------------------------------

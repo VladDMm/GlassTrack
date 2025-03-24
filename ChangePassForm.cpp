@@ -20,8 +20,8 @@ __fastcall TTChangePassForm::TTChangePassForm(TComponent* Owner, TFDQuery* query
 
 //--------------------------------------------------------------------------
 
-UnicodeString HashPassword(const UnicodeString &password) {
-    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
+UnicodeString TTChangePassForm::HashPassword(const UnicodeString &password) {
+	return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
 }
 
 //-------------------------------------------------------------------------
@@ -30,7 +30,7 @@ bool VerifyOldPassword(TFDQuery*& query, const UnicodeString &oldPassword) {
 //	TFDQuery* query = new TFDQuery(this);
 //	query->Connection = FDQuery1->Connection;
 
-    UnicodeString hashedOldPass = HashPassword(oldPassword);
+    UnicodeString hashedOldPass = TTChangePassForm::HashPassword(oldPassword);
 
     try {
         query->SQL->Text = L"SELECT COUNT(*) FROM pass_table WHERE password = :pass";
