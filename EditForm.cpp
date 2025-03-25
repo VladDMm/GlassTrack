@@ -13,17 +13,22 @@
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TEditFormProduct* EditFormProduct;
+extern LogF*
+    logger; // obiectul logger pentru salvarea in fisier a informatiilor
 //---------------------------------------------------------------------------
-// Constructorul care initializeaza datele din edituri pe baza id-ului, randului selectat
+// Constructorul care initializeaza datele in edituri pe baza id-ului, randului selectat
 __fastcall TEditFormProduct::TEditFormProduct(
     TComponent* Owner, TFDQuery* query, int pa_id) :
     TForm(Owner),
     FDQuery1(query), ProductId(pa_id)
 {
+    logger->info(logger->charToWString(__func__).c_str(), L"Functie apelata");
+    logger->debug(logger->charToWString(__func__).c_str(),
+        L"ID produs preluat %d", pa_id);
     FDQuery1->Close();
     FDQuery1->SQL->Text =
         "SELECT pp.pa_id, a.a_marca_model, ct.cod, "
-		"c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at "
+        "c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at "
         "FROM product_auto_table pp "
         "JOIN vehicle_table a ON a.a_id = pp.a_id "
         "JOIN celula_table c ON c.id_celula = pp.celula_id "
@@ -32,8 +37,12 @@ __fastcall TEditFormProduct::TEditFormProduct(
 
     FDQuery1->ParamByName("pa_id")->AsInteger = pa_id;
     FDQuery1->Open();
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Interogare SQL generata: %s", FDQuery1->SQL->Text.w_str());
 
     if (!FDQuery1->IsEmpty()) {
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Exista date in baza de date la acest produs! Adaugarea in edituri datele");
         AutoEdit->Text = (FDQuery1->FieldByName("a_marca_model")->AsWideString);
         CodEdit->Text = FDQuery1->FieldByName("cod")->AsString;
         CelulaEdit->Text = FDQuery1->FieldByName("nume_celula")->AsString;
@@ -48,11 +57,14 @@ __fastcall TEditFormProduct::TEditFormProduct(
             DateLabel->Caption = "N/A";
         }
     }
+    logger->info(logger->charToWString(__func__).c_str(), L"Functie terminata");
 }
 //---------------------------------------------------------------------------
 
 void __fastcall TEditFormProduct::CancelButtonClick(TObject* Sender)
 {
+    logger->info(logger->charToWString(__func__).c_str(),
+        L"Anulare editare de utilizator");
     this->Close();
 }
 
@@ -67,8 +79,8 @@ UnicodeString HashPassword(const UnicodeString &password)
 bool __fastcall TEditFormProduct::VerifyOldPassword(
     const UnicodeString &oldPassword)
 {
-	UnicodeString hashedOldPass = HashPassword(oldPassword);
-	TFDQuery* newFdQuery = new TFDQuery(this);
+    UnicodeString hashedOldPass = HashPassword(oldPassword);
+    TFDQuery* newFdQuery = new TFDQuery(this);
     newFdQuery->Connection = FDQuery1->Connection;
     try {
         newFdQuery->SQL->Text =
@@ -124,7 +136,7 @@ bool __fastcall TEditFormProduct::ShowPasswordDialog(
     CancelButton->Caption = "Anulează";
     CancelButton->ModalResult = mrCancel;
     CancelButton->Left = 150;
-	CancelButton->Top = 90;
+    CancelButton->Top = 90;
     CancelButton->Cancel = true;
 
     PasswordDialog->KeyPreview = true;
@@ -144,17 +156,26 @@ bool __fastcall TEditFormProduct::ShowPasswordDialog(
 
 void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
 {
+    logger->info(logger->charToWString(__func__).c_str(), L"Functie apelata");
     if (CodEdit->Text == "" || AutoEdit->Text == "") {
         ShowMessage(L"Câmpurile automobil sau cod sunt obligatorii!");
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Nu s-au introdus date in campurile cod sau automobil");
         return;
     }
 
     if (!StrToInt(PriceEdit->Text) && StrToInt(PriceEdit->Text) != 0) {
         ShowMessage(L"Doar Cifre!");
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Nu s-au introdus date in campurile cod sau automobil");
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Alte caractere in campul pret");
         return;
     }
     if (!StrToInt(CountEdit->Text) && StrToInt(CountEdit->Text) != 0) {
         ShowMessage(L"Doar Cifre!");
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Alte caractere in campul cantitate");
         return;
     }
 
@@ -168,9 +189,10 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
         return;
     }
 
-    TFDQuery* newFDQuery = new TFDQuery(
-        this); // Creează un nou FDQuery temporar  sa nu faca conflict cu cel principal
+    TFDQuery* newFDQuery = new TFDQuery(this);
     try {
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Inceput proces de adaugare in baza de date");
         newFDQuery->Connection =
             FDQuery1->Connection; // Folosește aceeași conexiune
         newFDQuery->Close();
@@ -181,7 +203,6 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
         String celulaNume = CelulaEdit->Text;
         std::transform(celulaNume.begin(), celulaNume.end(), celulaNume.begin(),
             ::toupper);
-        //        ShowMessage("pa_id primit: " + IntToStr(ProductId));
 
         // verificare daca celula exista
         newFDQuery->Close();
@@ -191,8 +212,15 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
         newFDQuery->Open();
 
         if (!newFDQuery->IsEmpty()) {
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"Celula %s exista in baza de date", celulaNume.w_str());
             celulaId = newFDQuery->FieldByName("id_celula")->AsInteger;
         } else {
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"Celula %s nu exista in baza de date", celulaNume.w_str());
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"Inseram celula %s in db", celulaNume.w_str());
+
             // daca nu exista, o inseram și preia noul ID
             newFDQuery->Close();
             newFDQuery->SQL->Text =
@@ -204,6 +232,8 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
             newFDQuery->SQL->Text = "SELECT LAST_INSERT_ID() AS celula_id";
             newFDQuery->Open();
             celulaId = newFDQuery->FieldByName("celula_id")->AsInteger;
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"ID celula inserat %d", celulaId);
         }
 
         newFDQuery->Close();
@@ -263,16 +293,6 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
         newFDQuery->ParamByName("pa_id")->AsInteger = ProductId;
         newFDQuery->ExecSQL();
 
-        //		// Update product_auto_table cu pret nou sau vechi inserat
-        //        newFDQuery->SQL->Text =
-        //            "UPDATE product_auto_table SET p_count = :p_count, p_price = :price WHERE pa_id = :pa_id";
-        //        newFDQuery->ParamByName("p_count")->AsInteger =
-        //            StrToIntDef(CountEdit->Text, 0);
-        //        newFDQuery->ParamByName("price")->AsFloat =
-        //            StrToFloatDef(PriceEdit->Text, 0);
-        //        newFDQuery->ParamByName("pa_id")->AsInteger = ProductId;
-        //        newFDQuery->ExecSQL();
-
         // Verificare dacă prețul s - a schimbat newFDQuery->Close();
         newFDQuery->SQL->Text =
             "SELECT p_price FROM product_auto_table WHERE pa_id = :pa_id";
@@ -308,9 +328,15 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
         newFDQuery->ExecSQL();
 
         ShowMessage("Modificările au fost salvate!");
+        logger->info(
+            logger->charToWString(__func__).c_str(), L"Functie terminata");
         ModalResult = mrOk;
 
     } catch (Exception &e) {
+        String str = e.Message.c_str();
+        logger->warning(WARN_SQL_UPDATE,
+            logger->charToWString(__func__).c_str(),
+            L"Eroare la actualizare %s", str.w_str());
         ShowMessage("Eroare la actualizare: " + e.Message);
     }
 

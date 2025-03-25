@@ -21,6 +21,8 @@
 #include <FireDAC.Stan.Intf.hpp>
 #include <FireDAC.Stan.Option.hpp>
 #include <FireDAC.Stan.Param.hpp>
+#include "Log.h"
+using namespace logg;
 //---------------------------------------------------------------------------
 class TEditFormProduct : public TForm
 {

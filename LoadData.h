@@ -28,36 +28,36 @@ using namespace logg;
 //---------------------------------------------------------------------------
 class TLoadDataForm : public TForm
 {
-__published:	// IDE-managed Components
-	TButton *AddFileButton;
-	TEdit *PathEdit;
-	TStringGrid *StringGrid1;
-	TOpenDialog *OpenDialog1;
-	TButton *ConfirmButton;
-	TComboBox *PrinterComboBox;
-	TLabel *Label1;
-	TEdit *CopyCountEdit;
-	TLabel *Label2;
-	TButton *ChangePassButton;
-	TEdit *LEdit;
-	TLabel *Label3;
-	TLabel *Label4;
-	TComboBox *LogLevelComboBox;
-	void __fastcall AddFileButtonClick(TObject *Sender);
-	void __fastcall ConfirmButtonClick(TObject *Sender);
+  __published: // IDE-managed Components
+    TButton* AddFileButton;
+    TEdit* PathEdit;
+    TStringGrid* StringGrid1;
+    TOpenDialog* OpenDialog1;
+    TButton* ConfirmButton;
+    TComboBox* PrinterComboBox;
+    TLabel* Label1;
+    TEdit* CopyCountEdit;
+    TLabel* Label2;
+    TButton* ChangePassButton;
+    TEdit* LEdit;
+    TLabel* Label3;
+    TLabel* Label4;
+    TComboBox* LogLevelComboBox;
+    void __fastcall AddFileButtonClick(TObject* Sender);
+    void __fastcall ConfirmButtonClick(TObject* Sender);
     void __fastcall ResizeStringGrid();
-	void __fastcall FormResize(TObject *Sender);
-	void __fastcall FormKeyPress(TObject *Sender, System::WideChar &Key);
-	void __fastcall LoadSettings();
-	void __fastcall LoadPrinters();
-	void __fastcall ChangePassButtonClick(TObject *Sender);
-private:	// User declarations
-	TFDQuery* FDQuery1;
-   // logg::LogF *logger;
-public:		// User declarations
-	__fastcall TLoadDataForm(TComponent* Owner, TFDQuery* query);
+    void __fastcall FormResize(TObject* Sender);
+    void __fastcall FormKeyPress(TObject* Sender, System::WideChar &Key);
+    void __fastcall LoadSettings();
+    void __fastcall LoadPrinters();
+    void __fastcall ChangePassButtonClick(TObject* Sender);
+  private: // User declarations
+    TFDQuery* FDQuery1;
+  public: // User declarations
+    __fastcall TLoadDataForm(TComponent* Owner, TFDQuery* query);
 };
 //---------------------------------------------------------------------------
-extern PACKAGE TLoadDataForm *LoadDataForm;
+extern PACKAGE TLoadDataForm* LoadDataForm;
 //---------------------------------------------------------------------------
 #endif
+

@@ -10,6 +10,7 @@ object MenuForm: TMenuForm
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poDesktopCenter
   OnCreate = FormCreate
   OnResize = FormResize
   DesignSize = (
@@ -246,7 +247,7 @@ object MenuForm: TMenuForm
   end
   object DataSource1: TDataSource
     DataSet = FDQuery1
-    Left = 592
+    Left = 584
     Top = 168
   end
   object FDConnection1: TFDConnection
@@ -260,18 +261,18 @@ object MenuForm: TMenuForm
       'Password=root')
     UpdateOptions.AssignedValues = [uvAutoCommitUpdates]
     UpdateOptions.AutoCommitUpdates = True
-    Left = 704
-    Top = 160
+    Left = 688
+    Top = 104
   end
   object FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink
     VendorLib = 'libmysql.dll'
-    Left = 840
-    Top = 160
+    Left = 696
+    Top = 168
   end
   object FDUpdateSQL1: TFDUpdateSQL
     Connection = FDConnection1
-    Left = 728
-    Top = 256
+    Left = 992
+    Top = 88
   end
   object PopupMenu1: TPopupMenu
     Left = 440
@@ -292,7 +293,7 @@ object MenuForm: TMenuForm
     Top = 80
   end
   object PrintDialog1: TPrintDialog
-    Left = 944
-    Top = 248
+    Left = 872
+    Top = 80
   end
 end

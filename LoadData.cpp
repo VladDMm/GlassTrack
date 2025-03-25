@@ -59,12 +59,12 @@ void __fastcall TLoadDataForm::LoadSettings()
     TStringList* fileContent = new TStringList();
 
     UnicodeString printerName = "N/A"; // Valoare implicită
-	int fileCopies = 1; // Valoare implicită
-	int monthInterval = 1; // Valoare implicită
-	int logIndex = 0;
+    int fileCopies = 1; // Valoare implicită
+    int monthInterval = 1; // Valoare implicită
+    int logIndex = 0;
 
     if (FileExists(settingsFile)) {
-		try {
+        try {
             fileContent->LoadFromFile(settingsFile, TEncoding::UTF8);
             for (int i = 0; i < fileContent->Count; i++) {
                 UnicodeString line = fileContent->Strings[i];
@@ -78,20 +78,23 @@ void __fastcall TLoadDataForm::LoadSettings()
                             1); // 8 = lungimea lui "Copies="
                 } else if (line.Pos(L"MonthInterval=") == 1) {
                     monthInterval =
-						StrToIntDef(line.SubString(15, line.Length() - 14),
-							1); // 15 = lungimea lui "MonthInterval="
-				}
-           		// Setează nivelul de logare în ComboBox
-				else if (line.Pos(L"LevelLog=") == 1) {
-				logIndex = StrToIntDef(line.SubString(10, line.Length() - 9), 0);
-						if (logIndex >= 0 && logIndex < LogLevelComboBox->Items->Count) {
-							LogLevelComboBox->ItemIndex = logIndex;
-						}
-				}
-			}
+                        StrToIntDef(line.SubString(15, line.Length() - 14),
+                            1); // 15 = lungimea lui "MonthInterval="
+                }
+                // Setează nivelul de logare în ComboBox
+                else if (line.Pos(L"LevelLog=") == 1)
+                {
+                    logIndex =
+                        StrToIntDef(line.SubString(10, line.Length() - 9), 0);
+                    if (logIndex >= 0 &&
+                        logIndex < LogLevelComboBox->Items->Count)
+                    {
+                        LogLevelComboBox->ItemIndex = logIndex;
+                    }
+                }
+            }
 
-
-		 // Setează imprimanta în ComboBox dacă există
+            // Setează imprimanta în ComboBox dacă există
             int index = PrinterComboBox->Items->IndexOf(printerName);
             if (index != -1) {
                 PrinterComboBox->ItemIndex = index;
@@ -259,6 +262,7 @@ String fixNumberFormat(String value)
 // Eveniment la confirmare care adauga setarile alese in baza de date/fisier cfg
 void __fastcall TLoadDataForm::ConfirmButtonClick(TObject* Sender)
 {
+    logger->info(logger->charToWString(__func__).c_str(), L"Functie apelata");
     // Obține valoarea intervalului de luni
     UnicodeString monthInterval = LEdit->Text;
     if (monthInterval.IsEmpty()) {
@@ -272,16 +276,6 @@ void __fastcall TLoadDataForm::ConfirmButtonClick(TObject* Sender)
         }
     }
 
-	String levelLog = LogLevelComboBox->Text.c_str();
-	if (levelLog.IsEmpty()) {
-		levelLog = "0 - None";
-	}
-//	else
-//	{
-//         levelLog = levelLog.SubString(1,1);
-//
-//	}
-
     // Verifică dacă lista de imprimante este goală
     if (PrinterComboBox->Items->Count == 0) {
         ShowMessage(L"Nu există imprimante disponibile!");
@@ -293,38 +287,54 @@ void __fastcall TLoadDataForm::ConfirmButtonClick(TObject* Sender)
     UnicodeString copyCount = CopyCountEdit->Text;
     if (copyCount == "")
         copyCount = "1";
-	int logIndex = LogLevelComboBox->ItemIndex;
+    int logIndex = LogLevelComboBox->ItemIndex;
     // Dacă nu este selectat nimic, setăm valoarea implicită
-	if (logIndex == -1) {
-		logIndex = 0; // Corespunde lui "0 - None"
-	}
+    if (logIndex == -1) {
+        logIndex = 0; // Corespunde lui "0 - None"
+    }
     // Salvează setarile în settings.cfg
     try {
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Salvarea setarilor in settings.cfg");
         UnicodeString settingsFile =
             ExtractFilePath(Application->ExeName) + L"settings.cfg";
         TStringList* fileContent = new TStringList();
+
+        logger->trace(logger->charToWString(__func__).c_str(),
+            L"Valori date salvate in settings.cfg: Printer= %s, Copies= %s, MonthIntervalSettings= %s, LevelLog= %d",
+            selectedPrinter.w_str(), copyCount.w_str(), monthInterval.w_str(),
+            logIndex);
 
         fileContent->Add(L"[PrinterSettings]");
         fileContent->Add(L"Printer=" + selectedPrinter);
         fileContent->Add(L"Copies=" + copyCount);
         fileContent->Add(L"[MonthIntervalSettings]");
-        fileContent->Add(
-			L"MonthInterval=" + monthInterval);
+        fileContent->Add(L"MonthInterval=" + monthInterval);
 
-		fileContent->Add(L"[LevelLog]");
-		fileContent->Add(L"LevelLog=" + IntToStr(logIndex));
-		fileContent->SaveToFile(settingsFile, TEncoding::UTF8);
+        fileContent->Add(L"[LevelLog]");
+        fileContent->Add(L"LevelLog=" + IntToStr(logIndex));
+        fileContent->SaveToFile(settingsFile, TEncoding::UTF8);
 
-		delete fileContent;
+        delete fileContent;
 
         ShowMessage(L"Setările au fost salvate!");
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Setarile au fost salvate");
+        logger->info(
+            logger->charToWString(__func__).c_str(), L"Functie terminata");
 
     } catch (Exception &e) {
         ShowMessage(L"Eroare la salvarea setărilor: " + e.Message);
+        String str = e.Message.c_str();
+        logger->warning(WARN_SAVE_DATA, logger->charToWString(__func__).c_str(),
+            L"Eroare la salvarea setărilor: %s", str.w_str());
         return;
     }
 
     if (PathEdit->Text == "") {
+        logger->info(logger->charToWString(__func__).c_str(),
+            L"Nu sunt date de salvat in afara de acele din cfg, se inchide fereastra");
+        this->Close();
         return;
     }
 
@@ -443,9 +453,10 @@ void __fastcall TLoadDataForm::ConfirmButtonClick(TObject* Sender)
         delete newFDQuery;
         ModalResult = mrOk;
     } catch (Exception &e) {
+        String str = e.Message.c_str();
         logger->warning(WARN_DATA_PUSH_DATA_DB,
             logger->charToWString(__func__).c_str(), L"Eroare la salvare: %s",
-            e.Message.c_str());
+            str.w_str());
         ShowMessage(L"Eroare la salvare: " + e.Message);
     }
 }

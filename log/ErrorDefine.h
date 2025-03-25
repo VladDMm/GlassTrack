@@ -10,10 +10,11 @@
 #define WARN_SQL_SORT            23  // Eroare la sortare date
 #define WARN_SQL_INSERT          24  // Eroare la inserare date
 
-// 30 - 40 LOAD DATA ERRORS
+// 30 - 40 LOAD/SAVE DATA ERRORS
 #define WARN_DATA_LOAD_FAIL      30  // Eroare la încărcarea datelor
 #define WARN_DATA_PUSH_DATA_DB   31  // Eroare la incarcarea datelor din fisier in db
-#define WARN_SAVE_DATA_TO_DB     32  // Eroare la salvarea datelor
+#define WARN_SAVE_DATA_TO_DB     32  // Eroare la salvarea datelor in baza de date
+#define WARN_SAVE_DATA           33 // Eroare la salvarea datelor , eroare generala
 
 // 40 - 50 OTHER ERRORS
 #define WARN_NO_SELECTED_ROW     40  // Nu există rând selectat pentru ștergere

@@ -154,7 +154,7 @@ bool __fastcall TAddFormG::ShowPasswordDialog(UnicodeString &enteredPassword)
     CancelButton->Caption = "Anulează";
     CancelButton->ModalResult = mrCancel;
     CancelButton->Left = 150;
-	CancelButton->Top = 90;
+    CancelButton->Top = 90;
     CancelButton->Cancel = true;
 
     PasswordDialog->KeyPreview = true;

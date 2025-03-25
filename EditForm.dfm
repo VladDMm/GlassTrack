@@ -176,7 +176,7 @@ object EditFormProduct: TEditFormProduct
   object PriceEdit: TEdit
     Left = 142
     Top = 198
-    Width = 75
+    Width = 69
     Height = 28
     Cursor = crIBeam
     Anchors = [akLeft, akTop, akRight]
@@ -187,6 +187,7 @@ object EditFormProduct: TEditFormProduct
     Font.Style = []
     ParentFont = False
     TabOrder = 4
+    ExplicitWidth = 71
   end
   object CelulaEdit: TEdit
     Left = 142
@@ -202,7 +203,7 @@ object EditFormProduct: TEditFormProduct
     TabOrder = 2
   end
   object ConfirmButton: TButton
-    Left = 269
+    Left = 265
     Top = 285
     Width = 101
     Height = 35
@@ -217,11 +218,11 @@ object EditFormProduct: TEditFormProduct
     ParentFont = False
     TabOrder = 5
     OnClick = ConfirmButtonClick
-    ExplicitLeft = 268
+    ExplicitLeft = 266
     ExplicitTop = 277
   end
   object CancelButton: TButton
-    Left = 101
+    Left = 99
     Top = 285
     Width = 91
     Height = 35

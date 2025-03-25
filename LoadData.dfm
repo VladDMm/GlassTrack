@@ -19,7 +19,7 @@ object LoadDataForm: TLoadDataForm
     441)
   TextHeight = 15
   object Label1: TLabel
-    Left = 454
+    Left = 450
     Top = 8
     Width = 86
     Height = 20
@@ -34,7 +34,7 @@ object LoadDataForm: TLoadDataForm
     ExplicitLeft = 456
   end
   object Label2: TLabel
-    Left = 454
+    Left = 450
     Top = 46
     Width = 84
     Height = 20
@@ -46,9 +46,10 @@ object LoadDataForm: TLoadDataForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ExplicitLeft = 454
   end
   object Label3: TLabel
-    Left = 634
+    Left = 630
     Top = 45
     Width = 160
     Height = 20
@@ -60,9 +61,10 @@ object LoadDataForm: TLoadDataForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ExplicitLeft = 634
   end
   object Label4: TLabel
-    Left = 863
+    Left = 859
     Top = 43
     Width = 63
     Height = 20
@@ -74,6 +76,7 @@ object LoadDataForm: TLoadDataForm
     Font.Name = 'Segoe UI'
     Font.Style = []
     ParentFont = False
+    ExplicitLeft = 863
   end
   object AddFileButton: TButton
     Left = 8
@@ -106,7 +109,7 @@ object LoadDataForm: TLoadDataForm
   object StringGrid1: TStringGrid
     Left = 8
     Top = 72
-    Width = 1030
+    Width = 1026
     Height = 330
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelInner = bvSpace
@@ -120,9 +123,10 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 2
+    ExplicitWidth = 1030
   end
   object ConfirmButton: TButton
-    Left = 465
+    Left = 463
     Top = 408
     Width = 159
     Height = 25
@@ -136,9 +140,10 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
     TabOrder = 3
     OnClick = ConfirmButtonClick
+    ExplicitLeft = 465
   end
   object PrinterComboBox: TComboBox
-    Left = 556
+    Left = 552
     Top = 8
     Width = 189
     Height = 28
@@ -152,7 +157,7 @@ object LoadDataForm: TLoadDataForm
     TabOrder = 4
   end
   object CopyCountEdit: TEdit
-    Left = 556
+    Left = 552
     Top = 44
     Width = 49
     Height = 22
@@ -164,9 +169,10 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 5
+    ExplicitLeft = 556
   end
   object ChangePassButton: TButton
-    Left = 923
+    Left = 919
     Top = 8
     Width = 113
     Height = 25
@@ -180,9 +186,10 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
     TabOrder = 6
     OnClick = ChangePassButtonClick
+    ExplicitLeft = 923
   end
   object LEdit: TEdit
-    Left = 800
+    Left = 796
     Top = 43
     Width = 46
     Height = 23
@@ -194,9 +201,10 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 7
+    ExplicitLeft = 800
   end
   object LogLevelComboBox: TComboBox
-    Left = 932
+    Left = 928
     Top = 40
     Width = 103
     Height = 28
