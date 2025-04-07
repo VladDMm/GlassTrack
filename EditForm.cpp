@@ -70,16 +70,16 @@ void __fastcall TEditFormProduct::CancelButtonClick(TObject* Sender)
 
 //---------------------------------------------------------------------------
 
-UnicodeString HashPassword(const UnicodeString &password)
-{
-    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
-}
+//UnicodeString HashPassword(const UnicodeString &password)
+//{
+//    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
+//}
 //---------------------------------------------------------------------------
 
 bool __fastcall TEditFormProduct::VerifyOldPassword(
     const UnicodeString &oldPassword)
 {
-    UnicodeString hashedOldPass = HashPassword(oldPassword);
+    UnicodeString hashedOldPass = TMenuForm::HashPassword(oldPassword);
     TFDQuery* newFdQuery = new TFDQuery(this);
     newFdQuery->Connection = FDQuery1->Connection;
     try {

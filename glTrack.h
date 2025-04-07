@@ -74,6 +74,7 @@ __published:	// IDE-managed Components
 	void __fastcall DBGrid1DrawColumnCell(TObject *Sender, const TRect &Rect, int DataCol,
           TColumn *Column, TGridDrawState State);
 	void __fastcall MenuItemEditClick(TObject *Sender);
+    void __fastcall LoadDBSettings();
 	void __fastcall Button2Click(TObject *Sender);
 	void __fastcall SearchBoxClick(TObject *Sender);
     int __fastcall ShowConfirmationDeleteDialog();
@@ -93,7 +94,9 @@ private:	// User declarations
 
 public:		// User declarations
 	__fastcall TMenuForm(TComponent* Owner);
-    __fastcall ~TMenuForm(); // Destructor pentru a elibera memoria
+    bool terminateOnShow = false;
+	__fastcall ~TMenuForm(); // Destructor pentru a elibera memoria
+	static UnicodeString HashPassword(const UnicodeString &password);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TMenuForm *MenuForm;

@@ -66,6 +66,88 @@ __fastcall TMenuForm::~TMenuForm()
 
 //---------------------------------------------------------------------------
 
+void __fastcall TMenuForm::LoadDBSettings()
+{
+    UnicodeString settingsFile =
+        ExtractFilePath(Application->ExeName) + L"db_settings.cfg";
+
+    TStringList* fileContent = new TStringList();
+
+    UnicodeString username = "root"; // Valoare implicită
+    UnicodeString password = "root"; // Valoare implicită
+    UnicodeString port = "3306"; // Valoare implicită
+    UnicodeString server = "127.0.0.1"; // Valoare implicita
+    UnicodeString db_name = "glasstrack_db"; // Valoare implicita
+    UnicodeString driver_id = "MySQL"; // Valoare implicita
+    UnicodeString CharacterSet = "cp1251"; // Valoare implicita
+
+    if (FileExists(settingsFile)) {
+        try {
+            fileContent->LoadFromFile(settingsFile, TEncoding::UTF8);
+            for (int i = 0; i < fileContent->Count; i++) {
+                UnicodeString line = fileContent->Strings[i];
+
+                if (line.Pos(L"UserName=") == 1) {
+                    username = line.SubString(
+                        10, line.Length() - 9); // 9 = lungimea lui "UserName="
+                } else if (line.Pos(L"Password=") == 1) {
+                    password = line.SubString(
+                        10, line.Length() - 8); // 8 = lungimea lui "Password="
+                } else if (line.Pos(L"Server=") == 1) {
+                    server = line.SubString(
+                        8, line.Length() - 7); // 15 = lungimea lui "Server="
+                } else if (line.Pos(L"Port=") == 1) {
+                    port = line.SubString(
+                        6, line.Length() - 5); // 6 = lungimea lui "Port="
+                } else if (line.Pos(L"DataBase=") == 1) {
+                    db_name = line.SubString(
+                        10, line.Length() - 9); // 10 = Lungimea lui "DataBase="
+                } else if (line.Pos(L"DriverID=") == 1) {
+                    driver_id = line.SubString(
+                        10, line.Length() - 9); // 10 = Lungimea lui "DriverID="
+                } else if (line.Pos(L"CharacterSet=") == 1) {
+                    CharacterSet = line.SubString(
+                        14, line.Length() -
+                                13); // 14 = Lungimea lui "CharacterSet="
+                }
+            }
+
+            // Setare parametri FDConnection
+            FDConnection1->Params->Clear();
+            FDConnection1->Params->Add("User_Name=" + username);
+            FDConnection1->Params->Add("Password=" + password);
+            FDConnection1->Params->Add("Database=" + db_name);
+            FDConnection1->Params->Add("Server=" + server);
+            FDConnection1->Params->Add("Port=" + port);
+            FDConnection1->Params->Add("DriverID=" + driver_id);
+            FDConnection1->Params->Add("CharacterSet=" + CharacterSet);
+
+        } catch (Exception &e) {
+            String str = e.Message.c_str();
+            logger->warning(WARN_ERROR_READ_FILE,
+                logger->charToWString(__func__).c_str(),
+                L"Eroare la citirea fișierului de configurare: %s. Se citesc valorile implicite.",
+                str.w_str());
+            ShowMessage(
+                L"Eroare la citirea fișierului de configurare: Se citesc valorile implicite" +
+                e.Message);
+        }
+    } else {
+        ShowMessage(
+            L"Eroare la citirea fișierului de configurare: Se citesc valorile implicite");
+        FDConnection1->Params->Clear();
+        FDConnection1->Params->Add("User_Name=" + username);
+        FDConnection1->Params->Add("Password=" + password);
+        FDConnection1->Params->Add("Database=" + db_name);
+        FDConnection1->Params->Add("Server=" + server);
+        FDConnection1->Params->Add("Port=" + port);
+        FDConnection1->Params->Add("DriverID=" + driver_id);
+        FDConnection1->Params->Add("CharacterSet=" + CharacterSet);
+    }
+    delete fileContent;
+}
+
+//---------------------------------------------------------------------------
 // Crearea Formei Principale cu afisarea datelor
 void __fastcall TMenuForm::FormCreate(TObject* Sender)
 {
@@ -74,6 +156,7 @@ void __fastcall TMenuForm::FormCreate(TObject* Sender)
             L"Inițiere creare formă și conexiune la baza de date.");
 
         FDConnection1->LoginPrompt = false;
+        LoadDBSettings();
         FDConnection1->Connected = true; // Conectare la baza de date
 
         logger->trace(logger->charToWString(__func__).c_str(),
@@ -91,12 +174,16 @@ void __fastcall TMenuForm::FormCreate(TObject* Sender)
             L"Eroare la conectare: %s. Închidere program.", str.w_str());
 
         ShowMessage(L"Eroare la conectare: " + e.Message);
-        Application->Terminate();
+		terminateOnShow = true; // Marchez că trebuie închis
+        if (terminateOnShow) {
+            PostQuitMessage(0); // Închidere curată
+            return;
+        }
     }
 }
 
 //---------------------------------------------------------------------------
-UnicodeString HashPassword(const UnicodeString &password)
+UnicodeString TMenuForm::HashPassword(const UnicodeString &password)
 {
     return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
 }
@@ -420,6 +507,10 @@ void __fastcall TMenuForm::AddButtonClick(TObject* Sender)
 // Functie pentru a adauga datele din baza de date in DBGrid
 void __fastcall TMenuForm::FormShow(TObject* Sender)
 {
+    if (terminateOnShow) {
+        PostQuitMessage(0); // Închidere curată
+        return;
+    }
     logger->info(
         logger->charToWString(__func__).c_str(), L"Funcția a fost apelată.");
 
@@ -454,6 +545,10 @@ void __fastcall TMenuForm::FormShow(TObject* Sender)
             logger->charToWString(__func__).c_str(),
             L"Eroare CRITICĂ la încarcarea datelor: %s", str.w_str());
         ShowMessage(L"Eroare CRITICA la incarcarea datelor: " + e.Message);
+        if (terminateOnShow) {
+            PostQuitMessage(0); // Închidere curată
+            return;
+        }
     }
 }
 
@@ -466,13 +561,10 @@ void __fastcall TMenuForm::SearchBoxChange(TObject* Sender)
         L"Funcția de căutare a fost apelată.");
 
     String searchText = SearchBox->Text.Trim();
-    std::wstring my_wstr = searchText.c_str();
-    std::string my_str =
-        std::wstring_convert<std::codecvt_utf8_utf16<System::Char> > {}
-            .to_bytes(my_wstr);
+   
 
     logger->debug(logger->charToWString(__func__).c_str(),
-        L"Valoarea searchText: %s", my_str.c_str());
+        L"Valoarea searchText: %s", searchText.w_str());
 
     try {
         FDQuery1->Close();
@@ -1183,7 +1275,7 @@ void __fastcall TMenuForm::Timer1Timer(TObject* Sender)
             my_str.c_str());
 
         ShowMessage(L"Eroare la conectare: " + e.Message);
-        Application->Terminate();
+		PostQuitMessage(0); // Închidere curată
     }
 
     logger->info(

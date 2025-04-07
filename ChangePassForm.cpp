@@ -23,16 +23,17 @@ __fastcall TTChangePassForm::TTChangePassForm(
 
 //--------------------------------------------------------------------------
 
-UnicodeString HashPassword(const UnicodeString &password)
-{
-    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
-}
+//UnicodeString HashPassword(const UnicodeString &password)
+//{
+//    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
+//}
+
 
 //-------------------------------------------------------------------------
 
 bool VerifyOldPassword(TFDQuery*&query, const UnicodeString &oldPassword)
 {
-    UnicodeString hashedOldPass = HashPassword(oldPassword);
+	UnicodeString hashedOldPass = TMenuForm::HashPassword(oldPassword);
 
     try {
         query->SQL->Text =
@@ -52,7 +53,7 @@ bool VerifyOldPassword(TFDQuery*&query, const UnicodeString &oldPassword)
 void __fastcall TTChangePassForm::UpdatePasswordInDB(
     TFDQuery*&query, const UnicodeString &newPassword)
 {
-    UnicodeString hashedNewPass = HashPassword(newPassword);
+    UnicodeString hashedNewPass = TMenuForm::HashPassword(newPassword);
 
     try {
         logger->info(
