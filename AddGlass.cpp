@@ -17,9 +17,7 @@
 extern LogF* logger;
 TAddFormG* AddFormG;
 //---------------------------------------------------------------------------
-__fastcall TAddFormG::TAddFormG(TComponent* Owner) : TForm(Owner)
-{
-}
+__fastcall TAddFormG::TAddFormG(TComponent* Owner) : TForm(Owner) {}
 //---------------------------------------------------------------------------
 void __fastcall TAddFormG::CancelButtonClick(TObject* Sender)
 {
@@ -31,10 +29,11 @@ void __fastcall TAddFormG::CancelButtonClick(TObject* Sender)
 //UnicodeString HashPassword(const UnicodeString &password)
 //{
 //    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
-//}
+//}
+
 //---------------------------------------------------------------------------
 
-bool __fastcall TAddFormG::VerifyOldPassword(const UnicodeString &oldPassword)
+bool __fastcall TAddFormG::VerifyPassword(const UnicodeString &oldPassword)
 {
     UnicodeString hashedOldPass = TMenuForm::HashPassword(oldPassword);
     TFDQuery* newFdQuery = new TFDQuery(this);
@@ -56,6 +55,7 @@ bool __fastcall TAddFormG::VerifyOldPassword(const UnicodeString &oldPassword)
 }
 //-------------------------------------------------------------------------
 
+// initializare componente in forma de adaugare produs
 void __fastcall TAddFormG::Initialize_Component()
 {
     logger->info(
@@ -118,6 +118,7 @@ void __fastcall TAddFormG::Initialize_Component()
 
 //-----------------------------------------------------------------------------
 
+// afisare dialog de introducere parola
 bool __fastcall TAddFormG::ShowPasswordDialog(UnicodeString &enteredPassword)
 {
     TForm* PasswordDialog = new TForm(this);
@@ -195,7 +196,7 @@ void __fastcall TAddFormG::AddButtonClick(TObject* Sender)
         return; // Oprește execuția dacă utilizatorul a anulat
     }
 
-    if (!VerifyOldPassword(enteredPassword)) {
+    if (!VerifyPassword(enteredPassword)) {
         ShowMessage(L"Parola nu este corectă!");
         return;
     }

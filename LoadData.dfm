@@ -19,7 +19,7 @@ object LoadDataForm: TLoadDataForm
     441)
   TextHeight = 15
   object Label1: TLabel
-    Left = 450
+    Left = 446
     Top = 8
     Width = 86
     Height = 20
@@ -34,7 +34,7 @@ object LoadDataForm: TLoadDataForm
     ExplicitLeft = 456
   end
   object Label2: TLabel
-    Left = 450
+    Left = 446
     Top = 46
     Width = 84
     Height = 20
@@ -49,7 +49,7 @@ object LoadDataForm: TLoadDataForm
     ExplicitLeft = 454
   end
   object Label3: TLabel
-    Left = 630
+    Left = 626
     Top = 45
     Width = 160
     Height = 20
@@ -64,7 +64,7 @@ object LoadDataForm: TLoadDataForm
     ExplicitLeft = 634
   end
   object Label4: TLabel
-    Left = 859
+    Left = 855
     Top = 43
     Width = 63
     Height = 20
@@ -109,7 +109,7 @@ object LoadDataForm: TLoadDataForm
   object StringGrid1: TStringGrid
     Left = 8
     Top = 72
-    Width = 1026
+    Width = 1022
     Height = 330
     Anchors = [akLeft, akTop, akRight, akBottom]
     BevelInner = bvSpace
@@ -123,10 +123,10 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    ExplicitWidth = 1030
+    ExplicitWidth = 1024
   end
   object ConfirmButton: TButton
-    Left = 463
+    Left = 461
     Top = 408
     Width = 159
     Height = 25
@@ -140,10 +140,10 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
     TabOrder = 3
     OnClick = ConfirmButtonClick
-    ExplicitLeft = 465
+    ExplicitLeft = 462
   end
   object PrinterComboBox: TComboBox
-    Left = 552
+    Left = 548
     Top = 8
     Width = 189
     Height = 28
@@ -157,10 +157,10 @@ object LoadDataForm: TLoadDataForm
     TabOrder = 4
   end
   object CopyCountEdit: TEdit
-    Left = 552
+    Left = 548
     Top = 44
     Width = 49
-    Height = 22
+    Height = 28
     Anchors = [akTop, akRight]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -169,10 +169,10 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 5
-    ExplicitLeft = 556
+    ExplicitLeft = 550
   end
   object ChangePassButton: TButton
-    Left = 919
+    Left = 915
     Top = 8
     Width = 113
     Height = 25
@@ -186,13 +186,13 @@ object LoadDataForm: TLoadDataForm
     ParentFont = False
     TabOrder = 6
     OnClick = ChangePassButtonClick
-    ExplicitLeft = 923
+    ExplicitLeft = 917
   end
   object LEdit: TEdit
-    Left = 796
+    Left = 792
     Top = 43
     Width = 46
-    Height = 23
+    Height = 28
     Anchors = [akTop, akRight]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -201,10 +201,10 @@ object LoadDataForm: TLoadDataForm
     Font.Style = []
     ParentFont = False
     TabOrder = 7
-    ExplicitLeft = 800
+    ExplicitLeft = 794
   end
   object LogLevelComboBox: TComboBox
-    Left = 928
+    Left = 924
     Top = 40
     Width = 103
     Height = 28

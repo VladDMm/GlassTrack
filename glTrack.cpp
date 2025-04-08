@@ -68,6 +68,7 @@ __fastcall TMenuForm::~TMenuForm()
 
 void __fastcall TMenuForm::LoadDBSettings()
 {
+    logger->info(logger->charToWString(__func__).c_str(), L"Apel functie.");
     UnicodeString settingsFile =
         ExtractFilePath(Application->ExeName) + L"db_settings.cfg";
 
@@ -83,6 +84,8 @@ void __fastcall TMenuForm::LoadDBSettings()
 
     if (FileExists(settingsFile)) {
         try {
+            logger->debug(logger->charToWString(__func__).c_str(),
+                L"Fisier db_settings.cfg exista.");
             fileContent->LoadFromFile(settingsFile, TEncoding::UTF8);
             for (int i = 0; i < fileContent->Count; i++) {
                 UnicodeString line = fileContent->Strings[i];
@@ -125,8 +128,7 @@ void __fastcall TMenuForm::LoadDBSettings()
         } catch (Exception &e) {
             String str = e.Message.c_str();
             logger->warning(WARN_ERROR_READ_FILE,
-                logger->charToWString(__func__).c_str(),
-                L"Eroare la citirea fișierului de configurare: %s. Se citesc valorile implicite.",
+                logger->charToWString(__func__).c_str(), L"Eroare : %s .",
                 str.w_str());
             ShowMessage(
                 L"Eroare la citirea fișierului de configurare: Se citesc valorile implicite" +
@@ -174,7 +176,7 @@ void __fastcall TMenuForm::FormCreate(TObject* Sender)
             L"Eroare la conectare: %s. Închidere program.", str.w_str());
 
         ShowMessage(L"Eroare la conectare: " + e.Message);
-		terminateOnShow = true; // Marchez că trebuie închis
+        terminateOnShow = true; // Marchez că trebuie închis
         if (terminateOnShow) {
             PostQuitMessage(0); // Închidere curată
             return;
@@ -561,7 +563,6 @@ void __fastcall TMenuForm::SearchBoxChange(TObject* Sender)
         L"Funcția de căutare a fost apelată.");
 
     String searchText = SearchBox->Text.Trim();
-   
 
     logger->debug(logger->charToWString(__func__).c_str(),
         L"Valoarea searchText: %s", searchText.w_str());
@@ -992,11 +993,14 @@ void __fastcall TMenuForm::MenuItemVindeClick(TObject* Sender)
     }
 
     UnicodeString enteredPassword;
-    if (ShowPasswordDialog(enteredPassword)) {
-        if (!VerifyOldPassword(enteredPassword)) {
-            ShowMessage(L"Parola nu este corectă!");
-            return;
-        }
+    if (!ShowPasswordDialog(enteredPassword)) {
+        return;
+    }
+    logger->trace(logger->charToWString(__func__).c_str(),
+        L"Parola introdusa %s", enteredPassword.w_str());
+    if (!VerifyOldPassword(enteredPassword)) {
+        ShowMessage(L"Parola nu este corectă!");
+        return;
     }
 
     int pa_id =
@@ -1275,7 +1279,7 @@ void __fastcall TMenuForm::Timer1Timer(TObject* Sender)
             my_str.c_str());
 
         ShowMessage(L"Eroare la conectare: " + e.Message);
-		PostQuitMessage(0); // Închidere curată
+        PostQuitMessage(0); // Închidere curată
     }
 
     logger->info(

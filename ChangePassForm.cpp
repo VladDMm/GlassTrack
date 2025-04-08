@@ -28,12 +28,11 @@ __fastcall TTChangePassForm::TTChangePassForm(
 //    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
 //}
 
-
 //-------------------------------------------------------------------------
 
 bool VerifyOldPassword(TFDQuery*&query, const UnicodeString &oldPassword)
 {
-	UnicodeString hashedOldPass = TMenuForm::HashPassword(oldPassword);
+    UnicodeString hashedOldPass = TMenuForm::HashPassword(oldPassword);
 
     try {
         query->SQL->Text =
@@ -58,18 +57,20 @@ void __fastcall TTChangePassForm::UpdatePasswordInDB(
     try {
         logger->info(
             logger->charToWString(__func__).c_str(), L"Functie apelata");
-        logger->debug(logger->charToWString(__func__).c_str(),
-            L"Schimbare parola %s", newPassword.w_str());
+        logger->debug(
+            logger->charToWString(__func__).c_str(), L"Schimbare parola");
         FDQuery1->SQL->Text =
             L"UPDATE pass_table SET password = :newPass WHERE pass_id = 1";
         FDQuery1->ParamByName(L"newPass")->AsString = hashedNewPass;
         FDQuery1->ExecSQL();
         logger->trace(logger->charToWString(__func__).c_str(),
-            L"Interogarea sql generata %s", FDQuery1->SQL->Text.w_str());
-    } catch (...) {
-        ShowMessage(L"Eroare la actualizarea parolei!");
-        logger->debug(logger->charToWString(__func__).c_str(),
-            L"Eroare la actualizarea parolei!");
+            L"Interogarea SQL generata %s", FDQuery1->SQL->Text.w_str());
+    } catch (const Exception &e) {
+        String str = e.Message.c_str();
+        ShowMessage(L"Eroare la actualizarea parolei!" + e.Message);
+        logger->warning(WARN_SQL_UPDATE,
+            logger->charToWString(__func__).c_str(),
+            L"Eroare la actualizarea parolei! %s", str.w_str());
     }
 }
 
@@ -102,6 +103,8 @@ void __fastcall TTChangePassForm::ConfirmButtonClick(TObject* Sender)
         }
 
         UpdatePasswordInDB(newFDQuery, newPass);
+        logger->trace(logger->charToWString(__func__).c_str(),
+            L"Parola noua: %s", newPass.w_str());
         ShowMessage(L"Parola a fost schimbată cu succes!");
         logger->debug(logger->charToWString(__func__).c_str(),
             L"Parola a fost schimbată cu succes!");

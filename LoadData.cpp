@@ -54,6 +54,7 @@ void __fastcall TLoadDataForm::LoadPrinters()
 // Încărcare setări din CSV
 void __fastcall TLoadDataForm::LoadSettings()
 {
+    logger->info(logger->charToWString(__func__).c_str(), L"Apel functie");
     UnicodeString settingsFile =
         ExtractFilePath(Application->ExeName) + L"settings.cfg";
     TStringList* fileContent = new TStringList();
@@ -64,6 +65,8 @@ void __fastcall TLoadDataForm::LoadSettings()
     int logIndex = 0;
 
     if (FileExists(settingsFile)) {
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Fisier settings.cfg exista, parcurgerea datelor");
         try {
             fileContent->LoadFromFile(settingsFile, TEncoding::UTF8);
             for (int i = 0; i < fileContent->Count; i++) {
@@ -72,20 +75,29 @@ void __fastcall TLoadDataForm::LoadSettings()
                 if (line.Pos(L"Printer=") == 1) {
                     printerName = line.SubString(
                         9, line.Length() - 8); // 9 = lungimea lui "Printer="
+                    logger->trace(logger->charToWString(__func__).c_str(),
+                        L"Nume printer %s", printerName.w_str());
                 } else if (line.Pos(L"Copies=") == 1) {
                     fileCopies =
                         StrToIntDef(line.SubString(8, line.Length() - 7),
                             1); // 8 = lungimea lui "Copies="
+                    logger->trace(logger->charToWString(__func__).c_str(),
+                        L"Numar copii foi imprimate %d", fileCopies);
                 } else if (line.Pos(L"MonthInterval=") == 1) {
                     monthInterval =
                         StrToIntDef(line.SubString(15, line.Length() - 14),
                             1); // 15 = lungimea lui "MonthInterval="
+                    logger->trace(logger->charToWString(__func__).c_str(),
+                        L"Interval luni de la ultima actualizare %d",
+                        monthInterval);
                 }
                 // Setează nivelul de logare în ComboBox
                 else if (line.Pos(L"LevelLog=") == 1)
                 {
                     logIndex =
                         StrToIntDef(line.SubString(10, line.Length() - 9), 0);
+                    logger->trace(logger->charToWString(__func__).c_str(),
+                        L"Nivel log %d", logIndex);
                     if (logIndex >= 0 &&
                         logIndex < LogLevelComboBox->Items->Count)
                     {
@@ -106,28 +118,20 @@ void __fastcall TLoadDataForm::LoadSettings()
             // Setează intervalul de luni
             LEdit->Text = IntToStr(monthInterval);
         } catch (Exception &e) {
+            String str = e.Message.c_str();
             ShowMessage(
                 L"Eroare la citirea fișierului de configurare: " + e.Message);
+            logger->warning(WARN_ERROR_READ_FILE,
+                logger->charToWString(__func__).c_str(),
+                L"Eroare la citirea fișierului de configurare: %s",
+                str.w_str());
         }
+    } else if (!FileExists(settingsFile)) {
+        logger->debug(logger->charToWString(__func__).c_str(),
+            L"Fisier settings.cfg nu exista");
     }
+    logger->info(logger->charToWString(__func__).c_str(), L"Sfarsit functie");
     delete fileContent;
-
-    //	std::ifstream file("settings.csv");
-    //	if (file.is_open()) {
-    //		std::string line;
-    //		while (std::getline(file, line)) {
-    //			if (line.find("PrinterName,") == 0) {
-    //				String printerName = line.substr(12).c_str();
-    //
-    //				// Setează ComboBox-ul pe imprimanta salvată
-    //				int index = PrinterComboBox->Items->IndexOf(printerName);
-    //				if (index != -1) {
-    //					PrinterComboBox->ItemIndex = index;
-    //				}
-    //			}
-    //		}
-    //		file.close();
-    //	}
 }
 
 //---------------------------------------------------------------------------
@@ -139,11 +143,8 @@ void __fastcall TLoadDataForm::ResizeStringGrid()
     int totalWidth =
         StringGrid1->Width - 20; // Lăsăm puțin spațiu pentru scrollbar
 
-    //   logger->debug(__func__, "Redimensionare StringGrid: colCount = %d, totalWidth = %d", colCount, totalWidth);
-
     for (int i = 0; i < colCount; i++) {
         StringGrid1->ColWidths[i] = totalWidth / colCount;
-        //	logger->trace(__func__, "Setare latime coloana %d: %d", i, StringGrid1->ColWidths[i]);
     }
 }
 
@@ -258,11 +259,97 @@ String fixNumberFormat(String value)
 }
 
 //-------------------------------------------------------------------------
+// verificare parola introdusa la confirmarea setarilor
+bool __fastcall TLoadDataForm::VerifyPassword(const UnicodeString &oldPassword)
+{
+    UnicodeString hashedOldPass = TMenuForm::HashPassword(oldPassword);
+    TFDQuery* newFdQuery = new TFDQuery(this);
+    newFdQuery->Connection = FDQuery1->Connection;
+    try {
+        newFdQuery->SQL->Text =
+            L"SELECT COUNT(*) FROM pass_table WHERE password = :pass";
+        newFdQuery->ParamByName(L"pass")->AsString = hashedOldPass;
+        newFdQuery->Open();
 
+        int count = newFdQuery->Fields->Fields[0]->AsInteger;
+        newFdQuery->Close();
+        delete newFdQuery;
+        return count > 0; // Dacă există cel puțin o parolă, este corectă
+    } catch (...) {
+        delete newFdQuery;
+        return false;
+    }
+}
+
+//-------------------------------------------------------------------------
+// dialog de introducere a parolei
+bool __fastcall TLoadDataForm::ShowPasswordDialog(
+    UnicodeString &enteredPassword)
+{
+    TForm* PasswordDialog = new TForm(this);
+    PasswordDialog->Caption = "Introdu parola";
+    PasswordDialog->Position = poScreenCenter;
+    PasswordDialog->BorderStyle = bsDialog;
+    PasswordDialog->Width = 300;
+    PasswordDialog->Height = 180;
+
+    TLabel* Label = new TLabel(PasswordDialog);
+    Label->Parent = PasswordDialog;
+    Label->Caption = L"Introduceți parola:";
+    Label->Left = 20;
+    Label->Top = 20;
+    Label->AutoSize = true;
+
+    TEdit* PasswordEdit = new TEdit(PasswordDialog);
+    PasswordEdit->Parent = PasswordDialog;
+    PasswordEdit->Left = 20;
+    PasswordEdit->Top = 50;
+    PasswordEdit->Width = 250;
+    PasswordEdit->PasswordChar = '*'; // Ascunde caracterele introduse
+
+    TButton* OkButton = new TButton(PasswordDialog);
+    OkButton->Parent = PasswordDialog;
+    OkButton->Caption = "OK";
+    OkButton->ModalResult = mrOk;
+    OkButton->Left = 50;
+    OkButton->Top = 90;
+
+    TButton* CancelButton = new TButton(PasswordDialog);
+    CancelButton->Parent = PasswordDialog;
+    CancelButton->Caption = "Anulează";
+    CancelButton->ModalResult = mrCancel;
+    CancelButton->Left = 150;
+    CancelButton->Top = 90;
+    CancelButton->Cancel = true;
+
+    PasswordDialog->KeyPreview = true;
+
+    // Afișează dialogul și verifică rezultatul
+    bool result = (PasswordDialog->ShowModal() == mrOk);
+    if (result) {
+        enteredPassword = PasswordEdit->Text.Trim();
+    }
+
+    delete PasswordDialog;
+    return result;
+}
+
+//-------------------------------------------------------------------------
 // Eveniment la confirmare care adauga setarile alese in baza de date/fisier cfg
 void __fastcall TLoadDataForm::ConfirmButtonClick(TObject* Sender)
 {
     logger->info(logger->charToWString(__func__).c_str(), L"Functie apelata");
+
+    UnicodeString enteredPassword;
+    if (!ShowPasswordDialog(enteredPassword)) {
+        return; // Oprește execuția dacă utilizatorul a anulat
+    }
+
+    if (!VerifyPassword(enteredPassword)) {
+        ShowMessage(L"Parola nu este corectă!");
+        return;
+    }
+
     // Obține valoarea intervalului de luni
     UnicodeString monthInterval = LEdit->Text;
     if (monthInterval.IsEmpty()) {

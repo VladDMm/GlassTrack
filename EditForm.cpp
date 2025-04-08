@@ -73,10 +73,11 @@ void __fastcall TEditFormProduct::CancelButtonClick(TObject* Sender)
 //UnicodeString HashPassword(const UnicodeString &password)
 //{
 //    return THashSHA2::GetHashString(password, THashSHA2::TSHA2Version::SHA256);
-//}
+//}
+
 //---------------------------------------------------------------------------
 
-bool __fastcall TEditFormProduct::VerifyOldPassword(
+bool __fastcall TEditFormProduct::VerifyPassword(
     const UnicodeString &oldPassword)
 {
     UnicodeString hashedOldPass = TMenuForm::HashPassword(oldPassword);
@@ -184,7 +185,7 @@ void __fastcall TEditFormProduct::ConfirmButtonClick(TObject* Sender)
         return; // Oprește execuția dacă utilizatorul a anulat
     }
 
-    if (!VerifyOldPassword(enteredPassword)) {
+    if (!VerifyPassword(enteredPassword)) {
         ShowMessage(L"Parola nu este corectă!");
         return;
     }

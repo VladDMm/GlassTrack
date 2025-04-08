@@ -1,0 +1,329 @@
+|=========================================================================================================================|
+|       Ora         |   PID  |    Level Info    |         Functia         |      Error     |            Message           |
+|===================|========|==================|=========================|================|==============================|
+
+|================================================== Log Date: 2025-04-08 =================================================|
+|=========================================================================================================================|
+|       Ora         |   PID  |    Level Info    |         Functia         |      Error     |            Message           |
+|===================|========|==================|=========================|================|==============================|
+ 2025-04-08 09:39:12  15764        Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-04-08 09:39:12  15764        Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-04-08 09:39:12  15764        Info                 LoadDBSettings                       Apel functie.
+ 2025-04-08 09:39:12  15764        Debug                LoadDBSettings                       Fisier db_settings.cfg exista.
+ 2025-04-08 09:39:12  15764        Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-04-08 09:39:12  15764        Info                 CheckPriceUpdateStatus               Functie apelata
+ 2025-04-08 09:39:12  15764        Info                 CheckPriceUpdateStatus               Functie incheiata
+ 2025-04-08 09:39:12  15764        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:39:12  15764        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:39:12  15764        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:39:12  15764        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:39:12  15764        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:39:12  15764        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:39:12  15764        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:39:12  15764        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:39:12  15764        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:39:12  15764        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:39:12  15764        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:39:12  15764        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:39:12  15764        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-04-08 09:39:12  15764        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-04-08 09:39:12  15764        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-04-08 09:39:12  15764        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:39:12  15764        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:39:12  15764        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:39:12  15764        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:39:12  15764        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:39:12  15764        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:39:12  15764        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:39:12  15764        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:39:12  15764        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:39:12  15764        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:39:12  15764        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:39:12  15764        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:39:14  15764        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:39:14  15764        Trace                FormResize                           Lațime grid: 1867, Număr coloane: 7
+ 2025-04-08 09:39:14  15764        Trace                FormResize                           Lațime efectivă: 1849, Lațime coloană: 308, Pixeli rămași: 1
+ 2025-04-08 09:39:14  15764        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:39:15  15764        Debug                AddButtonClick                       Butonul 'Adăugare' a fost apăsat. Se creeaza fereastra de adăugare.
+ 2025-04-08 09:39:15  15764        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-04-08 09:39:15  15764        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-04-08 09:39:15  15764        Info                 AddButtonClick                       Fereastra 'Adăugare' a fost creata.
+ 2025-04-08 09:39:20  15764        Trace                AddButtonClick                       Fereastra 'Adăugare' a fost distrusă.
+ 2025-04-08 09:39:20  15764        Debug                AddButtonClick                       Se reîncarcă datele în grid.
+ 2025-04-08 09:39:20  15764        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:39:20  15764        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:39:20  15764        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:39:20  15764        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:39:20  15764        Trace                FormResize                           Lațime grid: 1867, Număr coloane: 7
+ 2025-04-08 09:39:20  15764        Trace                FormResize                           Lațime efectivă: 1849, Lațime coloană: 308, Pixeli rămași: 1
+ 2025-04-08 09:39:20  15764        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:39:20  15764        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:39:22  15764        Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:39:23  15764        Debug                MenuItemVindeClick                   ID produs selectat: 1
+ 2025-04-08 09:39:23  15764        Debug                MenuItemVindeClick                   ID produs selectat: 1, Cantitate: 2
+ 2025-04-08 09:39:25  15764        Info                 MenuItemVindeClick                   Vânzare anulată de utilizator.
+ 2025-04-08 09:39:27  15764        Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:39:29  15764        Debug                MenuItemVindeClick                   ID produs selectat: 1
+ 2025-04-08 09:39:29  15764        Debug                MenuItemVindeClick                   ID produs selectat: 1, Cantitate: 2
+ 2025-04-08 09:39:31  15764        Info                 MenuItemVindeClick                   Vânzare anulată de utilizator.
+ 2025-04-08 09:39:33  15764        Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:39:35  15764        Debug                MenuItemVindeClick                   ID produs selectat: 1
+ 2025-04-08 09:39:35  15764        Debug                MenuItemVindeClick                   ID produs selectat: 1, Cantitate: 2
+ 2025-04-08 09:39:36  15764        Info                 MenuItemVindeClick                   Vânzare anulată de utilizator.
+ 2025-04-08 09:39:38  15764        Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-04-08 09:39:38
+
+ 2025-04-08 09:40:25  6944         Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-04-08 09:40:25  6944         Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-04-08 09:40:25  6944         Info                 LoadDBSettings                       Apel functie.
+ 2025-04-08 09:40:25  6944         Debug                LoadDBSettings                       Fisier db_settings.cfg exista.
+ 2025-04-08 09:40:25  6944         Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-04-08 09:40:25  6944         Info                 CheckPriceUpdateStatus               Functie apelata
+ 2025-04-08 09:40:25  6944         Info                 CheckPriceUpdateStatus               Functie incheiata
+ 2025-04-08 09:40:25  6944         Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:40:25  6944         Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:40:25  6944         Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:40:25  6944         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:40:25  6944         Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:40:25  6944         Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:40:25  6944         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:40:25  6944         Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:40:25  6944         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:40:25  6944         Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:40:25  6944         Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:40:25  6944         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:40:25  6944         Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-04-08 09:40:25  6944         Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-04-08 09:40:25  6944         Info                 Initialize_Component                 Iniţializare Componente
+ 2025-04-08 09:40:25  6944         Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:40:25  6944         Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:40:25  6944         Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:40:25  6944         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:40:25  6944         Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:40:25  6944         Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:40:25  6944         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:40:25  6944         Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:40:25  6944         Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:40:25  6944         Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:40:25  6944         Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:40:25  6944         Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:40:28  6944         Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:40:29  6944         Debug                MenuItemVindeClick                   ID produs selectat: 1
+ 2025-04-08 09:40:29  6944         Debug                MenuItemVindeClick                   ID produs selectat: 1, Cantitate: 2
+ 2025-04-08 09:40:30  6944         Info                 MenuItemVindeClick                   Vânzare anulată de utilizator.
+ 2025-04-08 09:40:32  6944         Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:40:33  6944         Debug                MenuItemVindeClick                   ID produs selectat: 1
+ 2025-04-08 09:40:33  6944         Debug                MenuItemVindeClick                   ID produs selectat: 1, Cantitate: 2
+ 2025-04-08 09:40:34  6944         Info                 MenuItemVindeClick                   Vânzare anulată de utilizator.
+ 2025-04-08 09:40:36  6944         Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-04-08 09:40:36
+
+ 2025-04-08 09:40:55  15856        Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-04-08 09:40:55  15856        Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-04-08 09:40:55  15856        Info                 LoadDBSettings                       Apel functie.
+ 2025-04-08 09:40:55  15856        Debug                LoadDBSettings                       Fisier db_settings.cfg exista.
+ 2025-04-08 09:40:55  15856        Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-04-08 09:40:55  15856        Info                 CheckPriceUpdateStatus               Functie apelata
+ 2025-04-08 09:40:55  15856        Info                 CheckPriceUpdateStatus               Functie incheiata
+ 2025-04-08 09:40:55  15856        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:40:55  15856        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:40:55  15856        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:40:55  15856        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:40:55  15856        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:40:55  15856        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:40:55  15856        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:40:55  15856        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:40:55  15856        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:40:55  15856        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:40:55  15856        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:40:55  15856        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:40:55  15856        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-04-08 09:40:55  15856        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-04-08 09:40:55  15856        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-04-08 09:40:55  15856        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:40:55  15856        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:40:55  15856        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:40:55  15856        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:40:55  15856        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:40:55  15856        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:40:55  15856        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:40:55  15856        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:40:55  15856        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:40:55  15856        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:40:55  15856        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:40:55  15856        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:40:58  15856        Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:41:02  15856        Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:41:04  15856        Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:41:08  15856        Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:41:13  15856        Info                 MenuItemEditClick                    Funcția a fost apelată
+ 2025-04-08 09:41:13  15856        Debug                MenuItemEditClick                    ID rând selectat: 1
+ 2025-04-08 09:41:13  15856        Debug                MenuItemEditClick                    Deschiderea formei de editare pentru ID: 1
+ 2025-04-08 09:41:13  15856        Info                 TEditFormProduct                     Functie apelata
+ 2025-04-08 09:41:13  15856        Debug                TEditFormProduct                     ID produs preluat 1
+ 2025-04-08 09:41:13  15856        Trace                TEditFormProduct                     Interogare SQL generata: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod WHERE pp.pa_id = :pa_id
+ 2025-04-08 09:41:13  15856        Debug                TEditFormProduct                     Exista date in baza de date la acest produs! Adaugarea in edituri datele
+ 2025-04-08 09:41:13  15856        Info                 TEditFormProduct                     Functie terminata
+ 2025-04-08 09:41:15  15856        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:41:15  15856        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:41:15  15856        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:41:15  15856        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:41:15  15856        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:41:15  15856        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:41:15  15856        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:41:15  15856        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:41:15  15856        Info                 MenuItemEditClick                    Funcția s-a încheiat
+ 2025-04-08 09:41:17  15856        Info                 MenuItemVindeClick                   Funcția a fost apelată
+ 2025-04-08 09:41:22  15856        Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-04-08 09:41:22
+
+ 2025-04-08 09:46:53  15888        Info                 TMenuForm                            Inițializare constructor pentru TMenuForm.
+ 2025-04-08 09:46:53  15888        Info                 FormCreate                           Inițiere creare formă și conexiune la baza de date.
+ 2025-04-08 09:46:53  15888        Info                 LoadDBSettings                       Apel functie.
+ 2025-04-08 09:46:53  15888        Debug                LoadDBSettings                       Fisier db_settings.cfg exista.
+ 2025-04-08 09:46:53  15888        Trace                FormCreate                           Conexiunea la baza de date a fost stabilită cu succes.
+ 2025-04-08 09:46:53  15888        Info                 CheckPriceUpdateStatus               Functie apelata
+ 2025-04-08 09:46:53  15888        Info                 CheckPriceUpdateStatus               Functie incheiata
+ 2025-04-08 09:46:53  15888        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:46:53  15888        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:46:53  15888        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:46:53  15888        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:46:53  15888        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:46:53  15888        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:46:53  15888        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:46:53  15888        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:46:53  15888        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:46:53  15888        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:46:53  15888        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:46:53  15888        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:46:53  15888        Info                 FormCreate                           S-a creat forma cu succes.
+ 2025-04-08 09:46:53  15888        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-04-08 09:46:53  15888        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-04-08 09:46:53  15888        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:46:53  15888        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:46:53  15888        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:46:53  15888        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:46:53  15888        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:46:53  15888        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:46:53  15888        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:46:53  15888        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:46:53  15888        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:46:53  15888        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:46:53  15888        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:46:53  15888        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:46:54  15888        Debug                AddButtonClick                       Butonul 'Adăugare' a fost apăsat. Se creeaza fereastra de adăugare.
+ 2025-04-08 09:46:54  15888        Info                 FormCreate                           Crearea formei de adaugare produs
+ 2025-04-08 09:46:54  15888        Info                 Initialize_Component                 Iniţializare Componente
+ 2025-04-08 09:46:55  15888        Info                 AddButtonClick                       Fereastra 'Adăugare' a fost creata.
+ 2025-04-08 09:46:57  15888        Info                 CodComboBoxSelect                    Este selecat codul din combobox cu mouse-ul
+ 2025-04-08 09:46:57  15888        Debug                CodComboBoxSelect                    Cod selectat: 2302GBL
+ 2025-04-08 09:46:57  15888        Trace                CodComboBoxSelect                    Interogare SQL verificare existenta cod: SELECT id_cod FROM code_table WHERE cod = :cod_name
+ 2025-04-08 09:46:57  15888        Info                 CodComboBoxSelect                    Cod gasit in baza de date
+ 2025-04-08 09:46:57  15888        Debug                CodComboBoxSelect                    ID cod: 1
+ 2025-04-08 09:46:57  15888        Info                 CodComboBoxSelect                    Codul selectat exista in db
+ 2025-04-08 09:46:57  15888        Trace                CodComboBoxSelect                    Interogare SQL pentru selectare marci dupa id_cod: SELECT a.a_marca_model FROM product_auto_table pa JOIN vehicle_table a ON a.a_id = pa.a_id JOIN code_table ct ON ct.id_cod = pa.id_cod WHERE ct.id_cod = :id_cod
+ 2025-04-08 09:46:57  15888        Trace                CodComboBoxSelect                    Interogarea SQL pentru selectare celule dupa id_cod: SELECT c.nume_celula FROM product_auto_table pa JOIN celula_table c ON c.id_celula = pa.celula_id WHERE pa.id_cod = :id_cod
+ 2025-04-08 09:46:57  15888        Info                 CodComboBoxSelect                    Functie terminata
+ 2025-04-08 09:46:59  15888        Info                 AutoComboBoxSelect                   Automobil selectat cu mouse-ul
+ 2025-04-08 09:46:59  15888        Debug                AutoComboBoxSelect                   Valoare automobil selectat: TOYOTA MATRIX, [02 - 08]
+ 2025-04-08 09:46:59  15888        Info                 AutoComboBoxSelect                   Automobil introdus
+ 2025-04-08 09:46:59  15888        Trace                AutoComboBoxSelect                   Interogare SQL pentru verificare automobil existent: SELECT a_id FROM vehicle_table WHERE a_marca_model = :a_name
+ 2025-04-08 09:46:59  15888        Info                 AutoComboBoxSelect                   Automobil gasit
+ 2025-04-08 09:46:59  15888        Debug                AutoComboBoxSelect                   a_id: 1
+ 2025-04-08 09:46:59  15888        Info                 AutoComboBoxSelect                   Automobil gasit, afisarea codului si celulei de unde face parte
+ 2025-04-08 09:46:59  15888        Trace                AutoComboBoxSelect                   Interogarea SQL pentru selectarea codului dupa a_id: SELECT ct.cod FROM product_auto_table pa JOIN vehicle_table a ON a.a_id = pa.a_id JOIN code_table ct ON ct.id_cod = pa.id_cod WHERE a.a_id = :a_id
+ 2025-04-08 09:46:59  15888        Trace                AutoComboBoxSelect                   Interogarea SQL pentru afisarea celulei dupa a_id: SELECT c.nume_celula FROM product_auto_table pa JOIN celula_table c ON c.id_celula = pa.celula_id WHERE pa.a_id = :a_id
+ 2025-04-08 09:46:59  15888        Info                 AutoComboBoxSelect                   Functie executata
+ 2025-04-08 09:47:12  15888        Info                 AddButtonClick                       Buton Adăugare apăsat.
+ 2025-04-08 09:47:15  15888        Info                 AddButtonClick                       Buton Adăugare apăsat.
+ 2025-04-08 09:47:17  15888        Info                 AddButtonClick                       Buton Adăugare apăsat.
+ 2025-04-08 09:47:20  15888        Info                 AddButtonClick                       Buton Adăugare apăsat.
+ 2025-04-08 09:47:22  15888        Trace                AddButtonClick                       Valoare marca: TOYOTA MATRIX, [02 - 08]; celula: E14, cod: 2302GBL
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Verficare dacă automobil există
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Automobil gasit
+ 2025-04-08 09:47:22  15888        Debug                AddButtonClick                       ID a_id: 1
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Verificare daca celula exista
+ 2025-04-08 09:47:22  15888        Trace                AddButtonClick                       Interogare SQL pentru verificare existenta celula: SELECT id_celula FROM celula_table WHERE nume_celula = :nume_celula
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Celula E14 exista
+ 2025-04-08 09:47:22  15888        Debug                AddButtonClick                       Celula id: 1
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Verificăm dacă codul există
+ 2025-04-08 09:47:22  15888        Trace                AddButtonClick                       Interogare SQL pentru verificare daca codu exista: SELECT id_cod FROM code_table WHERE cod = :cod_name
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Codul 2302GBL exista
+ 2025-04-08 09:47:22  15888        Debug                AddButtonClick                       ID cod preluat 1
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Verificam daca exista produsul in baza de date
+ 2025-04-08 09:47:22  15888        Trace                AddButtonClick                       Interogarea SQL pentru verificarea existentei produsului in db: SELECT pa_id FROM product_auto_table WHERE a_id = :a_id AND celula_id = :celula_id AND id_cod = :id_cod
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Produs exista, facem update pa_id: 1
+ 2025-04-08 09:47:22  15888        Trace                AddButtonClick                       Interogarea SQL: UPDATE product_auto_table SET p_count = :p_count, p_price = :p_price WHERE pa_id = :pa_id
+ 2025-04-08 09:47:22  15888        Info                 AddButtonClick                       Update produs efectuat
+ 2025-04-08 09:47:26  15888        Trace                AddButtonClick                       Fereastra 'Adăugare' a fost distrusă.
+ 2025-04-08 09:47:26  15888        Debug                AddButtonClick                       Se reîncarcă datele în grid.
+ 2025-04-08 09:47:26  15888        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:47:26  15888        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:47:26  15888        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:47:26  15888        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:47:26  15888        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:47:26  15888        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:47:26  15888        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:47:26  15888        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:47:37  15888        Info                 MenuItemEditClick                    Funcția a fost apelată
+ 2025-04-08 09:47:37  15888        Debug                MenuItemEditClick                    ID rând selectat: 1
+ 2025-04-08 09:47:37  15888        Debug                MenuItemEditClick                    Deschiderea formei de editare pentru ID: 1
+ 2025-04-08 09:47:37  15888        Info                 TEditFormProduct                     Functie apelata
+ 2025-04-08 09:47:37  15888        Debug                TEditFormProduct                     ID produs preluat 1
+ 2025-04-08 09:47:37  15888        Trace                TEditFormProduct                     Interogare SQL generata: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod WHERE pp.pa_id = :pa_id
+ 2025-04-08 09:47:37  15888        Debug                TEditFormProduct                     Exista date in baza de date la acest produs! Adaugarea in edituri datele
+ 2025-04-08 09:47:37  15888        Info                 TEditFormProduct                     Functie terminata
+ 2025-04-08 09:47:40  15888        Info                 CancelButtonClick                    Anulare editare de utilizator
+ 2025-04-08 09:47:40  15888        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:47:40  15888        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:47:40  15888        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:47:40  15888        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:47:40  15888        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:47:40  15888        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:47:40  15888        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:47:40  15888        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:47:40  15888        Info                 MenuItemEditClick                    Funcția s-a încheiat
+ 2025-04-08 09:47:45  15888        Info                 MenuItemEditClick                    Funcția a fost apelată
+ 2025-04-08 09:47:45  15888        Debug                MenuItemEditClick                    ID rând selectat: 1
+ 2025-04-08 09:47:45  15888        Debug                MenuItemEditClick                    Deschiderea formei de editare pentru ID: 1
+ 2025-04-08 09:47:45  15888        Info                 TEditFormProduct                     Functie apelata
+ 2025-04-08 09:47:45  15888        Debug                TEditFormProduct                     ID produs preluat 1
+ 2025-04-08 09:47:45  15888        Trace                TEditFormProduct                     Interogare SQL generata: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod WHERE pp.pa_id = :pa_id
+ 2025-04-08 09:47:45  15888        Debug                TEditFormProduct                     Exista date in baza de date la acest produs! Adaugarea in edituri datele
+ 2025-04-08 09:47:45  15888        Info                 TEditFormProduct                     Functie terminata
+ 2025-04-08 09:47:49  15888        Info                 ConfirmButtonClick                   Functie apelata
+ 2025-04-08 09:47:53  15888        Info                 ConfirmButtonClick                   Functie apelata
+ 2025-04-08 09:47:55  15888        Info                 ConfirmButtonClick                   Functie apelata
+ 2025-04-08 09:47:57  15888        Info                 ConfirmButtonClick                   Functie apelata
+ 2025-04-08 09:47:59  15888        Debug                ConfirmButtonClick                   Inceput proces de adaugare in baza de date
+ 2025-04-08 09:47:59  15888        Debug                ConfirmButtonClick                   Celula E14 exista in baza de date
+ 2025-04-08 09:47:59  15888        Info                 ConfirmButtonClick                   Functie terminata
+ 2025-04-08 09:47:59  15888        Info                 MenuItemEditClick                    Editare confirmată, reafișare date.
+ 2025-04-08 09:47:59  15888        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:47:59  15888        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:47:59  15888        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:47:59  15888        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:47:59  15888        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:47:59  15888        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:47:59  15888        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:47:59  15888        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:47:59  15888        Info                 FormShow                             Funcția a fost apelată.
+ 2025-04-08 09:47:59  15888        Debug                FormShow                             Execut interogarea SQL.
+ 2025-04-08 09:47:59  15888        Trace                FormShow                             Interogare SQL generată: SELECT pp.pa_id, a.a_marca_model, ct.cod, c.nume_celula, pp.p_count, pp.p_price, pp.is_updated, pp.price_updated_at FROM product_auto_table pp JOIN vehicle_table a ON a.a_id = pp.a_id JOIN celula_table c ON c.id_celula = pp.celula_id JOIN code_table ct ON ct.id_cod = pp.id_cod
+ 2025-04-08 09:47:59  15888        Debug                FormResize                           Apel funcție pentru redimensionare formă.
+ 2025-04-08 09:47:59  15888        Trace                FormResize                           Lațime grid: 1272, Număr coloane: 7
+ 2025-04-08 09:47:59  15888        Trace                FormResize                           Lațime efectivă: 1254, Lațime coloană: 209, Pixeli rămași: 0
+ 2025-04-08 09:47:59  15888        Debug                FormResize                           Redimensionarea grilei a fost finalizată.
+ 2025-04-08 09:47:59  15888        Info                 FormShow                             Datele au fost afișate cu succes în grid.
+ 2025-04-08 09:47:59  15888        Info                 MenuItemEditClick                    Funcția s-a încheiat
+ 2025-04-08 09:48:02  15888        Info                 ~TMenuForm                           Închiderea aplicației și eliberarea resurselor.
+
+|==============================================================================================================================================|
+2025-04-08 09:48:02
+

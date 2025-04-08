@@ -46,7 +46,7 @@ __published:	// IDE-managed Components
 	void __fastcall ConfirmButtonClick(TObject *Sender);
    // static UnicodeString HashPassword(const UnicodeString &password);
 	bool __fastcall ShowPasswordDialog(UnicodeString &enteredPassword);
-    bool __fastcall VerifyOldPassword(const UnicodeString &oldPassword);
+    bool __fastcall VerifyPassword(const UnicodeString &oldPassword);
 	void __fastcall CancelButtonKeyDown(TObject *Sender, WORD &Key, TShiftState Shift);
 
 private:	// User declarations

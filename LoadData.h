@@ -48,7 +48,9 @@ class TLoadDataForm : public TForm
     void __fastcall ResizeStringGrid();
     void __fastcall FormResize(TObject* Sender);
     void __fastcall FormKeyPress(TObject* Sender, System::WideChar &Key);
-    void __fastcall LoadSettings();
+	void __fastcall LoadSettings();
+	bool __fastcall ShowPasswordDialog(UnicodeString &enteredPassword);
+    bool __fastcall VerifyPassword(const UnicodeString &oldPassword);
     void __fastcall LoadPrinters();
     void __fastcall ChangePassButtonClick(TObject* Sender);
   private: // User declarations

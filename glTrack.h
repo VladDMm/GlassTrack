@@ -49,7 +49,6 @@ __published:	// IDE-managed Components
 	TFDConnection *FDConnection1;
 	TFDPhysMySQLDriverLink *FDPhysMySQLDriverLink1;
 	TLabel *Label1;
-	TFDUpdateSQL *FDUpdateSQL1;
 	TPopupMenu *PopupMenu1;
 	TMenuItem *MenuItemVinde;
 	TMenuItem *MenuItemEdit;
